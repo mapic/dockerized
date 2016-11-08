@@ -70,17 +70,21 @@
 
 <ol>
 <li>Install (see above).</li>
-<li>Run <code>./start-mapic.sh</code>. (First run might take a few minutes due to installation of dependencies.)</li>
+<li>Run <code>./restart-mapic.sh</code>. (First run might take a few minutes due to installation of dependencies.)</li>
 <li>Open your browser @ <a href="https://localhost">https://localhost</a>.</li>
 <li>Stop server with <code>./stop-mapic.sh</code>.</li>
 </ol>
 
-<h3>
-<a id="create-user" class="anchor" href="#create-user" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create User</h3>
+<h4>
+<a id="create-user" class="anchor" href="#create-user" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create User</h4>
 
 <p>While you are running the server in one terminal , open another terminal and do as follows (read instructions).</p>
 
-<div class="highlight highlight-source-shell"><pre>docker <span class="pl-c1">exec</span> -it localhost_engine_1 node scripts/create_user.js</pre></div>
+<div class="highlight highlight-source-shell"><pre><span class="pl-c"># create user</span>
+docker <span class="pl-c1">exec</span> -it localhost_engine_1 node scripts/create_user.js user@domain.com username firstName lastName [optional password]
+
+<span class="pl-c"># make user super</span>
+docker <span class="pl-c1">exec</span> -it localhost_engine_1 node scripts/make_super.js user@domain.com</pre></div>
 
 <h2>
 <a id="libraries" class="anchor" href="#libraries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Libraries</h2>
