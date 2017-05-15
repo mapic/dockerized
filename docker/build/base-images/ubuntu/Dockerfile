@@ -39,7 +39,10 @@ RUN apt-get install -y \
   libprotobuf-dev \
   apt-transport-https \
   make \
-  sudo 
+  sudo \
+  nano \
+  host \
+  dnsutils
 
 # ensure everything up to date
 RUN apt-get update --fix-missing -y

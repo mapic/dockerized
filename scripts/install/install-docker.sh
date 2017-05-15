@@ -7,9 +7,10 @@
 
 DOCKER_COMPOSE_VERSION=1.13.0
 DOCKER_MACHINE_VERSION=0.10.0
+DOCKER_CE_VERSION=17.03
 
 # remove old docker versions
-sudo apt-get remove -y docker docker-engine
+sudo apt-get remove -y docker docker-engine docker-ce
 
 # install deps
 sudo apt-get install -y \
@@ -29,7 +30,7 @@ sudo add-apt-repository \
 sudo apt-get update -y
 
 # install docker-ce
-sudo apt-get install -y docker-ce
+sudo apt-get install -y docker-ce=$DOCKER_CE_VERSION
 
 # install docker-compose
 curl -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
