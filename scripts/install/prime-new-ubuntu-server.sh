@@ -4,9 +4,6 @@
 DOCKER_COMPOSE_VERSION=1.13.0
 DOCKER_MACHINE_VERSION=0.10.0
 
-# privs
-sudo -s
-
 # update/upgrade
 apt update -y
 apt upgrade -y
@@ -29,5 +26,3 @@ chmod +x /usr/local/bin/docker-compose
 curl -L https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine
 chmod +x /tmp/docker-machine
 sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
-
-# nodejs
