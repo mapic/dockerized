@@ -15,6 +15,11 @@ env_not_set () {
     echo "You need to set MAPIC_ROOT_FOLDER and MAPIC_DOMAIN enviroment variable before you can use this script."
     exit 1
 }
+symlink_not_set () {
+    ln -s $MAPIC_ROOT_FOLDER/scripts/mapic-cli.sh /usr/bin/mapic
+    echo "Self-registered as global command."
+    usage;
+}
 
 # mapic-cli functions
 mapic_ps () {
@@ -55,9 +60,10 @@ mapic_help () {
 }
 
 # check vars
-[ -z "$1" ] && usage
 [ -z "$MAPIC_ROOT_FOLDER" ] && env_not_set 
 [ -z "$MAPIC_DOMAIN" ] && env_not_set 
+[ ! -f /usr/bin/mapic ] && symlink_not_set
+[ -z "$1" ] && usage
 
 
 
