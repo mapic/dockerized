@@ -51,19 +51,21 @@ mapic_help () {
     echo "A CLI for Mapic"
     echo ""
     echo "Commands:"
-    echo "  start         Start Mapic server"
-    echo "  stop          Stop Mapic server"
-    echo "  enter         Enter running container. Takes 'grep' argument for finding Docker container."
-    echo "  logs          Show logs of running Mapic server"
-    echo "  ps            Show running containers"
+    echo "  start           Start Mapic server"
+    echo "  restart         Restart Mapic server (same as 'mapic start')"
+    echo "  stop            Stop Mapic server"
+    echo "  enter [filter]  Enter running container. Greps filter argument for finding Docker container."
+    echo "  logs            Show logs of running Mapic server"
+    echo "  ps              Show running containers"
     echo ""
+    exit 0
 }
 
 # check vars
 [ -z "$MAPIC_ROOT_FOLDER" ] && env_not_set 
 [ -z "$MAPIC_DOMAIN" ] && env_not_set 
 [ ! -f /usr/bin/mapic ] && symlink_not_set
-[ -z "$1" ] && usage
+[ -z "$1" ] && mapic_help
 
 
 
@@ -71,6 +73,7 @@ mapic_help () {
 case "$1" in
 
 start)  mapic_start;;
+restart)  mapic_start;;
 stop)   mapic_stop;;
 enter)  mapic_enter "$@";;
 logs)   mapic_logs;;
