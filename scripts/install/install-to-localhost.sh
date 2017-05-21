@@ -75,7 +75,7 @@ docker run --rm -it --name openssl \
 # update config
 print_log "# Updating configuration..."
 cd $DIR/scripts/install
-node update-configs.js localhost
+node update-configs.js $MAPIC_DOMAIN
 
 # create storage containers
 print_log "# Creating storage containers..."

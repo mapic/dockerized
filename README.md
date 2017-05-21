@@ -7,10 +7,11 @@ Learn more @ https://mapic.io. For a technical overview, please see [Mapic Techn
 
 
 ## Usage
-1. Install (see below).
-2. Start server with `./restart-mapic.sh`.
-3. Open your browser @ https://localhost.
-4. Stop server with `./stop-mapic.sh`.
+1. Set enviroment variables: `MAPIC_DOMAIN=domain.example.com` and `$MAPIC_ROOT_FOLDER=/home/mapic`. Exchange values for your domain and installation folder.
+2. Install with `mapic install` (or see below).
+3. Start server with `mapic start`.
+4. Open your browser @ https://localhost.
+5. Stop server with `mapic stop`.
 
 
 ## Install
@@ -21,12 +22,22 @@ Learn more @ https://mapic.io. For a technical overview, please see [Mapic Techn
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 ### Install to localhost
-Clone repository and run install:
+Download install script and run install:
 ```bash
+
+# download mapic
 git clone git://github.com/mapic/mapic.git
 cd mapic
-./install-to-localhost.sh
+
+# Set enviroment variables
+export MAPIC_DOMAIN your.domain.com
+export MAPIC_ROOT_FOLDER $PWD
+
+# Then install Mapic
+mapic install 
+
 ```
+
 ### Create User
 The first user is created automatically. You can log in to [https://localhost](https://localhost) with these default credentials:  
 

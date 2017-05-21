@@ -9,3 +9,8 @@ docker/compose/yml
 !docker/compose/yml/README.md
 !docker/compose/yml/localhost.yml
 !docker/compose/yml/common.yml
+logs
+logs/
+logs/*
+*.log
+env-cli.sh
