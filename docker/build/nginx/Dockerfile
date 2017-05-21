@@ -8,6 +8,10 @@ FROM mapic/ubuntu:latest
 # maintainer
 MAINTAINER Knut Ole Sjøli <knutole@mapic.io>
 
+# install tools
+RUN apt-get update -y
+RUN apt-get install -y zlib1g-dev
+
 # install openssl
 ADD ./install-openssl.sh /tmp/
 RUN sh /tmp/install-openssl.sh
@@ -33,6 +37,9 @@ ENV TERM xterm
 
 # workdir
 WORKDIR /mapic/config
+
+# add debug
+ADD ./debug /tmp
 
 # entrypoint
 CMD ["nginx", "-c", "/mapic/config/nginx.conf"]
