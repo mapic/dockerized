@@ -1,19 +1,117 @@
 #!/bin/bash
+#   _________  ____  / /______(_) /_  __  __/ /_(_)___  ____ _
+#  / ___/ __ \/ __ \/ __/ ___/ / __ \/ / / / __/ / __ \/ __ `/
+# / /__/ /_/ / / / / /_/ /  / / /_/ / /_/ / /_/ / / / / /_/ / 
+# \___/\____/_/ /_/\__/_/  /_/_.___/\__,_/\__/_/_/ /_/\__, /  
+#                                                    /____/   
+#
+#   To whomever is using this script, feel free to add more scripts and wrappers. 
+#   Just glean the other wrappers below, and follow these steps:
+# 
+#   How to add more scripts/commands:
+#       1. add entry in mapic_help
+#       2. add entry in mapic_cli
+#       3. add your script in your own command (see other examples)
+#       4. put script-file.sh in /cli/ or relevant subfolder (install, config, etc)
+#       5. commit and push as branch/PR
+#       
+#       (For "cool" ascii art text, see: http://patorjk.com/software/taag/#p=display&f=Slant&t=mapic)
+#       (Tracking issue: https://github.com/mapic/mapic/issues/27)
 
-# TODO:
-# ----- 
+
+#   / /_____  ____/ /___ 
+#  / __/ __ \/ __  / __ \
+# / /_/ /_/ / /_/ / /_/ /
+# \__/\____/\__,_/\____/ 
+#
 # 1. Create an ENV.sh file to source each time mapic-cli is run. 
 #    That way we don't have to worry about globals, just our own env file.
 #    Need to clean up this ENV across Mapic
+# 2. Prompt and contiune on missing $MAPIC_DOMAIN 
+# 3. Install flow, work seamlessly with `mapic install [OPTIONS]`. Also for travis (`mapic install --travis [OPTIONS]`)
+# 4. Create own repo for mapic-cli (?)
 
-# get absolute path of mapic-cli.sh
-D="$(readlink -f "$0")"
-MAPIC_CLI_FOLDER=${D%/*}
 
-# source env file
-set -o allexport
-source $MAPIC_CLI_FOLDER/env-cli.sh
+#   _____/ (_)
+#  / ___/ / / 
+# / /__/ / /  
+# \___/_/_/      
+mapic_help () {
+    echo ""
+    echo "Usage: mapic COMMAND"
+    echo ""
+    echo "A CLI for Mapic"
+    echo ""
+    echo "Commands:"
+    echo "  start               Start Mapic stack"
+    echo "  restart             Stop, flush and start Mapic stack"
+    echo "  stop                Stop Mapic stack"
+    echo "  status              Display status on running Mapic stack"
+    echo "  logs                Show logs of running Mapic server"
+    echo "  logs dump           Dump logs of running Mapic server to disk"
+    echo "  enter [filter]      Enter running container (with [filter] in grep format for finding Docker container)"
+    echo "  run [filter] [cmd]  Run command inside a container"
+    echo "  user                Show user information"
+    echo "  ps                  Show running containers"
+    echo "  dns                 Create or check DNS entries for Mapic"
+    echo "  ssl                 Create or scan SSL certificates for Mapic"
+    echo "  install             Install Mapic"
+    echo "  config              Configure Mapic"
+    echo "  test                Run Mapic tests"
+    echo "  help                This screen"
+    echo ""
+    exit 0
+}
+mapic_cli () {
 
+    # source n check
+    source_env "$@"
+    check "$@"
+
+    # api
+    case "$1" in
+        install)    mapic_install "$@";;
+        start)      mapic_start;;
+        restart)    mapic_start;;
+        stop)       mapic_stop;;
+        status)     mapic_status "$@";;
+        logs)       mapic_logs "$@";;
+        enter)      mapic_enter "$@";;
+        run)        mapic_run "$@";;
+        user)       mapic_user "$@";;
+        ps)         mapic_ps;;
+        dns)        mapic_dns "$@";;
+        ssl)        mapic_ssl "$@";;
+        test)       mapic_test "$@";;
+        home)       mapic_home "$@";;
+        config)     mapic_config "$@";;
+        help)       mapic_help;;
+        --help)     mapic_help;;
+        -h)         mapic_help;;
+        *)          mapic_wild "$@";;
+    esac
+}
+
+#    _______________(_)___  / /_   __  __/ /_(_) /____
+#   / ___/ ___/ ___/ / __ \/ __/  / / / / __/ / / ___/
+#  (__  ) /__/ /  / / /_/ / /_   / /_/ / /_/ / (__  ) 
+# /____/\___/_/  /_/ .___/\__/   \__,_/\__/_/_/____/  
+#                 /_/                                  
+check () {
+    test -z "$MAPIC_ROOT_FOLDER" && env_usage # check MAPIC_ROOT_FOLDER is set
+    test -z "$MAPIC_DOMAIN" && env_usage # check MAPIC_DOMAIN is set
+    test ! -f /usr/bin/mapic && symlink_usage # create symlink for global mapic
+    test -z "$1" && mapic_help # check for command line arguments
+}
+source_env () {
+    # get absolute path of mapic-cli.sh
+    D="$(readlink -f "$0")"
+    MAPIC_CLI_FOLDER=${D%/*}
+
+    # source env file
+    set -o allexport
+    source $MAPIC_CLI_FOLDER/env-cli.sh
+}
 usage () {
     echo "Usage: mapic [COMMAND]"
     exit 1
@@ -23,7 +121,8 @@ failed () {
     exit 1
 }
 env_usage () {
-    echo "You need to set MAPIC_ROOT_FOLDER and MAPIC_DOMAIN environment variable before you can use this script."
+    echo "You need to set MAPIC_DOMAIN environment variable before you can use this script."
+    # todo: prompt and continue
     exit 1
 }
 symlink_usage () {
@@ -31,22 +130,40 @@ symlink_usage () {
     echo "Self-registered as global command (/usr/bin/mapic)"
     mapic_help;
 }
-
-
-
-# mapic-cli functions
+               
+#    / __ \/ ___/
+#   / /_/ (__  ) 
+#  / .___/____/  
+# /_/            
 mapic_ps () {
     docker ps 
     exit 0
 }
+
+#    _____/ /_____ ______/ /_
+#   / ___/ __/ __ `/ ___/ __/
+#  (__  ) /_/ /_/ / /  / /_  
+# /____/\__/\__,_/_/   \__/  
 mapic_start () {
     cd $MAPIC_ROOT_FOLDER
     ./restart-mapic.sh
 }
+
+#    _____/ /_____  ____ 
+#   / ___/ __/ __ \/ __ \
+#  (__  ) /_/ /_/ / /_/ /
+# /____/\__/\____/ .___/ 
+#               /_/      
 mapic_stop () {
     cd $MAPIC_ROOT_FOLDER
     ./stop-mapic.sh
 }
+
+#    / /___  ____ ______
+#   / / __ \/ __ `/ ___/
+#  / / /_/ / /_/ (__  ) 
+# /_/\____/\__, /____/  
+#         /____/        
 mapic_logs () {
     if [ "$2" == "dump" ]; then
         # dump logs to disk
@@ -59,9 +176,13 @@ mapic_logs () {
         bash show-logs.sh
     fi
 }
+                     
+#  _      __(_) /___/ /
+# | | /| / / / / __  / 
+# | |/ |/ / / / /_/ /  
+# |__/|__/_/_/\__,_/   
 mapic_wild () {
-    echo "\"$@\" is not a Mapic command."
-    echo "See 'mapic help'"
+    echo "\"$@\" is not a Mapic command. See 'mapic help' for available commands."
     exit 1
 }
 
@@ -199,7 +320,7 @@ mapic_ssl_create () {
 }
 mapic_ssl_scan () {
     cd $MAPIC_CLI_FOLDER
-    bash ssllabs-scan.sh $MAPIC_DOMAIN
+    bash ssllabs-scan.sh "https://$MAPIC_DOMAIN"
 }
 
 #   ____/ /___  _____
@@ -295,6 +416,11 @@ mapic_test_failed () {
     exit 1;
 }
 
+#   _________  ____  / __(_)___ _
+#  / ___/ __ \/ __ \/ /_/ / __ `/
+# / /__/ /_/ / / / / __/ / /_/ / 
+# \___/\____/_/ /_/_/ /_/\__, /  
+#                       /____/   
 mapic_config_usage () {
     echo ""
     echo "Usage: mapic config [OPTIONS]"
@@ -347,18 +473,8 @@ mapic_config_refresh () {
     esac 
 }
 mapic_config_refresh_all () {
-    echo "Refreshing all Mapic configs!"
-
-    # todo: first make a backup of config files that will be changed
-
-    docker run -it \
-        --env MAPIC_ROOT_FOLDER=$MAPIC_ROOT_FOLDER \
-        --env MAPIC_DOMAIN=$MAPIC_DOMAIN \
-        --env MAPIC_CONFIG_FOLDER=$MAPIC_CONFIG_FOLDER \
-        --volume $MAPIC_ROOT_FOLDER:$MAPIC_ROOT_FOLDER \
-        -w $MAPIC_ROOT_FOLDER \
-        node:4 node scripts/cli/config/configure-mapic.js 
-
+    cd $MAPIC_CLI_FOLDER
+    bash configure-mapic.sh || failed "$@"
 }
 mapic_config_refresh_nginx () {
     echo "Not yet supported."
@@ -393,64 +509,11 @@ mapic_config_refresh_slack () {
     exit 0;
 }
 
-#    / /_  ___  / /___ 
-#   / __ \/ _ \/ / __ \
-#  / / / /  __/ / /_/ /
-# /_/ /_/\___/_/ .___/ 
-#             /_/      
-mapic_help () {
-    echo ""
-    echo "Usage: mapic COMMAND"
-    echo ""
-    echo "A CLI for Mapic"
-    echo ""
-    echo "Commands:"
-    echo "  start               Start Mapic stack"
-    echo "  restart             Stop, flush and start Mapic stack"
-    echo "  stop                Stop Mapic stack"
-    echo "  status              Display status on running Mapic stack"
-    echo "  logs                Show logs of running Mapic server"
-    echo "  logs dump           Dump logs of running Mapic server to disk"
-    echo "  enter [filter]      Enter running container (with [filter] in grep format for finding Docker container)"
-    echo "  run [filter] [cmd]  Run command inside a container."
-    echo "  user                Show user information"
-    echo "  ps                  Show running containers"
-    echo "  dns                 Create or check DNS entries for Mapic"
-    echo "  ssl                 Create or scan SSL certificates for Mapic"
-    echo "  install             Install Mapic"
-    echo "  config              Configure Mapic"
-    echo "  test                Run Mapic tests"
-    echo "  help                This screen"
-    echo ""
-    exit 0
-}
 
 
-# checks
-test -z "$MAPIC_ROOT_FOLDER" && env_usage # check MAPIC_ROOT_FOLDER is set
-test -z "$MAPIC_DOMAIN" && env_usage # check MAPIC_DOMAIN is set
-test ! -f /usr/bin/mapic && symlink_usage # create symlink for global mapic
-test -z "$1" && mapic_help # check for command line arguments
-
-
-# api
-case "$1" in
-    install)    mapic_install "$@";;
-    start)      mapic_start;;
-    restart)    mapic_start;;
-    stop)       mapic_stop;;
-    status)     mapic_status "$@";;
-    logs)       mapic_logs "$@";;
-    enter)      mapic_enter "$@";;
-    run)        mapic_run "$@";;
-    user)       mapic_user "$@";;
-    ps)         mapic_ps;;
-    dns)        mapic_dns "$@";;
-    ssl)        mapic_ssl "$@";;
-    test)       mapic_test "$@";;
-    home)       mapic_home "$@";;
-    config)     mapic_config "$@";;
-    help)       mapic_help;;
-    *)          mapic_wild "$@";;
-esac
-
+#   ___  ____  / /________  ______  ____  (_)___  / /_
+#  / _ \/ __ \/ __/ ___/ / / / __ \/ __ \/ / __ \/ __/
+# /  __/ / / / /_/ /  / /_/ / /_/ / /_/ / / / / / /_  
+# \___/_/ /_/\__/_/   \__, / .___/\____/_/_/ /_/\__/  
+#                    /____/_/                         
+mapic_cli "$@"

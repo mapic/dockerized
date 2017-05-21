@@ -6,7 +6,6 @@ var MAPIC_DOMAIN = process.env.MAPIC_DOMAIN;
 if (!MAPIC_DOMAIN) {
     process.exit('Need to set $MAPIC_DOMAIN');
 }
-console.log('confige!!!')
 
 // set config folder
 var CONFIG_FOLDER           = process.env.MAPIC_CONFIG_FOLDER + '/';
@@ -47,6 +46,9 @@ var mongo_config = JSON.parse(mongo_json);
 mongo_config.password = mongoPassString;
 fs.writeFileSync(MONGO_JSON_PATH, JSON.stringify(mongo_config, null, 2) , 'utf-8');
 
+// TODO: need to update mongo user directly!
+// db.updateUser("root", {pwd: "NewRootAdmin" }) 
+
 // adding redis passes to mile
 var mileConfig = require(MILE_CONFIG_PATH);
 mileConfig.redis.layers.auth = redisPassString;
@@ -75,10 +77,12 @@ updateRedisConfig(REDIS_TEMP_CONF_PATH);
 // engine
 var engineConfig = require(ENGINE_CONFIG_PATH);
 
+// updating domains
 engineConfig.serverConfig.portalServer.uri = 'https://' + MAPIC_DOMAIN;
 engineConfig.serverConfig.instance = MAPIC_DOMAIN;
 engineConfig.clientConfig.servers.portal = 'https://' + MAPIC_DOMAIN;
 
+// updating subdomains
 var subdomain = MAPIC_DOMAIN.split('.')[0];
 var main_domain = MAPIC_DOMAIN.split(subdomain)[1];
 engineConfig.clientConfig.servers.subdomain = 'https://{s}' + main_domain;
@@ -88,13 +92,13 @@ var proxy_sub = ["proxy-a-" + subdomain, "proxy-b-" + subdomain, "proxy-c-" + su
 engineConfig.clientConfig.servers.proxy.subdomains = proxy_sub;
 var grid_sub = ["grid-a-" + subdomain, "grid-b-" + subdomain, "grid-c-" + subdomain, "grid-d-" + subdomain];
 engineConfig.clientConfig.servers.utfgrid.subdomains = grid_sub;
-
 var tiles_url = engineConfig.clientConfig.servers.subdomain + '/v2/tiles/';
 var cubes_url = engineConfig.clientConfig.servers.subdomain + '/v2/cubes/';
 engineConfig.clientConfig.servers.tiles.uri = tiles_url;
 engineConfig.clientConfig.servers.cubes.uri = cubes_url;
 engineConfig.clientConfig.servers.proxy.uri = tiles_url;
 engineConfig.clientConfig.servers.utfgrid.uri = tiles_url;
+
 
 var engineJsonStr = 'module.exports = ' + JSON.stringify(engineConfig, null, 2);
 var content = fs.readFileSync(ENGINE_CONFIG_PATH);
