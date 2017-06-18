@@ -36,12 +36,12 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then tar xf docker-17.06.0-ce-rc4.tar; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd docker; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cp docker /usr/local/bin/docker; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker version
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker version; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo rm -f /usr/local/bin/docker-compose; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /tmp/docker-compose; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then chmod +x /tmp/docker-compose; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo mv /tmp/docker-compose /usr/local/bin; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker-compose version
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker-compose version; fi
 
 install:
   - cd cli
