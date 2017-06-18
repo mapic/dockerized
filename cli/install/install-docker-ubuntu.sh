@@ -54,7 +54,11 @@ PKG="docker-ce_17.03.0~ce-0~ubuntu-"$CODENAME"_amd64.deb"
 echo "PKG: $PKG"
 curl -L https://download.docker.com/linux/ubuntu/dists/$CODENAME/pool/stable/amd64/$PKG > /tmp/$PKG | abort "Couldn't download $PKG"
 ls /tmp
-sudo DEBIAN_FRONTEND=noninteractive dpkg -i /tmp/$PKG
+sudo dpkg -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -i /tmp/$PKG
+echo "NONITNERAVICE DONE!"
+echo "NONITNERAVICE DONE!"
+echo "NONITNERAVICE DONE!"
+echo "NONITNERAVICE DONE!"
 
 # install docker-compose
 echo "Installing Docker Compose"
