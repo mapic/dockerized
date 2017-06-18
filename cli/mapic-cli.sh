@@ -180,7 +180,9 @@ initialize () {
         create_mapic_symlink
 
         # install dependencies on osx
-        test $MAPIC_HOST_OS == "osx" && install_osx_tools
+        if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
+            install_osx_tools
+        fi
 
         # ensure editor
         ensure_editor
@@ -225,8 +227,12 @@ install_osx_tools () {
     BREW=$(which brew)
     JQ=$(which jq)
 
+    if [[ "$TRAVIS" = true ]]; then
+        mv -f $SED "$SED-tmp"
+    fi
+
     # gnu-sed
-    if [ -z $SED ]; then
+    if [ ! -f $SED ]; then
         echo "Installing GNU sed..."
         cd $MAPIC_CLI_FOLDER/lib >/dev/null 2>&1
         rm -rf sed-4.4 >/dev/null 2>&1
