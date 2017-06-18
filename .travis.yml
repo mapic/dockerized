@@ -16,20 +16,11 @@ matrix:
       dist: xenial
       sudo: required
     - os: linux
-      dist: precise
-      sudo: required
-    - os: linux
       dist: zesty
       sudo: required
     - os: linux
       dist: yakkety
       sudo: required
-    - os: linux
-      dist: artful
-      sudo: required
-    - os: osx
-      osx_image: xcode7.3.1
-      sudo : required
     - os: osx
       osx_image: xcode8.3
       sudo : required
