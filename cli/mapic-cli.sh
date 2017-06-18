@@ -230,14 +230,23 @@ install_osx_tools () {
     JQ=$(which jq)
     GREP=$(which grep)
 
-    if [[ "$TRAVIS" = true ]]; then
-        mv -f $SED "$SED-tmp"
-    fi
+
+
+   
 
     echo "Installing OSX Tools"
+    echo "SED: $SED"
+    echo "BREW: $BREW"
+    echo "JQ: $JQ"
+    echo "GREP: $GREP"
+
+    if [[ "$TRAVIS" = true ]]; then
+        echo "TRVAISE = TRUE"
+        mv -f $SED "/tmp/oldsed"
+    fi
 
     # gnu-sed
-    if [ ! -f $SED ]; then
+    if [ -z $SED ]; then
         echo "Installing GNU sed..."
         cd $MAPIC_CLI_FOLDER/lib >/dev/null 2>&1
         rm -rf sed-4.4 >/dev/null 2>&1
@@ -250,8 +259,8 @@ install_osx_tools () {
     fi
 
     # grep
-    if [ ! -f $GREP ]; then
-        if [ ! -f $BREW ]; then
+    if [ -z $GREP ]; then
+        if [ -z $BREW ]; then
             echo "Brew required for OSX. Please install 'grep' manually."
         else
             echo "Installing grep..."
