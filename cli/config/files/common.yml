@@ -8,8 +8,8 @@ engine:
   expose:
     - "3001"
   volumes:
-    - ${MAPIC_ROOT_FOLDER}/config/${MAPIC_DOMAIN}:/mapic/config
-    - ${MAPIC_ROOT_FOLDER}/modules:/mapic/modules
+    - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+    - ${MAPIC_ROOT_FOLDER}/engine:/mapic/modules/engine
   command: ./start-server.sh
 
 mile: 
@@ -21,26 +21,26 @@ mile:
   expose:
     - "3003"
   volumes:
-    - ${MAPIC_ROOT_FOLDER}/config/${MAPIC_DOMAIN}:/mapic/config
-    - ${MAPIC_ROOT_FOLDER}/modules:/mapic/modules
+    - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+    - ${MAPIC_ROOT_FOLDER}/mile:/mapic/modules/mile
   command: ./start-server.sh
 
 nginx:
   image: mapic/nginx:latest
   volumes:
-    - ${MAPIC_ROOT_FOLDER}/config/${MAPIC_DOMAIN}:/mapic/config
+    - ${MAPIC_CONFIG_FOLDER}:/mapic/config
 
 redis:
-  image: redis:latest
+  image: mapic/redis:latest
   volumes:
-    - ${MAPIC_ROOT_FOLDER}/config/${MAPIC_DOMAIN}:/mapic/config
+    - ${MAPIC_CONFIG_FOLDER}:/mapic/config
 
 mongo: 
   image: mapic/mongo:latest
   volumes:
-    - ${MAPIC_ROOT_FOLDER}/config/${MAPIC_DOMAIN}:/mapic/config
+    - ${MAPIC_CONFIG_FOLDER}:/mapic/config
 
 postgis:
   image: mapic/postgis:latest
   volumes:
-    - ${MAPIC_ROOT_FOLDER}/config/${MAPIC_DOMAIN}:/mapic/config
+    - ${MAPIC_CONFIG_FOLDER}:/mapic/config

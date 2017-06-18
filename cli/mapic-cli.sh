@@ -74,7 +74,7 @@ mapic_cli_usage () {
     echo "  grep                Find string in files in subdirectories of current path"
     echo "  ps                  Show running containers"
     echo "  debug               Toggle debug mode"
-    echo "  pull                git pull --rebase all repos"
+    # echo "  pull                git pull --rebase all repos"
     echo ""
     echo "API commands:"
     echo "  api user            Handle Mapic users"
@@ -123,7 +123,7 @@ m () {
         config)     mapic_config "$@";;
         grep)       mapic_grep "$@";;
         debug)      mapic_debug "$@";;
-        pull)       mapic_pull "$@";;
+        # pull)       mapic_pull "$@";;
         domain)     mapic_domain "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
@@ -489,32 +489,32 @@ mapic_wild () {
 }
 
 
-mapic_pull () {
-    cd $MAPIC_ROOT_FOLDER
+# mapic_pull () {
+#     cd $MAPIC_ROOT_FOLDER
 
-    REPO_FOLDER=$MAPIC_ROOT_FOLDER/modules
+#     REPO_FOLDER=$MAPIC_ROOT_FOLDER/modules
 
-    echo "Pulling mapic/mapic"
-    git pull --rebase
+#     echo "Pulling mapic/mapic"
+#     git pull --rebase
 
-    echo "Pulling mapic/engine"
-    cd $REPO_FOLDER/engine
-    git pull --rebase
+#     echo "Pulling mapic/engine"
+#     cd $REPO_FOLDER/engine
+#     git pull --rebase
 
-    echo "Pulling mapic/mile"
-    cd $REPO_FOLDER/mile
-    git pull --rebase
+#     echo "Pulling mapic/mile"
+#     cd $REPO_FOLDER/mile
+#     git pull --rebase
 
-    echo "Pulling mapic/mapic.js"
-    cd $REPO_FOLDER/mapic.js
-    git pull --rebase
+#     echo "Pulling mapic/mapic.js"
+#     cd $REPO_FOLDER/mapic.js
+#     git pull --rebase
 
-    echo "Pulling mapic/sdk"
-    cd $REPO_FOLDER/sdk
-    git pull --rebase
+#     echo "Pulling mapic/sdk"
+#     cd $REPO_FOLDER/sdk
+#     git pull --rebase
     
-    echo "All pulled!"
-}
+#     echo "All pulled!"
+# }
 
     
 mapic_domain_usage () {
@@ -524,6 +524,8 @@ mapic_domain_usage () {
     echo "  domain      Domain with which Mapic is configured"
     echo ""
     echo "Example: 'mapic domain localhost'"
+    echo ""
+    echo "Current Mapic domain is $MAPIC_DOMAIN"
     exit 1
 }
 mapic_domain () {
@@ -532,7 +534,7 @@ mapic_domain () {
     DOMAIN=$2
     write_env MAPIC_DOMAIN $DOMAIN
     echo ""
-    echo "Mapic domain is now configured to $DOMAIN"
+    echo "Current Mapic domain is $DOMAIN"
 }
 
 #   ___  ____  / /____  _____

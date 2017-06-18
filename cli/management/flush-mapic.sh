@@ -10,7 +10,8 @@ function abort() {
 [ -z "$MAPIC_DOMAIN" ] && abort "Flush failed! Need to set MAPIC_DOMAIN, eg: 'mapic env set MAPIC_DOMAIN localhost'"
 
 # get name
-COMPOSENAME=${MAPIC_DOMAIN//./}
+COMPOSEFILE=$MAPIC_CONFIG_FOLDER/mapic.yml
+COMPOSENAME=mapic_$MAPIC_DOMAIN
 
 # remove stale containers
 docker rm "$COMPOSENAME"_nginx_1
