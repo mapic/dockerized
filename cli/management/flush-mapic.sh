@@ -11,7 +11,7 @@ function abort() {
 
 # get name
 COMPOSEFILE=$MAPIC_CONFIG_FOLDER/mapic.yml
-COMPOSENAME=mapic_$MAPIC_DOMAIN
+COMPOSENAME=mapic$MAPIC_DOMAIN
 
 # remove stale containers
 docker rm "$COMPOSENAME"_nginx_1

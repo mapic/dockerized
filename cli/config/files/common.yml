@@ -19,12 +19,12 @@ mile:
   image: mapic/mile:latest
   environment:
     MAPIC_DOMAIN: ${MAPIC_DOMAIN}
-  working_dir: /mapic/modules/mile 
+  working_dir: /mapic/mile 
   expose:
     - "3003"
   volumes:
     - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-    - ${MAPIC_ROOT_FOLDER}/mile:/mapic/modules/mile
+    - ${MAPIC_ROOT_FOLDER}/mile:/mapic/mile
   command: ./start-server.sh
 
 nginx:
