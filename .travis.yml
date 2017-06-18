@@ -23,6 +23,7 @@ matrix:
     - os: osx
       osx_image: xcode8.3
       sudo : required
+      services: docker
       
 # services:
   # - docker
@@ -45,6 +46,7 @@ script:
   - mapic domain localhost
   - mapic install stable
   - mapic start
-  - mapic status
-  # - sleep 20
+  # - mapic status
+  - sleep 20
+  - mapic stop
   # - mapic test all
