@@ -100,7 +100,6 @@ mapic_cli () {
     # run internal mapic
     m "$@"
 }
-
 m () {
     
     case "$1" in
@@ -140,9 +139,7 @@ m () {
 #   / / __ \/ / __/ / __  / / /_  / / _ \
 #  / / / / / / /_/ / /_/ / / / / /_/  __/
 # /_/_/ /_/_/\__/_/\__,_/_/_/ /___/\___/ 
-print_debug () {
-    printf "${c_dot}[debug mode]${c_reset}\n"
-}
+
 initialize () {
 
     # get osx/linux
@@ -204,8 +201,9 @@ initialize () {
     # source env file
     set -o allexport
     echo "MAPIC_ENV_FILE: $MAPIC_ENV_FILE"
-    echo "MAPIC_COLOR_FILE: $MAPIC_COLOR_FILE"
-    
+    # echo "MAPIC_COLOR_FILE: $MAPIC_COLOR_FILE"
+    cat $MAPIC_ENV_FILE
+
     source $MAPIC_ENV_FILE
     # source $MAPIC_COLOR_FILE
 
@@ -218,6 +216,9 @@ initialize () {
 corrupted_install () {
     echo "Install is corrupted. Try downloading fresh from https://github.com/mapic/cli"
     exit 1 
+}
+print_debug () {
+    printf "${c_dot}[debug mode]${c_reset}\n"
 }
 install_osx_tools () {
     SED=$(which sed)
@@ -351,6 +352,9 @@ write_env () {
     # test -z $2 && failed "missing arg"
 
     # add or replace line in .mapic.env
+    echo "grep: 1: $1"
+    echo "grep: MAPIC_ENV_FILE: $MAPIC_ENV_FILE"
+    
     if grep -q "$1" "$MAPIC_ENV_FILE"; then
 
         # replace line

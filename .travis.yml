@@ -40,6 +40,7 @@ matrix:
 install:
   - cd cli
   - sudo bash mapic-cli.sh
+  - mapic env
   - sudo mapic install docker
 
 script:
