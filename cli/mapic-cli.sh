@@ -363,11 +363,11 @@ write_env () {
             # replace line
             sed -i "/$1/c\\$1=$2" $MAPIC_ENV_FILE
         fi
-
         
     else
 
         # ensure newline
+        echo "newline coming up"
         sed -i -e '$a\' $MAPIC_ENV_FILE 
 
         # add to bottom
