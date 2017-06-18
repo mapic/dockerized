@@ -50,7 +50,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install caskroom/cask/brew-cask; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install docker-toolbox; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install docker docker-machine docker-compose; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install docker docker-machine docker-compose; fi
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ; fi
   # brew install docker docker-machine docker-compose
   # Install Cask
