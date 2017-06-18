@@ -39,22 +39,9 @@ install:
   - sudo bash mapic-cli.sh
 
 script:
-  - mapic install mapic
+  - mapic domain localhost
+  - mapic install stable
   - mapic start
   - mapic status
-  - sleep 20
-  - mapic test all
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  # - sleep 20
+  # - mapic test all
