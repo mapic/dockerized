@@ -35,12 +35,12 @@ before_install:
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /tmp/docker-compose; fi
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then chmod +x /tmp/docker-compose; fi
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo mv /tmp/docker-compose /usr/local/bin; fi
-  - test "$TRAVIS_OS_NAME" == "osx" && brew update
-  - test "$TRAVIS_OS_NAME" == "osx" && brew install grep --with-default-names
-  - test "$TRAVIS_OS_NAME" == "osx" && sudo rm -f /usr/local/bin/docker-compose
-  - test "$TRAVIS_OS_NAME" == "osx" && curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /tmp/docker-compose
-  - test "$TRAVIS_OS_NAME" == "osx" && chmod +x /tmp/docker-compose
-  - test "$TRAVIS_OS_NAME" == "osx" && sudo mv /tmp/docker-compose /usr/local/bin
+  - test $TRAVIS_OS_NAME == 'osx' && brew update
+  - test $TRAVIS_OS_NAME == 'osx' && brew install grep --with-default-names
+  - test $TRAVIS_OS_NAME == 'osx' && sudo rm -f /usr/local/bin/docker-compose
+  - test $TRAVIS_OS_NAME == 'osx' && curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /tmp/docker-compose
+  - test $TRAVIS_OS_NAME == 'osx' && chmod +x /tmp/docker-compose
+  - test $TRAVIS_OS_NAME == 'osx' && sudo mv /tmp/docker-compose /usr/local/bin
 
 install:
   - cd cli
