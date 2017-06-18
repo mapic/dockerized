@@ -238,14 +238,10 @@ install_osx_tools () {
     echo "GREP: $GREP"
     echo "TRAVIS: $TRAVIS"
     echo "CI: $CI"
+    echo "MAPIC_TRAVIS: $MAPIC_TRAVIS"
 
     SEDV=$(sed --version | grep "sed (GNU sed)")
     echo "SED VERSION: $SEDV"
-
-    if [ -n "$MAPIC_TRAVIS" ]; then
-        echo "TRVAISE = TRUE "
-        mv -f $SED /tmp/oldsed
-    fi
 
     # gnu-sed
     if [ -z $SEDV ]; then
@@ -258,6 +254,8 @@ install_osx_tools () {
         make >/dev/null 2>&1
         make install >/dev/null 2>&1
         cd .. && rm -rf sed-4.4 >/dev/null 2>&1
+        SEDV=$(sed --version | grep "sed (GNU sed)")
+        echo "$SEDV installed"
     fi
 
     # grep
@@ -268,6 +266,8 @@ install_osx_tools () {
             echo "Installing grep..."
             brew update
             brew install grep --with-default-names
+            GREPV=$(grep --version)
+            echo "$GREPV installed"
         fi
     fi
 
