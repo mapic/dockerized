@@ -16,30 +16,39 @@ DOCKER_MACHINE_VERSION=0.10.0
 # exit 0
 
 
-# remove old docker versions
-sudo apt-get -qq remove -y docker docker-engine
+# # remove old docker versions
+# sudo apt-get -qq remove -y docker docker-engine
 
-# install deps
-echo "Installing dependencies"
-sudo apt-get -qq install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common
+# # install deps
+# echo "Installing dependencies"
+# sudo apt-get -qq install -y \
+#     apt-transport-https \
+#     ca-certificates \
+#     curl \
+#     software-properties-common
 
-# get key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+# # get key
+# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-# add repo
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
-sudo apt-get -qq update -y
+# # add repo
+# sudo add-apt-repository \
+#    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+#    $(lsb_release -cs) \
+#    stable"
+# sudo apt-get -qq update -y
 
-# install docker-ce
-echo "Installing Docker"
-sudo apt-get -qq install -y docker-ce
+# # install docker-ce
+# echo "Installing Docker"
+# sudo apt-get -qq install -y docker-ce
+
+
+# install docker from pkg
+CODENAME=$(lsb_release -cs)
+PKG="docker-ce_17.03.0~ce-0~ubuntu-" . $CODENAME . "_amd64.deb"
+echo "PKG $PKG"
+curl -L https://download.docker.com/linux/ubuntu/dists/$CODENAME/pool/stable/amd64/$PKG > /tmp/$PKG
+ls /tmp
+sudo dpkg -i /tmp/$PKG
 
 # install docker-compose
 echo "Installing Docker Compose"
