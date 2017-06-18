@@ -4,12 +4,14 @@ engine:
   image: mapic/engine:latest 
   environment:
     MAPIC_DOMAIN: ${MAPIC_DOMAIN}
-  working_dir: /mapic/modules/engine 
+  working_dir: /mapic/engine 
+  restart: "no"
   expose:
     - "3001"
   volumes:
     - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-    - ${MAPIC_ROOT_FOLDER}/engine:/mapic/modules/engine
+    - ${MAPIC_ROOT_FOLDER}/engine:/mapic/engine
+    - ${MAPIC_ROOT_FOLDER}/mapic.js:/mapic/mapic.js
   command: ./start-server.sh
 
 mile: 
