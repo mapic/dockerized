@@ -423,6 +423,12 @@ create_mapic_symlink () {
 ensure_editor () {
     if [ -z $MAPIC_DEFAULT_EDITOR ]; then
         MAPIC_DEFAULT_EDITOR=nano
+        
+        # if rsub exists
+        if [ -f $(which rsub) ]; then
+            MAPIC_DEFAULT_EDITOR=rsub
+        fi
+
         write_env MAPIC_DEFAULT_EDITOR $MAPIC_DEFAULT_EDITOR
     fi
 }
