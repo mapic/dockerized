@@ -171,6 +171,8 @@ initialize () {
         # set color file
         MAPIC_COLOR_FILE=$MAPIC_CLI_FOLDER/.mapic.colors
 
+        echo "MAPIC_COLOR_FILE: $MAPIC_COLOR_FILE"
+
         # set config folder
         MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
 
@@ -203,6 +205,7 @@ initialize () {
     set -o allexport
     source $MAPIC_ENV_FILE
     source $MAPIC_COLOR_FILE
+    echo "MAPIC_ENV_FILE: $MAPIC_ENV_FILE"
 
     # mark [debug mode]
     test ! -z $MAPIC_DEBUG && print_debug
