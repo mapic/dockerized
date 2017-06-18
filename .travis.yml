@@ -31,13 +31,21 @@ env:
   MAPIC_TRAVIS: true
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://download.docker.com/mac/static/test/x86_64/docker-17.06.0-ce-rc4.tgz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gunzip docker-17.06.0-ce-rc4.tgz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then tar xf docker-17.06.0-ce-rc4.tar; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd docker; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cp docker /usr/local/bin/docker; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(docker-machine env default)"; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker version; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://download.docker.com/mac/static/test/x86_64/docker-17.06.0-ce-rc4.tgz; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gunzip docker-17.06.0-ce-rc4.tgz; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then tar xf docker-17.06.0-ce-rc4.tar; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd docker; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cp docker /usr/local/bin/docker; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(docker-machine env default)"; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker version; fi
+  
+  # https://download.docker.com/mac/stable/DockerToolbox.pkg
+
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo wget https://download.docker.com/mac/stable/Docker.dmg; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo hdiutil attach Docker.dmg; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://download.docker.com/mac/stable/DockerToolbox.pkg; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo installer -allowUntrusted -verboseR -pkg "DockerToolbox.pkg" -target /; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo rm -f /usr/local/bin/docker-compose; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /tmp/docker-compose; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then chmod +x /tmp/docker-compose; fi
