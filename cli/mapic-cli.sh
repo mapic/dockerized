@@ -565,7 +565,8 @@ mapic_install_usage () {
     echo "Usage: mapic install [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  mapic       Install Mapic"
+    echo "  stable      Install latest stable version of Mapic"
+    echo "  master      Install master (dev) branch of Mapic"
     echo "  docker      Install Docker"
     echo "  jq          Install JQ (dependency)"
     echo "  node        Install NodeJS (not a dependency)"
@@ -575,14 +576,19 @@ mapic_install_usage () {
 mapic_install () {
     test -z $2 && mapic_install_usage
     case "$2" in
-        mapic)      mapic_install_mapic "$@";;
+        stable)     mapic_install_stable "$@";;
+        master)     mapic_install_master "$@";;
         docker)     mapic_install_docker "$@";;
         jq)         mapic_install_jq "$@";;
         node)       mapic_install_node "$@";;
         *)          mapic_install_usage;
     esac 
 }
-mapic_install_mapic () {
+mapic_install_stable () {
+
+    # todo: use revisions, latest stable tag, etc.
+    cd $MAPIC_ROOT_FOLDER
+    git checkout master # todo: revision tag
 
     # ensure MAPIC_DOMAIN
     test -z $MAPIC_DOMAIN && mapic env prompt MAPIC_DOMAIN "Domain for Mapic. (Example: maps.mapic.io)" localhost
@@ -590,57 +596,70 @@ mapic_install_mapic () {
     # save env
     write_env MAPIC_DOMAIN $MAPIC_DOMAIN
 
+    # notify
+    echo ""
+    echo "Installing Mapic to $MAPIC_DOMAIN"
+    echo ""
+    echo "Press Ctrl-C in next 10 seconds to cancel."
+    sleep 10
+
+    # init submodules
+    cd $MAPIC_CLI_FOLDER/install
+    bash init-submodules.sh
+
+    # create ssl
+    cd $MAPIC_CLI_FOLDER/install
     if [ $MAPIC_DOMAIN = "localhost" ]; then
-        echo ""
-        echo "Installing Mapic to $MAPIC_DOMAIN"
-        echo ""
-        echo "Press Ctrl-C in next 10 seconds to cancel."
-        sleep 10
-        mapic_install_mapic_localhost
-    else
-        echo "Only localhost supported at the moment, but trying $MAPIC_DOMAIN anyway."
-        echo ""
-        echo "Press Ctrl-C in next 10 seconds to cancel."
-        sleep 10
-        mapic_install_mapic_domain
+        bash create-ssl-localhost.sh
+    else 
+        bash create-ssl-public-domain.sh
     fi
-}
 
-mapic_install_mapic_domain () {
-    cd $MAPIC_CLI_FOLDER/install
-    bash init-submodules.sh
-
-    echo "$c_red submodule done! $c_reset"
-
-    cd $MAPIC_CLI_FOLDER/install
-    bash create-ssl-public-domain.sh
-
-    echo "$c_red ssl done! $c_reset"
-
+    # update config
     cd $MAPIC_CLI_FOLDER/install
     bash update-config.sh
 
-    echo "$c_red config done! $c_reset"
-
+    # create storage (todo: remove with deploy)
     cd $MAPIC_CLI_FOLDER/install
     bash create-storage-containers.sh
 
 }
-
-mapic_install_mapic_localhost () {
-    cd $MAPIC_CLI_FOLDER/install
-    bash init-submodules.sh
-
-    cd $MAPIC_CLI_FOLDER/install
-    bash create-ssl-localhost.sh
-
-    cd $MAPIC_CLI_FOLDER/install
-    bash update-config.sh
-
-    cd $MAPIC_CLI_FOLDER/install
-    bash create-storage-containers.sh
-
+mapic_install_master () {
+    echo "todo"
+    mapic_install_stable
 }
+
+# mapic_install_mapic_domain () {
+#     cd $MAPIC_CLI_FOLDER/install
+#     bash init-submodules.sh
+
+#     cd $MAPIC_CLI_FOLDER/install
+#     if [ $MAPIC_DOMAIN = "localhost" ]; then
+#         bash create-ssl-localhost.sh
+#     else 
+#         bash create-ssl-public-domain.sh
+#     fi
+
+#     cd $MAPIC_CLI_FOLDER/install
+#     bash update-config.sh
+
+#     cd $MAPIC_CLI_FOLDER/install
+#     bash create-storage-containers.sh
+# }
+
+# mapic_install_mapic_localhost () {
+#     cd $MAPIC_CLI_FOLDER/install
+#     bash init-submodules.sh
+
+#     cd $MAPIC_CLI_FOLDER/install
+#     bash create-ssl-localhost.sh
+
+#     cd $MAPIC_CLI_FOLDER/install
+#     bash update-config.sh
+
+#     cd $MAPIC_CLI_FOLDER/install
+#     bash create-storage-containers.sh
+# }
 mapic_install_jq () {
     DISTRO=$(lsb_release -si)
     case "$DISTRO" in
