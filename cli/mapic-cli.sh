@@ -237,17 +237,18 @@ install_osx_tools () {
     echo "JQ: $JQ"
     echo "GREP: $GREP"
     echo "TRAVIS: $TRAVIS"
+    echo "CI: $CI"
 
     SEDV=$(sed --version | grep "sed (GNU sed)")
     echo "SED VERSION: $SEDV"
 
-    if [ -n "$TRAVIS" ]; then
+    if [ -n "$MAPIC_TRAVIS" ]; then
         echo "TRVAISE = TRUE "
         mv -f $SED /tmp/oldsed
     fi
 
     # gnu-sed
-    if [ -z $SED ]; then
+    if [ -z $SEDV ]; then
         echo "Installing GNU sed..."
         cd $MAPIC_CLI_FOLDER/lib >/dev/null 2>&1
         rm -rf sed-4.4 >/dev/null 2>&1
