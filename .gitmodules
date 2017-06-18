@@ -1,9 +1,9 @@
-[submodule "modules/engine"]
+[submodule "engine"]
 	path = engine
 	url = git://github.com/mapic/engine.git
-[submodule "modules/mile"]
+[submodule "mile"]
 	path = mile
 	url = git://github.com/mapic/mile.git
-[submodule "modules/mapic.js"]
+[submodule "mapic.js"]
 	path = mapic.js
 	url = git://github.com/mapic/mapic.js.git
