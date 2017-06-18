@@ -12,20 +12,9 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-    - os: linux
-      dist: xenial
-      sudo: required
-    - os: linux
-      dist: zesty
-      sudo: required
-    - os: linux
-      dist: yakkety
-      sudo: required
     - os: osx
       osx_image: xcode8.3
       sudo : required
-
-sudo: required
 
 # services:
   # - docker
