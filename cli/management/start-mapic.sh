@@ -13,6 +13,7 @@ echo "COMPOSENAME $COMPOSENAME"
 echo "COMPOSEFILE $COMPOSEFILE"
 
 # start
+docker-compose -v
 docker-compose -f $COMPOSEFILE -p $COMPOSENAME up -d || fail "Couldn't start Mapic."
 
 echo ""
