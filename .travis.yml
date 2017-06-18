@@ -1,4 +1,4 @@
-language: generic
+language: ruby
 
 notifications:
   email:
@@ -44,10 +44,19 @@ before_install:
 
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo wget https://download.docker.com/mac/stable/Docker.dmg; fi
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo hdiutil attach Docker.dmg; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://download.docker.com/mac/stable/DockerToolbox.pkg; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo installer -allowUntrusted -verboseR -pkg "DockerToolbox.pkg" -target /; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which docker && find / -name docker; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://download.docker.com/mac/stable/DockerToolbox.pkg; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo installer -allowUntrusted -verboseR -pkg "DockerToolbox.pkg" -target /; fi
+  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which docker && find / -name docker; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install caskroom/cask/brew-cask; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install docker-toolbox; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install docker docker-machine docker-compose; fi
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ; fi
+  # brew install docker docker-machine docker-compose
+  # Install Cask
+  # brew install caskroom/cask/brew-cask
+  # Install docker toolbox
+  # brew cask install docker-toolbox
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo rm -f /usr/local/bin/docker-compose; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /tmp/docker-compose; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then chmod +x /tmp/docker-compose; fi
