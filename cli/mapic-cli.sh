@@ -527,10 +527,8 @@ mapic_domain () {
     [ -z "$2" ] && mapic_domain_usage
     DOMAIN=$2
     write_env MAPIC_DOMAIN $DOMAIN
-
     echo ""
     echo "Mapic domain is now configured to $DOMAIN"
-
 }
 
 #   ___  ____  / /____  _____
@@ -597,10 +595,13 @@ mapic_install_mapic () {
         echo "Installing Mapic to $MAPIC_DOMAIN"
         echo ""
         echo "Press Ctrl-C in next 10 seconds to cancel."
-        sleep 1
+        sleep 10
         mapic_install_mapic_localhost
     else
-        echo "Only localhost supported at the moment, but trying anyway."
+        echo "Only localhost supported at the moment, but trying $MAPIC_DOMAIN anyway."
+        echo ""
+        echo "Press Ctrl-C in next 10 seconds to cancel."
+        sleep 10
         mapic_install_mapic_domain
     fi
 }
