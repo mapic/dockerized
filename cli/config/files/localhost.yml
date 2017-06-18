@@ -1,0 +1,106 @@
+######################### 
+# engine: Mapic Server  #
+#########################
+engine:
+  extends:
+    file: common.yml
+    service: engine
+  links:
+    - mongo
+    - redislayers
+    - redisstats
+    - redistemp
+    - redistokens
+    - postgis
+  environment:
+    MAPIC_PRODMODE: 'false'
+  # working_dir: /mapic/modules/engine # double switch for prodmode; todo: move into start.sh script somehow, and keep only bool
+  volumes_from:
+    - data_store_localhost
+
+################################
+# mile: Mapic Tile Server      #
+################################
+mile: 
+  extends:
+    file: common.yml
+    service: mile
+  links: 
+    - engine # todo: remove? (or use directly instead of API as doing currently)
+    - redislayers
+    - redisstats
+    - redistokens
+    - redistemp
+    - postgis
+  environment:
+    MAPIC_PRODMODE: 'false'
+  # working_dir: /mapic/modules/mile # double switch for prodmode; todo: move into start.sh script somehow, and keep only bool
+  volumes_from:
+    - data_store_localhost
+
+##########################################
+# nginx: Reverse-proxy for engine & mile #
+##########################################
+nginx:
+  extends:
+    file: common.yml
+    service: nginx
+  ports:
+    - 443:443
+    - 8080:80
+  links: 
+    - mile
+    - engine
+
+###################################
+# redis: Simple key-value storage #
+###################################
+redislayers:
+  extends:
+    file: common.yml
+    service: redis
+  volumes_from:
+    - redis_layers_store_localhost
+  command: "redis-server /mapic/config/redis.layers.conf"
+
+redisstats:
+  extends:
+    file: common.yml
+    service: redis
+  volumes_from:
+    - redis_stats_store_localhost
+  command: "redis-server /mapic/config/redis.stats.conf"
+
+redistokens:
+  extends:
+    file: common.yml
+    service: redis
+  volumes_from:
+    - redis_tokens_store_localhost
+  command: "redis-server /mapic/config/redis.tokens.conf"
+
+redistemp:
+  extends:
+    file: common.yml
+    service: redis
+  command: "redis-server /mapic/config/redis.temp.conf"
+
+####################################
+# mongo: Storage for server models #
+####################################
+mongo: 
+  extends:
+    file: common.yml
+    service: mongo
+  volumes_from:
+    - mongo_store_localhost
+
+#################################
+# postgis: Storage for geo-data #
+#################################
+postgis:
+  extends:
+    file: common.yml
+    service: postgis
+  volumes_from:
+    - postgis_store_localhost

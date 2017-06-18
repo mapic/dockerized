@@ -9,7 +9,7 @@ git submodule update --recursive --remote
 git submodule foreach --recursive git checkout master
 
 # install yarn modules
-docker run -it --rm -v $MAPIC_ROOT_FOLDER:/tmp -w /tmp mapic/xenial:latest yarn install 
+docker run -it --rm -v $MAPIC_ROOT_FOLDER:/mapic_tmp -w /mapic_tmp mapic/xenial:latest yarn install 
 
 # # debug mode. usage: command 2>"${PIPE}" 1>"${PIPE}"
 # if [[ ${MAPIC_DEBUG} = true ]]; then

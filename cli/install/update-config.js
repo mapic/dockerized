@@ -2,7 +2,8 @@ var fs = require("fs");
 var crypto = require("crypto");
 
 // set config folder
-var CONFIG_FOLDER           = process.env.MAPIC_ROOT_FOLDER + '/config/' + process.env.MAPIC_DOMAIN + "/";
+// var CONFIG_FOLDER           = process.env.MAPIC_ROOT_FOLDER + '/cli/config/files/';
+var CONFIG_FOLDER           = '/config/';
 var MONGO_JSON_PATH         = CONFIG_FOLDER + "mongo.json";
 var MILE_CONFIG_PATH        = CONFIG_FOLDER + "mile.config.js";
 var ENGINE_CONFIG_PATH      = CONFIG_FOLDER + "engine.config.js";

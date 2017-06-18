@@ -13,11 +13,12 @@ fi
 # create self-signed SSL certs
 echo "# Creating SSL certficate for localhost..."
 docker run --rm -it --name openssl \
-    -v $MAPIC_ROOT_FOLDER/config/localhost:/certs \
+    -v $MAPIC_ROOT_FOLDER/cli/config/files:/certs \
     wallies/openssl \
     openssl req -x509 -nodes \
         -days 365 \
         -newkey rsa:2048 \
         -keyout /certs/ssl_certificate.key \
         -out /certs/ssl_certificate.pem \
-        -subj "/C=NO/ST=Oslo/L=Oslo/O=Mapic/OU=IT Department/CN=localhost" 2>"${PIPE}" 1>"${PIPE}"
+        -subj "/C=NO/ST=Oslo/L=Oslo/O=Mapic/OU=IT Department/CN=localhost"
+        # -subj "/C=NO/ST=Oslo/L=Oslo/O=Mapic/OU=IT Department/CN=localhost" 2>"${PIPE}" 1>"${PIPE}"
