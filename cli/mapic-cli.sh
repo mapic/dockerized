@@ -65,6 +65,7 @@ mapic_cli_usage () {
     echo "Commands:"
     echo "  install             Install Mapic"
     echo "  config              Configure Mapic"
+    echo "  domain              Set Mapic domain"
     echo "  env                 Get and set Mapic environment variables"
     echo "  dns                 Create or check DNS entries for Mapic"
     echo "  ssl                 Create or scan SSL certificates for Mapic"
@@ -123,6 +124,7 @@ m () {
         grep)       mapic_grep "$@";;
         debug)      mapic_debug "$@";;
         pull)       mapic_pull "$@";;
+        domain)     mapic_domain "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
         -h)         mapic_cli_usage;;
@@ -508,6 +510,27 @@ mapic_pull () {
     git pull --rebase
     
     echo "All pulled!"
+}
+
+    
+mapic_domain_usage () {
+    echo ""
+    echo "Usage: mapic domain [domain]"
+    echo ""
+    echo "  domain      Domain with which Mapic is configured"
+    echo ""
+    echo "Example: 'mapic domain localhost'"
+    exit 1
+}
+mapic_domain () {
+    [ -z "$1" ] && mapic_domain_usage
+    [ -z "$2" ] && mapic_domain_usage
+    DOMAIN=$2
+    write_env MAPIC_DOMAIN $DOMAIN
+
+    echo ""
+    echo "Mapic domain is now configured to $DOMAIN"
+
 }
 
 #   ___  ____  / /____  _____
