@@ -711,9 +711,7 @@ mapic_install_docker_unsupported () {
 mapic_install_docker_ubuntu () {
     echo "Installing Docker!"
     cd $MAPIC_CLI_FOLDER/install
-    ls -l
-    echo $PWD
-    bash install-docker.sh
+    bash install-docker-ubuntu.sh
 }
 
 #   ____ _____  (_)

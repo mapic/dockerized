@@ -5,6 +5,7 @@
 #
 # https://docs.docker.com/engine/installation/linux/ubuntu/
 
+# todo: track docker versions elsewhere, connected to git release tag
 DOCKER_COMPOSE_VERSION=1.13.0
 DOCKER_MACHINE_VERSION=0.10.0
 
@@ -12,7 +13,7 @@ DOCKER_MACHINE_VERSION=0.10.0
 DOCKER_EXISTING=$(docker version)
 echo "DOCKER_EXISTING: $DOCKER_EXISTING"
 
-exit 0
+# exit 0
 
 
 # remove old docker versions
