@@ -47,22 +47,50 @@ DOCKER_MACHINE_VERSION=0.10.0
 # sudo apt-get -qq install -y docker-ce
 
 
-# install docker from pkg
-CODENAME=$(lsb_release -cs)
-PKG="docker-ce_17.03.0~ce-0~ubuntu-"$CODENAME"_amd64.deb"
-curl -L https://download.docker.com/linux/ubuntu/dists/$CODENAME/pool/stable/amd64/$PKG > /tmp/$PKG | abort "Couldn't download $PKG"
-sudo dpkg --force-confdef --force-confold -i /tmp/$PKG
+command_exists() {
+    command -v "$@" > /dev/null 2>&1
+}
 
-# install docker-compose
-echo "Installing Docker Compose"
-curl -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+# check for docker
+if command_exists docker; then
+    DOCKER_VERSION=$(docker -v)
+    echo "$DOCKER_VERSION already installed"
+else 
+    # install docker
+    CODENAME=$(lsb_release -cs)
+    PKG="docker-ce_17.03.0~ce-0~ubuntu-"$CODENAME"_amd64.deb"
+    curl -L https://download.docker.com/linux/ubuntu/dists/$CODENAME/pool/stable/amd64/$PKG > /tmp/$PKG | abort "Couldn't download $PKG"
+    sudo dpkg --force-confdef --force-confold -i /tmp/$PKG
+    DOCKER_VERSION=$(docker -v)
+    echo "$DOCKER_VERSION installed"
+fi
 
-# install docker machine
-echo "Installing Docker Machine"
-curl -L https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
-  chmod +x /tmp/docker-machine &&
-  sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+# check for docker-compose
+if command_exists docker-compose; then
+    DOCKER_VERSION=$(docker-compose -v)
+    echo "$DOCKER_VERSION already installed"
+else 
+    # install docker-compose
+    echo "Installing Docker Compose"
+    curl -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    DOCKER_VERSION=$(docker-compose -v)
+    echo "$DOCKER_VERSION installed"
+fi
+
+# check for docker-machine
+if command_exists docker-machine; then
+    DOCKER_VERSION=$(docker-machine -v)
+    echo "$DOCKER_VERSION already installed"
+else 
+    # install docker machine
+    echo "Installing Docker Machine"
+    curl -L https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine
+    chmod +x /tmp/docker-machine
+    sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+    DOCKER_VERSION=$(docker-machine -v)
+    echo "$DOCKER_VERSION installed"
+fi
 
 # verify version
 # clear
