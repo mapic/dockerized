@@ -225,24 +225,25 @@ print_debug () {
     printf "${c_dot}[debug mode]${c_reset}\n"
 }
 install_osx_tools () {
+    
     SED=$(which sed)
     BREW=$(which brew)
     JQ=$(which jq)
     GREP=$(which grep)
-
-
-
-   
 
     echo "Installing OSX Tools"
     echo "SED: $SED"
     echo "BREW: $BREW"
     echo "JQ: $JQ"
     echo "GREP: $GREP"
+    echo "TRAVIS: $TRAVIS"
 
-    if [[ "$TRAVIS" = true ]]; then
-        echo "TRVAISE = TRUE"
-        mv -f $SED "/tmp/oldsed"
+    SEDV=$(sed --version | grep "sed (GNU sed)")
+    echo "SED VERSION: $SEDV"
+
+    if [ -n "$TRAVIS" ]; then
+        echo "TRVAISE = TRUE "
+        mv -f $SED /tmp/oldsed
     fi
 
     # gnu-sed
@@ -380,19 +381,15 @@ mapic_env_set () {
 # fn used internally to write to env file
 write_env () {
     test -z $1 && failed "missing arg"
-    # test -z $2 && failed "missing arg"
 
     # add or replace line in .mapic.env
-    echo "grep: 1: $1"
-    echo "grep: MAPIC_ENV_FILE: $MAPIC_ENV_FILE"
+    echo "arg 1: $1"
+    echo "arg MAPIC_ENV_FILE: $MAPIC_ENV_FILE"
 
     if grep -q "$1" "$MAPIC_ENV_FILE"; then
-        
         # replace line
         sed -i "/$1/c\\$1=$2" $MAPIC_ENV_FILE
-        
     else
-
         # ensure newline
         echo "newline coming up"
         sed -i -e '$a\' $MAPIC_ENV_FILE 
