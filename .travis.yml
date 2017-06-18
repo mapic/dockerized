@@ -33,7 +33,7 @@ env:
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://download.docker.com/mac/static/test/x86_64/docker-17.06.0-ce-rc4.tgz; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gunzip docker-17.06.0-ce-rc4.tgz; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then tar xf docker-17.06.0-ce-rc4.tgz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then tar xf docker-17.06.0-ce-rc4.tar; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd docker; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cp docker /usr/local/bin/docker; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker version
