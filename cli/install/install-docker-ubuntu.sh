@@ -49,16 +49,9 @@ DOCKER_MACHINE_VERSION=0.10.0
 
 # install docker from pkg
 CODENAME=$(lsb_release -cs)
-echo "CODENAME: $CODENAME"
 PKG="docker-ce_17.03.0~ce-0~ubuntu-"$CODENAME"_amd64.deb"
-echo "PKG: $PKG"
 curl -L https://download.docker.com/linux/ubuntu/dists/$CODENAME/pool/stable/amd64/$PKG > /tmp/$PKG | abort "Couldn't download $PKG"
-ls /tmp
 sudo dpkg --force-confdef --force-confold -i /tmp/$PKG
-echo "NONITNERAVICE DONE!"
-echo "NONITNERAVICE DONE!"
-echo "NONITNERAVICE DONE!"
-echo "NONITNERAVICE DONE!"
 
 # install docker-compose
 echo "Installing Docker Compose"
