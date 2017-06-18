@@ -171,6 +171,9 @@ initialize () {
         # set color file
         MAPIC_COLOR_FILE=$MAPIC_CLI_FOLDER/.mapic.colors
 
+        # set config folder
+        MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
+
         # cp default env file
         cp $MAPIC_CLI_FOLDER/.mapic.default.env /usr/local/bin/.mapic.env 
 
@@ -189,6 +192,7 @@ initialize () {
         write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
         write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
+        write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
 
     fi
 
@@ -277,7 +281,7 @@ mapic_env_usage () {
 mapic_env () {
 
     # debug mode: show env with 'mapic env'
-    if [ -z $MAPIC_DEBUG ] && test -z $2; then
+    if [ "$MAPIC_DEBUG" = true ] && test -z $2; then
         echo "(Mapic DEBUG mode: Showing ENV instead of help screen.)"
         echo ""
         mapic_env_get
