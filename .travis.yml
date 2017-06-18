@@ -1,8 +1,5 @@
 language: generic
 
-services:
-  - docker
-
 notifications:
   email: false
   slack: mapic-io:NKaii0z3tRkeDyXaDbRauRFp
@@ -36,6 +33,11 @@ matrix:
     - os: osx
       osx_image: xcode8.3
       sudo : required
+
+sudo: required
+
+# services:
+  # - docker
 
 # env:
 #   DOCKER_COMPOSE_VERSION: 1.4.2
