@@ -25,17 +25,16 @@ matrix:
       sudo : required
       services: docker
       
-# services:
-  # - docker
+env:
+  DOCKER_COMPOSE_VERSION: 1.4.2
 
-# env:
-#   DOCKER_COMPOSE_VERSION: 1.4.2
-
-# before_install:
-#   - sudo rm /usr/local/bin/docker-compose
-#   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-#   - chmod +x docker-compose
-#   - sudo mv docker-compose /usr/local/bin
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install grep --with-default-names; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo rm /usr/local/bin/docker-compose; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then chmod +x docker-compose; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo mv docker-compose /usr/local/bin; fi
 
 install:
   - cd cli
