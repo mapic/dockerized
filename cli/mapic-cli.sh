@@ -114,6 +114,8 @@ m () {
         enter)      mapic_enter "$@";;
         run)        mapic_run "$@";;
         api)        mapic_api "$@";;
+        user)       mapic_api_user "$@";;
+        upload)     mapic_api_upload "$@";;
         ps)         mapic_ps;;
         dns)        mapic_dns "$@";;
         ssl)        mapic_ssl "$@";;
@@ -784,7 +786,7 @@ mapic_api () {
 #     /_/              /_/                            
 mapic_api_upload_usage () {
     echo ""
-    echo "Usage: mapic api upload DATASET [OPTIONS]"
+    echo "Usage: mapic upload DATASET [OPTIONS]"
     echo ""
     echo "Dataset:"
     echo "  Absolute path of dataset to upload"
@@ -811,7 +813,7 @@ mapic_api_upload () {
 #     /_/                                     
 mapic_api_user_usage () {
     echo ""
-    echo "Usage: mapic api user [OPTIONS]"
+    echo "Usage: mapic user [OPTIONS]"
     echo ""
     echo "Options:"
     echo "  list        List registered users"
@@ -849,7 +851,7 @@ mapic_api_user_create () {
 }
 mapic_api_user_super_usage () {
     echo ""
-    echo "Usage: mapic api user super [EMAIL]"
+    echo "Usage: mapic user super [EMAIL]"
     echo ""
     echo "(WARNING: This command will promote user to SUPERADMIN,"
     echo "giving access to all projects and data.)"
