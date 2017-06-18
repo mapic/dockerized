@@ -354,17 +354,24 @@ write_env () {
     # add or replace line in .mapic.env
     echo "grep: 1: $1"
     echo "grep: MAPIC_ENV_FILE: $MAPIC_ENV_FILE"
-    
-    if grep -q "$1" "$MAPIC_ENV_FILE"; then
 
-        # replace line
-        sed -i "/$1/c\\$1=$2" $MAPIC_ENV_FILE 
+    if grep -q "$1" "$MAPIC_ENV_FILE"; then
+        if [ $MAPIC_HOST_OS == "osx" ]; then
+             # replace line
+            sed -i "" "/$1/c\\$1=$2" $MAPIC_ENV_FILE 
+        else
+            # replace line
+            sed -i "/$1/c\\$1=$2" $MAPIC_ENV_FILE
+        fi
+
+        
     else
-        # add to bottom
-        echo "$1"="$2" >> $MAPIC_ENV_FILE
 
         # ensure newline
         sed -i -e '$a\' $MAPIC_ENV_FILE 
+
+        # add to bottom
+        echo "$1"="$2" >> $MAPIC_ENV_FILE
     fi
 }
 mapic_env_get () {
