@@ -10,8 +10,8 @@ DOCKER_COMPOSE_VERSION=1.13.0
 DOCKER_MACHINE_VERSION=0.10.0
 
 # check for existing version
-DOCKER_EXISTING=$(docker version)
-echo "DOCKER_EXISTING: $DOCKER_EXISTING"
+# DOCKER_EXISTING=$(docker version)
+# echo "DOCKER_EXISTING: $DOCKER_EXISTING"
 
 # exit 0
 
