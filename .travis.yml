@@ -17,6 +17,8 @@ git:
 
 matrix:
   fast_finish: true
+  allow_failures:
+    - env: TRAVIS_OS_NAME=osx
   include:
     - os: linux
       dist: trusty
@@ -28,6 +30,7 @@ matrix:
 
 env:
   DOCKER_COMPOSE_VERSION: 1.4.2
+  MAPIC_TRAVIS: true
 
 before_install:
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
