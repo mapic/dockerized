@@ -1064,7 +1064,7 @@ mapic_test_download_data () {
     # need to download data
     echo "Downloading test data..."
     cd $MAPIC_ROOT_FOLDER/mile/test
-    git clone git@github.com:mapic/open-data.git
+    git clone https://github.com/mapic/open-data.git
     cp -rf open-data $MAPIC_ROOT_FOLDER/engine/test
     cp -rf open-data $MAPIC_ROOT_FOLDER/mapicjs/test
 }
