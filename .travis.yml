@@ -1,4 +1,4 @@
-language: ruby
+language: generic
 
 notifications:
   email:
@@ -25,6 +25,7 @@ matrix:
       osx_image: xcode8.3
       sudo : required
       services: docker
+      language: ruby
 
 env:
   DOCKER_COMPOSE_VERSION: 1.4.2
@@ -74,6 +75,7 @@ script:
   - mapic domain localhost
   - mapic install stable
   - mapic start
+  - mapic logs &
   # - mapic status
   - sleep 20
   - mapic stop
