@@ -48,5 +48,6 @@ script:
   - mapic logs &
   # - mapic status
   - sleep 20
+  - mapic test mile
   - mapic stop
   # - mapic test all
