@@ -1043,16 +1043,19 @@ mapic_test_ensure_data () {
     
     if [ -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" ]; then
       # Control will enter here if $DIRECTORY exists.
+      echo ""
     else
         mapic_test_download_data
     fi
     if [ -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" ]; then
       # Control will enter here if $DIRECTORY exists.
+      echo ""
     else
         mapic_test_download_data
     fi
     if [ -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" ]; then
       # Control will enter here if $DIRECTORY exists.
+      echo ""
     else
         mapic_test_download_data
     fi
