@@ -1051,12 +1051,12 @@ mapic_test_download_data () {
     git clone https://github.com/mapic/open-data.git
 
     # ensure folder
-    mkdir -rf $MAPIC_ROOT_FOLDER/mapicjs/test
+    mkdir -f $MAPIC_ROOT_FOLDER/mapicjs/test
 
     # create symlinks
-    ln -s $MAPIC_ROOT_FOLDER/open-data $/MAPIC_ROOT_FOLDER/mile/test/open-data
-    ln -s $MAPIC_ROOT_FOLDER/open-data $/MAPIC_ROOT_FOLDER/engine/test/open-data
-    ln -s $MAPIC_ROOT_FOLDER/open-data $/MAPIC_ROOT_FOLDER/mapicjs/test/open-data
+    ln -s $MAPIC_ROOT_FOLDER/open-data $MAPIC_ROOT_FOLDER/mile/test/open-data
+    ln -s $MAPIC_ROOT_FOLDER/open-data $MAPIC_ROOT_FOLDER/engine/test/open-data
+    ln -s $MAPIC_ROOT_FOLDER/open-data $MAPIC_ROOT_FOLDER/mapicjs/test/open-data
 }
 
 #   _________  ____  / __(_)___ _
