@@ -1038,35 +1038,25 @@ mapic_test_failed () {
     exit 1;
 }
 mapic_test_ensure_data () {
-    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && echo "no test data engine!"
-    test ! -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" && echo "no test data mile!"
+    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && mapic_test_download_data
+    test ! -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" && mapic_test_download_data
+    test ! -d "$MAPIC_ROOT_FOLDER/mapicjs/test/open-data" && mapic_test_download_data
     
-    if [ -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" ]; then
-      # Control will enter here if $DIRECTORY exists.
-      echo ""
-    else
-        mapic_test_download_data
-    fi
-    if [ -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" ]; then
-      # Control will enter here if $DIRECTORY exists.
-      echo ""
-    else
-        mapic_test_download_data
-    fi
-    if [ -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" ]; then
-      # Control will enter here if $DIRECTORY exists.
-      echo ""
-    else
-        mapic_test_download_data
-    fi
+   
 }
 mapic_test_download_data () {
     # need to download data
     echo "Downloading test data..."
-    cd $MAPIC_ROOT_FOLDER/mile/test
+    cd $MAPIC_ROOT_FOLDER
     git clone https://github.com/mapic/open-data.git
-    cp -rf open-data $MAPIC_ROOT_FOLDER/engine/test
-    cp -rf open-data $MAPIC_ROOT_FOLDER/mapicjs/test
+
+    # ensure folder
+    mkdir -rf $MAPIC_ROOT_FOLDER/mapicjs/test
+
+    # create symlinks
+    ln -s $MAPIC_ROOT_FOLDER/open-data $/MAPIC_ROOT_FOLDER/mile/test/open-data
+    ln -s $MAPIC_ROOT_FOLDER/open-data $/MAPIC_ROOT_FOLDER/engine/test/open-data
+    ln -s $MAPIC_ROOT_FOLDER/open-data $/MAPIC_ROOT_FOLDER/mapicjs/test/open-data
 }
 
 #   _________  ____  / __(_)___ _
