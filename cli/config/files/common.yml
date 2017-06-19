@@ -1,7 +1,7 @@
 # see domain-specific .yml for documentation
 engine:
-  # image: mapic/geo:latest 
-  image: mapic/engine:latest 
+  image: mapic/geo:latest 
+  # image: mapic/engine:latest 
   environment:
     MAPIC_DOMAIN: ${MAPIC_DOMAIN}
   working_dir: /mapic/engine 
@@ -15,8 +15,8 @@ engine:
   command: ./start-server.sh
 
 mile: 
-  # image: mapic/geo:latest
-  image: mapic/mile:latest
+  image: mapic/geo:latest
+  # image: mapic/mile:latest
   environment:
     MAPIC_DOMAIN: ${MAPIC_DOMAIN}
   working_dir: /mapic/mile 
