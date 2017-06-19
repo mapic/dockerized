@@ -77,8 +77,8 @@ mapic_cli_usage () {
     # echo "  pull                git pull --rebase all repos"
     echo ""
     echo "API commands:"
-    echo "  api user            Handle Mapic users"
-    echo "  api upload          Upload data"  
+    echo "  user                Handle Mapic users"
+    echo "  upload              Upload data"  
     echo ""
     
     # undocumented api
@@ -832,7 +832,7 @@ mapic_api_user_list () {
 }
 mapic_api_user_create_usage () {
     echo ""
-    echo "Usage: mapic api user create [EMAIL] [USERNAME] [FIRSTNAME] [LASTNAME]"
+    echo "Usage: mapic user create [EMAIL] [USERNAME] [FIRSTNAME] [LASTNAME]"
     echo ""
     exit 1
 }
