@@ -21,48 +21,18 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-    - os: osx
-      osx_image: xcode8.3
-      sudo : required
-      services: docker
-      language: ruby
+    # - os: osx
+    #   osx_image: xcode8.3
+    #   sudo : required
+    #   services: docker
+    #   language: ruby
 
 env:
   DOCKER_COMPOSE_VERSION: 1.4.2
   MAPIC_TRAVIS: true
 
-before_install:
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://download.docker.com/mac/static/test/x86_64/docker-17.06.0-ce-rc4.tgz; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gunzip docker-17.06.0-ce-rc4.tgz; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then tar xf docker-17.06.0-ce-rc4.tar; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd docker; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cp docker /usr/local/bin/docker; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(docker-machine env default)"; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker version; fi
-  
-  # https://download.docker.com/mac/stable/DockerToolbox.pkg
+# before_install:
   # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ; fi
-
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo wget https://download.docker.com/mac/stable/Docker.dmg; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo hdiutil attach Docker.dmg; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then wget https://download.docker.com/mac/stable/DockerToolbox.pkg; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo installer -allowUntrusted -verboseR -pkg "DockerToolbox.pkg" -target /; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then which docker && find / -name docker; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install caskroom/cask/brew-cask; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install docker-toolbox; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install docker docker-machine docker-compose; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ; fi
-  # brew install docker docker-machine docker-compose
-  # Install Cask
-  # brew install caskroom/cask/brew-cask
-  # Install docker toolbox
-  # brew cask install docker-toolbox
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo rm -f /usr/local/bin/docker-compose; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /tmp/docker-compose; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then chmod +x /tmp/docker-compose; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo mv /tmp/docker-compose /usr/local/bin; fi
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker-compose version; fi
 
 install:
   - cd cli

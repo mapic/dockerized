@@ -204,10 +204,6 @@ initialize () {
 
     # source env file
     set -o allexport
-    echo "MAPIC_ENV_FILE: $MAPIC_ENV_FILE"
-    # echo "MAPIC_COLOR_FILE: $MAPIC_COLOR_FILE"
-    cat $MAPIC_ENV_FILE
-
     source $MAPIC_ENV_FILE
     # source $MAPIC_COLOR_FILE
 
