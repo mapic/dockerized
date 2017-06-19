@@ -21,18 +21,9 @@ matrix:
     - os: linux
       dist: trusty
       sudo: required
-    # - os: osx
-    #   osx_image: xcode8.3
-    #   sudo : required
-    #   services: docker
-    #   language: ruby
-
-env:
-  DOCKER_COMPOSE_VERSION: 1.4.2
-  MAPIC_TRAVIS: true
-
-# before_install:
-  # - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ; fi
+    - os: linux
+      dist: precise
+      sudo: required
 
 install:
   - cd cli
@@ -46,8 +37,9 @@ script:
   - mapic install stable
   - mapic start
   - mapic logs &
-  # - mapic status
   - sleep 240
   - mapic test mile
-  - mapic stop
+  # - mapic test engine
+  # - mapic test mapicjs
   # - mapic test all
+  - mapic stop
