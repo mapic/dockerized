@@ -1005,23 +1005,27 @@ mapic_test () {
     esac 
 }
 mapic_test_all () {
-    echo "testing all"
+    echo "Testing errything"
+    mapic_test_ensure_data
     mapic run engine npm test || mapic_test_failed "$@"
     mapic run mile npm test || mapic_test_failed "$@"
     mapic run engine bash public/test/test.sh || mapic_test_failed "$@"
 }
 mapic_test_engine () {
     echo "Tesing Mapic Engine"
+    mapic_test_ensure_data
     mapic run engine npm test || mapic_test_failed "$@"
     exit 0;
 }
 mapic_test_mile () {
     echo "Tesing Mapic Mile"
+    mapic_test_ensure_data
     mapic run mile npm test || mapic_test_failed "$@"
     exit 0;
 }
 mapic_test_mapicjs () {
     echo "Tesing Mapic.js"
+    mapic_test_ensure_data
     mapic run engine bash public/test/test.sh || mapic_test_failed "$@"
     exit 0;
 }
@@ -1032,6 +1036,34 @@ mapic_test_travis() {
 mapic_test_failed () {
     echo "Some tests failed: $@";
     exit 1;
+}
+mapic_test_ensure_data () {
+    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && echo "no test data engine!"
+    test ! -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" && echo "no test data mile!"
+    
+    if [ -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" ]; then
+      # Control will enter here if $DIRECTORY exists.
+    else
+        mapic_test_download_data
+    fi
+    if [ -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" ]; then
+      # Control will enter here if $DIRECTORY exists.
+    else
+        mapic_test_download_data
+    fi
+    if [ -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" ]; then
+      # Control will enter here if $DIRECTORY exists.
+    else
+        mapic_test_download_data
+    fi
+}
+mapic_test_download_data () {
+    # need to download data
+    echo "Downloading test data..."
+    cd $MAPIC_ROOT_FOLDER/mile/test
+    git clone git@github.com:mapic/open-data.git
+    cp -rf open-data $MAPIC_ROOT_FOLDER/engine/test
+    cp -rf open-data $MAPIC_ROOT_FOLDER/mapicjs/test
 }
 
 #   _________  ____  / __(_)___ _
