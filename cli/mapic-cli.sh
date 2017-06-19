@@ -380,15 +380,11 @@ write_env () {
     test -z $1 && failed "missing arg"
 
     # add or replace line in .mapic.env
-    echo "arg 1: $1"
-    echo "arg MAPIC_ENV_FILE: $MAPIC_ENV_FILE"
-
     if grep -q "$1" "$MAPIC_ENV_FILE"; then
         # replace line
         sed -i "/$1/c\\$1=$2" $MAPIC_ENV_FILE
     else
         # ensure newline
-        echo "newline coming up"
         sed -i -e '$a\' $MAPIC_ENV_FILE 
 
         # add to bottom
