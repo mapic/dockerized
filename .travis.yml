@@ -36,7 +36,7 @@ script:
   - mapic logs &
   - sleep 240
   - mapic test mile
-  - mapic test engine
+  # - mapic test engine
   # - mapic test mapicjs
   # - mapic test all
   - mapic stop
