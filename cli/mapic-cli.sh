@@ -1005,27 +1005,25 @@ mapic_test () {
     esac 
 }
 mapic_test_all () {
-    echo "Testing errything"
-    mapic_test_ensure_data
-    mapic run engine npm test || mapic_test_failed "$@"
-    mapic run mile npm test || mapic_test_failed "$@"
-    mapic run engine bash public/test/test.sh || mapic_test_failed "$@"
+    mapic_test_engine
+    mapic_test_mile
+    mapic_test_mapicjs
 }
 mapic_test_engine () {
-    echo "Tesing Mapic Engine"
-    mapic_test_ensure_data
+    echo "Testing Mapic Engine"
+    mapic_test_ensure_data_engine
     mapic run engine npm test || mapic_test_failed "$@"
     exit 0;
 }
 mapic_test_mile () {
-    echo "Tesing Mapic Mile"
-    mapic_test_ensure_data
+    echo "Testing Mapic Mile"
+    mapic_test_ensure_data_mile
     mapic run mile npm test || mapic_test_failed "$@"
     exit 0;
 }
 mapic_test_mapicjs () {
-    echo "Tesing Mapic.js"
-    mapic_test_ensure_data
+    echo "Testing Mapic.js"
+    mapic_test_ensure_data_mapicjs
     mapic run engine bash public/test/test.sh || mapic_test_failed "$@"
     exit 0;
 }
@@ -1037,35 +1035,25 @@ mapic_test_failed () {
     echo "Some tests failed: $@";
     exit 1;
 }
-mapic_test_ensure_data () {
-    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && mapic_test_download_data
-    test ! -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" && mapic_test_download_data
-    test ! -d "$MAPIC_ROOT_FOLDER/mapic.js/test/open-data" && mapic_test_download_data
+mapic_test_ensure_data_mile () {
+    cd $MAPIC_ROOT_FOLDER/mile/test
+    mapic_test_download_data
+}
+
+mapic_test_ensure_data_engine () {
+    cd $MAPIC_ROOT_FOLDER/engine/test
+    mapic_test_download_data
+}
+mapic_test_ensure_data_mapicjs () {
+    cd $MAPIC_ROOT_FOLDER/engine/test
+    mapic_test_download_data
 }
 mapic_test_download_data () {
-    cd $MAPIC_ROOT_FOLDER
-
-    if [ ! -d "$MAPIC_ROOT_FOLDER/open-data" ]; then
-        # need to download data
+    # ensure open-data is downloaded
+    if [ ! -d "open-data" ]; then
         echo "Downloading test data..."
         git clone https://github.com/mapic/open-data.git
     fi
-
-    # ensure folder
-    mkdir -p $MAPIC_ROOT_FOLDER/mapic.js/test
-
-    # create symlinks
-    cd $MAPIC_ROOT_FOLDER/engine/test
-    unlink open-data && ln -s $MAPIC_ROOT_FOLDER/open-data open-data
-
-    cd $MAPIC_ROOT_FOLDER/mile/test
-    unlink open-data && ln -s $MAPIC_ROOT_FOLDER/open-data open-data
-
-    cd $MAPIC_ROOT_FOLDER/mapic.js/test
-    unlink open-data && ln -s $MAPIC_ROOT_FOLDER/open-data open-data
-    # test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../../open-data $MAPIC_ROOT_FOLDER/mile/test/open-data
-    # test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../../open-data $MAPIC_ROOT_FOLDER/engine/test/open-data
-    # test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../../open-data $MAPIC_ROOT_FOLDER/mapic.js/test/open-data
 }
 
 #   _________  ____  / __(_)___ _
