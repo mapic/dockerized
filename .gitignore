@@ -12,3 +12,4 @@ logs/*
 cli/.mapic.env
 tmp/
 tmp/*
+open-data
