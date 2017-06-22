@@ -1041,8 +1041,6 @@ mapic_test_ensure_data () {
     test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && mapic_test_download_data
     test ! -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" && mapic_test_download_data
     test ! -d "$MAPIC_ROOT_FOLDER/mapic.js/test/open-data" && mapic_test_download_data
-    
-   
 }
 mapic_test_download_data () {
     cd $MAPIC_ROOT_FOLDER
@@ -1057,9 +1055,17 @@ mapic_test_download_data () {
     mkdir -p $MAPIC_ROOT_FOLDER/mapic.js/test
 
     # create symlinks
-    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../open-data $MAPIC_ROOT_FOLDER/mile/test/open-data
-    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../open-data $MAPIC_ROOT_FOLDER/engine/test/open-data
-    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../open-data $MAPIC_ROOT_FOLDER/mapic.js/test/open-data
+    cd $MAPIC_ROOT_FOLDER/engine/test
+    unlink open-data && ln -s $MAPIC_ROOT_FOLDER/open-data open-data
+
+    cd $MAPIC_ROOT_FOLDER/mile/test
+    unlink open-data && ln -s $MAPIC_ROOT_FOLDER/open-data open-data
+
+    cd $MAPIC_ROOT_FOLDER/mapic.js/test
+    unlink open-data && ln -s $MAPIC_ROOT_FOLDER/open-data open-data
+    # test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../../open-data $MAPIC_ROOT_FOLDER/mile/test/open-data
+    # test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../../open-data $MAPIC_ROOT_FOLDER/engine/test/open-data
+    # test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../../open-data $MAPIC_ROOT_FOLDER/mapic.js/test/open-data
 }
 
 #   _________  ____  / __(_)___ _
