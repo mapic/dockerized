@@ -55,7 +55,7 @@ mapic help
 ```bash
 
 # set mapic domain
-mapic config set MAPIC_DOMAIN domain.example.com
+mapic domain domain.example.com
 
 # install mapic
 mapic install stable
