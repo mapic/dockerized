@@ -1,5 +1,4 @@
-# Mapic  
-[![GitHub tag](https://img.shields.io/github/tag/mapic/mapic.svg)](https://github.com/mapic/mapic/releases)
+# Mapic  [![GitHub tag](https://img.shields.io/github/tag/mapic/mapic.svg)](https://github.com/mapic/mapic/releases)
 [![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=master)](https://travis-ci.org/mapic/mapic)
 [![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=v2.0)](https://travis-ci.org/mapic/mapic)
 [![Twitter Follow](https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow)](https://twitter.com/mapic_io) 
