@@ -24,9 +24,7 @@ matrix:
 
 install:
   - cd cli
-  - grep --version
   - sudo bash mapic-cli.sh
-  - mapic env
   - sudo mapic install docker
 
 script:
