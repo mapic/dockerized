@@ -6,7 +6,7 @@
 
 Mapic is an Open Source Web Map Engine. 
 
-Learn more @ [mapic.io](https://mapic.io). For a technical overview, see the [wiki](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
+Learn more @ https://mapic.io. For a technical overview, see the [wiki](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
 
 
 
@@ -22,7 +22,7 @@ mapic
 
 ```
 
-This will install and start the Mapic server on your localhost:
+This will install and start the Mapic server on `localhost`:
 ```bash
 
 # configure localhost
@@ -36,7 +36,6 @@ mapic start
 
 ```
 
-
 Install to custom domain:
 ```bash
 
@@ -47,7 +46,6 @@ mapic domain maps.example.com
 mapic install stable
 
 ```
-
 
 ## Mapic usage
 
@@ -80,21 +78,12 @@ mapic upload
 mapic help
 ```
 
-
-
-### Depends: 
+## Depends: 
 - [Docker](https://docs.docker.com/engine/installation/) `>= 1.9.0`  
 - [Docker Compose](https://docs.docker.com/compose/install/) `>= 1.5.2`  
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 The `mapic cli` will try to install these automatically on Ubuntu and OSX.
-
-
-## Libraries
-Mapic consists of:   
-- [`mapic/engine`](https://github.com/mapic/engine)  
-- [`mapic/mile`](https://github.com/mapic/mile)    
-- [`mapic/mapic.js`](https://github.com/mapic/mapic.js)    
 
 Mapic is built on Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
 
