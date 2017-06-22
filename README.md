@@ -6,7 +6,9 @@ Mapic is an Open Source Web Map Engine.
 Learn more @ https://mapic.io. For a technical overview, see the [wiki](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
 
 ## Install
+
 #### Install the Mapic CLI:
+On OSX or Ubuntu:
 
 ```bash
 # install mapic cli
@@ -34,6 +36,7 @@ mapic start
 ## Usage
 
 #### Manage Mapic server
+Commands for managing the Mapic server. See `mapic help` for all options.
 
 ```bash
 # start server
@@ -52,7 +55,8 @@ mapic stop
 mapic restart
 ```
 
-#### Interact with Mapic (SDK)
+#### SDK: Interact with Mapic API
+Commands for interacting with any running Mapic server. 
 ```bash
 # create user
 mapic user create
@@ -80,7 +84,7 @@ Mapic is built on Docker. Docker images for Mapic are available on the [Docker H
 ## Licence 
 Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations and NGO's, as well as for-profit businesses.
 
-Mapic is licenced under the [AGPL licence](https://github.com/mapic/mapic/blob/master/LICENCE).
+Mapic is licensed under the [AGPL licence](https://github.com/mapic/mapic/blob/master/LICENCE).
 
 ## Project contributors
 - [Frano Cetinic](https://github.com/franocetinic)
