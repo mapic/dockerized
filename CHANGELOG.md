@@ -4,7 +4,7 @@ All notable changes to all repositories in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 2.0.0
 ### Added/changes
 - [x] `mapic/mapic`: Mapic CLI [#27](https://github.com/mapic/mapic/issues/27)
 - [x] `mapic/mapic`: Reorganized repositories [#37](https://github.com/mapic/mapic/issues/37)
