@@ -74,7 +74,7 @@ mapic_cli_usage () {
     echo "  grep                Find string in files in subdirectories of current path"
     echo "  ps                  Show running containers"
     echo "  debug               Toggle debug mode"
-    # echo "  pull                git pull --rebase all repos"
+    echo "  version             Display Mapic version"
     echo ""
     echo "API commands:"
     echo "  user                Handle Mapic users"
@@ -130,6 +130,7 @@ m () {
         -h)         mapic_cli_usage;;
         env)        mapic_env "$@";;
         edit)       mapic_edit "$@";;
+        version)    mapic_version "$@";;
         create_storage) mapic_create_storage "$@";;
     
         *)          mapic_wild "$@";;
@@ -291,6 +292,13 @@ mapic_edit () {
     # edit mapic-cli.sh
     echo "$MAPIC_DEFAULT_EDITOR $MAPIC_CLI_FOLDER/mapic-cli.sh"
     $MAPIC_DEFAULT_EDITOR $MAPIC_CLI_FOLDER/mapic-cli.sh
+}
+mapic_version () {
+    echo "Mapic version:"
+    # mapic version     2.0.0
+    # engine version    2.0.0
+    # mile version      2.0.0
+    # mapic.js version  2.0.0
 }
                   
 #  / _ \/ __ \ | / /
