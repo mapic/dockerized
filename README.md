@@ -1,13 +1,9 @@
 # Mapic 
 [![GitHub release](https://img.shields.io/github/release/mapic/mapic.svg)](https://github.com/mapic/mapic/releases) [![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=v2.0)](https://travis-ci.org/mapic/mapic) [![Travis branch](https://img.shields.io/travis/rust-lang/rust/master.svg?label=build@master)](https://travis-ci.org/mapic/mapic/builds)  [![Twitter Follow](https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow)](https://twitter.com/mapic_io) 
 
-
-
 Mapic is an Open Source Web Map Engine. 
 
 Learn more @ https://mapic.io. For a technical overview, see the [wiki](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
-
-
 
 ## Install
 #### Install the Mapic CLI:
@@ -17,7 +13,7 @@ Learn more @ https://mapic.io. For a technical overview, see the [wiki](https://
 curl -sSL https://get.mapic.io  | sh
 
 # show options
-mapic
+mapic help
 
 ```
 
@@ -38,6 +34,7 @@ mapic start
 ## Usage
 
 #### Manage Mapic server
+
 ```bash
 # start server
 mapic start
@@ -75,12 +72,12 @@ mapic help
 - [Docker Compose](https://docs.docker.com/compose/install/) `>= 1.5.2`  
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-The Mapic CLI will try to install these automatically on Ubuntu and OSX.
+The Mapic CLI will attempt to install these automatically on Ubuntu and OSX.
 
 Mapic is built on Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
 
 
-## Licence [![license](https://img.shields.io/github/license/mapic/mapic.svg?label=AGPL)](https://github.com/mapic/mapic/blob/master/LICENCE)
+## Licence 
 Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations and NGO's, as well as for-profit businesses.
 
 Mapic is licenced under the [AGPL licence](https://github.com/mapic/mapic/blob/master/LICENCE).
