@@ -7,14 +7,37 @@ Learn more @ https://mapic.io. For a technical overview, see [Mapic Technical Ov
 
 
 ## Install
-This will install mapic and configure it for `localhost`. For custom domain configuration, see below.
+Begin by installing the Mapic CLI:
 
 ```bash
 # install mapic cli
 curl -sSL https://get.mapic.io  | sh
 
+# show options
+mapic
+
+```
+
+This will install and start the Mapic server on your localhost:
+```bash
+
 # configure localhost
 mapic domain localhost
+
+# install mapic
+mapic install stable
+
+# start mapic
+mapic start
+
+```
+
+
+Install to custom domain:
+```bash
+
+# set mapic domain
+mapic domain maps.example.com
 
 # install mapic
 mapic install stable
@@ -54,16 +77,6 @@ mapic help
 ```
 
 
-### Install to custom domain
-```bash
-
-# set mapic domain
-mapic domain domain.example.com
-
-# install mapic
-mapic install stable
-
-```
 
 ### Depends: 
 - [Docker](https://docs.docker.com/engine/installation/) `>= 1.9.0`  
