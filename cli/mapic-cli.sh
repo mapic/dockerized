@@ -603,6 +603,7 @@ mapic_install () {
         docker)     mapic_install_docker "$@";;
         jq)         mapic_install_jq "$@";;
         node)       mapic_install_node "$@";;
+        travis)     mapic_install_travis "$@";;
         *)          mapic_install_usage;
     esac 
 }
@@ -625,6 +626,10 @@ mapic_install_master () {
     git checkout master
 
     # install current branch
+    mapic_install_branch
+}
+mapic_install_travis () {
+    # install whatever branch is designated in travis
     mapic_install_branch
 }
 mapic_install_branch () {

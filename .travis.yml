@@ -29,7 +29,7 @@ install:
 
 script:
   - mapic domain localhost
-  - mapic install master
+  - mapic install travis
   - mapic start
   - mapic logs &
   - sleep 240
