@@ -49,6 +49,7 @@ mapic install stable
 
 ## Mapic usage
 
+#### Manage server:
 ```bash
 # start server
 mapic start
@@ -64,7 +65,10 @@ mapic stop
 
 # restart mapic server
 mapic restart
+```
 
+#### Interact with Mapic (SDK)
+```bash
 # create user
 mapic user create
 
