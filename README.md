@@ -80,10 +80,10 @@ The Mapic CLI will try to install these automatically on Ubuntu and OSX.
 Mapic is built on Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
 
 
-## Licence
+## Licence [![license](https://img.shields.io/github/license/mapic/mapic.svg?label=AGPL)](https://github.com/mapic/mapic/blob/master/LICENCE)
 Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations and NGO's, as well as for-profit businesses.
 
-Mapic is licenced under the [![license](https://img.shields.io/github/license/mapic/mapic.svg?label=AGPL)](https://github.com/mapic/mapic/blob/master/LICENCE)
+Mapic is licenced under the [AGPL licence](https://github.com/mapic/mapic/blob/master/LICENCE).
 
 ## Project contributors
 - [Frano Cetinic](https://github.com/franocetinic)
