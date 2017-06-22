@@ -82,7 +82,7 @@ mapic_cli_usage () {
     echo ""
     
     # undocumented api
-    if [[ "$MAPIC_DEBUG" = "true" ]]; then
+    if [[ "$MAPIC_DEBUG" == "true" ]]; then
     echo "Undocumented:"
     echo "  edit                Edit mapic-cli.sh source file"
     echo ""
@@ -124,7 +124,6 @@ m () {
         config)     mapic_config "$@";;
         grep)       mapic_grep "$@";;
         debug)      mapic_debug "$@";;
-        # pull)       mapic_pull "$@";;
         domain)     mapic_domain "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
@@ -284,8 +283,7 @@ mapic_debug () {
         echo "Debug mode is on"
         write_env MAPIC_DEBUG true
     else 
-       
-         echo "Debug mode is off"
+        echo "Debug mode is off"
         write_env MAPIC_DEBUG
     fi
 }
@@ -435,7 +433,6 @@ mapic_env_prompt () {
     fi
 
     # set env
-    # test -n "$ENV_VALUE" && mapic env set "$ENV_KEY" "$ENV_VALUE" 
     mapic env set "$ENV_KEY" "$ENV_VALUE" 
 }
 
@@ -526,34 +523,6 @@ mapic_wild () {
     echo "\"$@\" is not a Mapic command. See 'mapic help' for available commands."
     exit 1
 }
-
-
-# mapic_pull () {
-#     cd $MAPIC_ROOT_FOLDER
-
-#     REPO_FOLDER=$MAPIC_ROOT_FOLDER/modules
-
-#     echo "Pulling mapic/mapic"
-#     git pull --rebase
-
-#     echo "Pulling mapic/engine"
-#     cd $REPO_FOLDER/engine
-#     git pull --rebase
-
-#     echo "Pulling mapic/mile"
-#     cd $REPO_FOLDER/mile
-#     git pull --rebase
-
-#     echo "Pulling mapic/mapic.js"
-#     cd $REPO_FOLDER/mapic.js
-#     git pull --rebase
-
-#     echo "Pulling mapic/sdk"
-#     cd $REPO_FOLDER/sdk
-#     git pull --rebase
-    
-#     echo "All pulled!"
-# }
 
     
 mapic_domain_usage () {
@@ -674,37 +643,6 @@ mapic_install_master () {
     mapic_install_stable
 }
 
-# mapic_install_mapic_domain () {
-#     cd $MAPIC_CLI_FOLDER/install
-#     bash init-submodules.sh
-
-#     cd $MAPIC_CLI_FOLDER/install
-#     if [ $MAPIC_DOMAIN = "localhost" ]; then
-#         bash create-ssl-localhost.sh
-#     else 
-#         bash create-ssl-public-domain.sh
-#     fi
-
-#     cd $MAPIC_CLI_FOLDER/install
-#     bash update-config.sh
-
-#     cd $MAPIC_CLI_FOLDER/install
-#     bash create-storage-containers.sh
-# }
-
-# mapic_install_mapic_localhost () {
-#     cd $MAPIC_CLI_FOLDER/install
-#     bash init-submodules.sh
-
-#     cd $MAPIC_CLI_FOLDER/install
-#     bash create-ssl-localhost.sh
-
-#     cd $MAPIC_CLI_FOLDER/install
-#     bash update-config.sh
-
-#     cd $MAPIC_CLI_FOLDER/install
-#     bash create-storage-containers.sh
-# }
 mapic_install_jq () {
     DISTRO=$(lsb_release -si)
     case "$DISTRO" in
@@ -882,7 +820,6 @@ mapic_api_display_config () {
     echo "  Auth:     $MAPIC_API_AUTH"
 }
 
-                   
 #   / ___/ / / / __ \
 #  / /  / /_/ / / / /
 # /_/   \__,_/_/ /_/ 
@@ -989,7 +926,6 @@ mapic_test_usage () {
     echo "  engine      Run all Mapic Engine tests"
     echo "  mile        Run all Mapic Mile tests"
     echo "  mapicjs     Run all Mapic.js tests"
-    echo "  travis      Run a build test on Travis"
     echo ""
     exit 1   
 }
@@ -1000,7 +936,6 @@ mapic_test () {
         engine)     mapic_test_engine;;
         mile)       mapic_test_mile;;
         mapicjs)    mapic_test_mapicjs;;
-        travis)     mapic_test_travis;;
         *)          mapic_test_usage;
     esac 
 }
@@ -1027,10 +962,6 @@ mapic_test_mapicjs () {
     mapic run engine bash public/test/test.sh || mapic_test_failed "$@"
     exit 0;
 }
-mapic_test_travis() {
-    echo "Not yet supported."
-    exit 0;
-}
 mapic_test_failed () {
     echo "Some tests failed: $@";
     exit 1;
@@ -1039,7 +970,6 @@ mapic_test_ensure_data_mile () {
     cd $MAPIC_ROOT_FOLDER/mile/test
     mapic_test_download_data
 }
-
 mapic_test_ensure_data_engine () {
     cd $MAPIC_ROOT_FOLDER/engine/test
     mapic_test_download_data
@@ -1071,7 +1001,7 @@ mapic_config_usage () {
     echo "  get                     Get an environment variable. Do 'mapic config get' to list all variables."
     echo "  get                     Get an environment variable. Do 'mapic config get' to list all variables."
     echo "  edit                    Edit config directly in your favorite editor."
-    echo "  file                    Returns absolute path of Mapic config file, useful for scripts and 'docker run --env-file'"
+    echo "  file                    Returns absolute path of Mapic config file, useful for scripts and 'docker run --env-file $(mapic config file) ...'"
     echo ""
     exit 1   
 }
