@@ -6,7 +6,7 @@
 
 Mapic is an Open Source Web Map Engine. 
 
-Learn more @ https://mapic.io. For a technical overview, see [Mapic Technical Overview](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
+Learn more @ [mapic.io](https://mapic.io). For a technical overview, see the [wiki](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
 
 
 
@@ -92,11 +92,11 @@ The `mapic cli` will try to install these automatically on Ubuntu and OSX.
 
 ## Libraries
 Mapic consists of:   
-1. [Mapic Engine](https://github.com/mapic/engine)  
-2. [Mapic Mile Tileserver](https://github.com/mapic/mile)    
-3. [Mapic Javascript Client library](https://github.com/mapic/mapic.js)    
+- [`mapic/engine`](https://github.com/mapic/engine)  
+- [`mapic/mile`](https://github.com/mapic/mile)    
+- [`mapic/mapic.js`](https://github.com/mapic/mapic.js)    
 
-Mapic is built on Docker. Docker Images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
+Mapic is built on Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
 
 ## Licence
 Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations and NGO's, as well as for-profit businesses.
