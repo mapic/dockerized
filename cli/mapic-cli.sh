@@ -1040,23 +1040,26 @@ mapic_test_failed () {
 mapic_test_ensure_data () {
     test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && mapic_test_download_data
     test ! -d "$MAPIC_ROOT_FOLDER/mile/test/open-data" && mapic_test_download_data
-    test ! -d "$MAPIC_ROOT_FOLDER/mapicjs/test/open-data" && mapic_test_download_data
+    test ! -d "$MAPIC_ROOT_FOLDER/mapic.js/test/open-data" && mapic_test_download_data
     
    
 }
 mapic_test_download_data () {
-    # need to download data
-    echo "Downloading test data..."
     cd $MAPIC_ROOT_FOLDER
-    git clone https://github.com/mapic/open-data.git
+
+    if [ ! -d "$MAPIC_ROOT_FOLDER/open-data" ]; then
+        # need to download data
+        echo "Downloading test data..."
+        git clone https://github.com/mapic/open-data.git
+    fi
 
     # ensure folder
-    mkdir -f $MAPIC_ROOT_FOLDER/mapicjs/test
+    mkdir -p $MAPIC_ROOT_FOLDER/mapic.js/test
 
     # create symlinks
-    ln -s $MAPIC_ROOT_FOLDER/open-data $MAPIC_ROOT_FOLDER/mile/test/open-data
-    ln -s $MAPIC_ROOT_FOLDER/open-data $MAPIC_ROOT_FOLDER/engine/test/open-data
-    ln -s $MAPIC_ROOT_FOLDER/open-data $MAPIC_ROOT_FOLDER/mapicjs/test/open-data
+    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../open-data $MAPIC_ROOT_FOLDER/mile/test/open-data
+    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../open-data $MAPIC_ROOT_FOLDER/engine/test/open-data
+    test ! -d "$MAPIC_ROOT_FOLDER/engine/test/open-data" && ln -s ../open-data $MAPIC_ROOT_FOLDER/mapic.js/test/open-data
 }
 
 #   _________  ____  / __(_)___ _
