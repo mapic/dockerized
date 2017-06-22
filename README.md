@@ -5,26 +5,6 @@ Mapic is an Open Source Web Map Engine.
 Learn more @ https://mapic.io. For a technical overview, see [Mapic Technical Overview](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
 
 
-## Usage
-1. Start server with `mapic start`.
-2. Open your browser @ https://localhost
-3. Stop server with `mapic stop`.
-
-See `mapic help` for more options.
-
-
-### Create user
-Create a user with the `mapic` cli:
-
-```bash
-# create user
-mapic user create
-
-# promote to superuser
-mapic user super 
-
-```
-
 
 ## Install
 This will install mapic and configure it for `localhost`. For custom domain configuration, see below.
@@ -33,10 +13,43 @@ This will install mapic and configure it for `localhost`. For custom domain conf
 # install mapic cli
 wget -qO- https://get.mapic.io/ | sh
 
-# install to localhost
-mapic install mapic
+# configure localhost
+mapic domain localhost
+
+# install mapic
+mapic install stable
 
 ```
+
+
+## Mapic usage
+
+```
+# start server
+mapic start
+
+# open web
+open https://localhost
+
+# tail logs
+mapic logs
+
+# stop mapic server
+mapic stop
+
+# restart
+mapic restart
+
+# create user
+mapic user create
+
+# promote to superuser
+mapic user super 
+
+# see help for more commands and options
+mapic help
+```
+
 
 ### Install to custom domain
 ```bash
@@ -45,11 +58,11 @@ mapic install mapic
 mapic config set MAPIC_DOMAIN domain.example.com
 
 # install mapic
-mapic install mapic
+mapic install stable
 
 ```
 
-### Dependencies: 
+### Depends: 
 - [Docker](https://docs.docker.com/engine/installation/) `>= 1.9.0`  
 - [Docker Compose](https://docs.docker.com/compose/install/) `>= 1.5.2`  
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
