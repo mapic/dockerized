@@ -608,9 +608,26 @@ mapic_install () {
 }
 mapic_install_stable () {
 
-    # todo: use revisions, latest stable tag, etc.
+    # checkout latest stable tag
     cd $MAPIC_ROOT_FOLDER
-    git checkout master # todo: revision tag
+    git fetch --tags
+    LATEST=$(git describe --tags `git rev-list --tags --max-count=1`)
+    echo "Checking out $LATEST..."
+    git checkout $LATEST
+
+    # install current branch
+    mapic_install_branch
+}
+mapic_install_master () {
+
+    cd $MAPIC_ROOT_FOLDER
+    echo "Checking out master..."
+    git checkout master
+
+    # install current branch
+    mapic_install_branch
+}
+mapic_install_branch () {
 
     # ensure MAPIC_DOMAIN
     test -z $MAPIC_DOMAIN && mapic env prompt MAPIC_DOMAIN "Domain for Mapic. (Example: maps.mapic.io)" localhost
@@ -646,11 +663,6 @@ mapic_install_stable () {
     bash create-storage-containers.sh
 
 }
-mapic_install_master () {
-    echo "todo"
-    mapic_install_stable
-}
-
 mapic_install_jq () {
     DISTRO=$(lsb_release -si)
     case "$DISTRO" in

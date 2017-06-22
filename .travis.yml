@@ -29,7 +29,7 @@ install:
 
 script:
   - mapic domain localhost
-  - mapic install stable
+  - mapic install master
   - mapic start
   - mapic logs &
   - sleep 240
