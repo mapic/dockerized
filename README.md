@@ -47,9 +47,9 @@ mapic install stable
 
 ```
 
-## Mapic usage
+## Usage
 
-#### Manage server:
+#### Manage Mapic server
 ```bash
 # start server
 mapic start
@@ -82,12 +82,12 @@ mapic upload
 mapic help
 ```
 
-## Depends: 
+## Depends
 - [Docker](https://docs.docker.com/engine/installation/) `>= 1.9.0`  
 - [Docker Compose](https://docs.docker.com/compose/install/) `>= 1.5.2`  
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-The `mapic cli` will try to install these automatically on Ubuntu and OSX.
+The Mapic CLI will try to install these automatically on Ubuntu and OSX.
 
 Mapic is built on Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
 
