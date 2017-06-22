@@ -24,7 +24,7 @@ mapic install stable
 
 ## Mapic usage
 
-```
+```bash
 # start server
 mapic start
 
