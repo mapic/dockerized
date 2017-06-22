@@ -1,10 +1,7 @@
-# Mapic  
+# Mapic 
+[![GitHub release](https://img.shields.io/github/release/mapic/mapic.svg)](https://github.com/mapic/mapic/releases) [![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=v2.0)](https://travis-ci.org/mapic/mapic) [![Travis branch](https://img.shields.io/travis/rust-lang/rust/master.svg?label=build@master)](https://travis-ci.org/mapic/mapic/builds)  [![Twitter Follow](https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow)](https://twitter.com/mapic_io) 
 
-[![GitHub release](https://img.shields.io/github/release/mapic/mapic.svg)](https://github.com/mapic/mapic/releases)
-[![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=v2.0)](https://travis-ci.org/mapic/mapic)
-[![GitHub branch](https://img.shields.io/badge/branch-master-blue.svg)](https://github.com/mapic/mapic/tree/master)
-[![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=master)](https://travis-ci.org/mapic/mapic)
-[![Twitter Follow](https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow)](https://twitter.com/mapic_io) 
+
 
 Mapic is an Open Source Web Map Engine. 
 
@@ -13,7 +10,7 @@ Learn more @ https://mapic.io. For a technical overview, see the [wiki](https://
 
 
 ## Install
-Begin by installing the Mapic CLI:
+#### Install the Mapic CLI:
 
 ```bash
 # install mapic cli
@@ -24,7 +21,7 @@ mapic
 
 ```
 
-This will install and start the Mapic server on `localhost`:
+#### Install and start on `localhost`:
 ```bash
 
 # configure localhost
@@ -35,17 +32,6 @@ mapic install stable
 
 # start mapic
 mapic start
-
-```
-
-Install to custom domain:
-```bash
-
-# set mapic domain
-mapic domain maps.example.com
-
-# install mapic
-mapic install stable
 
 ```
 
@@ -93,10 +79,11 @@ The Mapic CLI will try to install these automatically on Ubuntu and OSX.
 
 Mapic is built on Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
 
+
 ## Licence
 Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations and NGO's, as well as for-profit businesses.
 
-Mapic is licenced under the [AGPL licence](https://github.com/mapic/mapic/blob/master/LICENCE).
+Mapic is licenced under the [![license](https://img.shields.io/github/license/mapic/mapic.svg?label=AGPL)](https://github.com/mapic/mapic/blob/master/LICENCE)
 
 ## Project contributors
 - [Frano Cetinic](https://github.com/franocetinic)
