@@ -37,7 +37,7 @@ mapic logs
 # stop mapic server
 mapic stop
 
-# restart
+# restart mapic server
 mapic restart
 
 # create user
@@ -45,6 +45,9 @@ mapic user create
 
 # promote to superuser
 mapic user super 
+
+# upload data
+mapic upload
 
 # see help for more commands and options
 mapic help
