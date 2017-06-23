@@ -26,7 +26,7 @@ module.exports = {
   "path": {
     "log": "/data/logs/"
   },
-  "noAccessMessage": "No access. Please contact Systemapic.com if you believe you are getting this message in error.",
+  "noAccessMessage": "No access. Please contact hello@mapic.io if you believe you are getting this message in error.",
   "noAccessTile": "public/noAccessTile.png",
   "processingTile": "public/noAccessTile.png",
   "defaultStylesheets": {
