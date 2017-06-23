@@ -27,6 +27,9 @@ install:
   - sudo bash mapic-cli.sh
   - sudo mapic install docker
   - mapic version
+  - touch /etc/docker/daemon.json
+  - echo '{"experimental":true}' >> /etc/docker/daemon.json
+  - sudo systemctl restart docker
   - docker swarm init
 
 script:
