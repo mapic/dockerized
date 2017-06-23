@@ -542,7 +542,8 @@ mapic_ps () {
 # /____/\__/\__,_/_/   \__/  
 mapic_start () {
     cd $MAPIC_CLI_FOLDER/management
-    bash start-mapic.sh
+    # bash start-mapic.sh
+    bash mapic-up.sh
 }
 mapic_restart () {
     mapic_stop
@@ -551,7 +552,8 @@ mapic_restart () {
 }
 mapic_stop () {
     cd $MAPIC_CLI_FOLDER/management
-    bash stop-mapic.sh
+    # bash stop-mapic.sh
+    bash mapic-down.sh
 }
 mapic_flush () {
     cd $MAPIC_CLI_FOLDER/management

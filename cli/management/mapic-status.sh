@@ -1,3 +1,3 @@
 #!/bin/bash
 
-mapic ps
+docker stack services mapic
