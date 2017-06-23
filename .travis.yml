@@ -33,7 +33,10 @@ script:
   - mapic domain localhost
   - mapic install travis
   - mapic start
+  - mapic status
+  - mapic logs
   - sleep 240
+  - mapic status
   - mapic test all
   - mapic stop
-  - mapic logs 
+  # - mapic logs 
