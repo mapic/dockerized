@@ -950,7 +950,7 @@ mapic_test_usage () {
     echo "  all         Run all available Mapic tests"
     echo "  engine      Run all Mapic Engine tests"
     echo "  mile        Run all Mapic Mile tests"
-    echo "  mapicjs     Run all Mapic.js tests"
+    echo "  js          Run all Mapic.js tests"
     echo ""
     exit 1   
 }
@@ -960,14 +960,14 @@ mapic_test () {
         all)        mapic_test_all;;
         engine)     mapic_test_engine;;
         mile)       mapic_test_mile;;
-        mapicjs)    mapic_test_mapicjs;;
+        js)         mapic_test_js;;
         *)          mapic_test_usage;
     esac 
 }
 mapic_test_all () {
     mapic_test_engine
     mapic_test_mile
-    mapic_test_mapicjs
+    mapic_test_js
 }
 mapic_test_engine () {
     echo "Testing Mapic Engine"
@@ -981,7 +981,7 @@ mapic_test_mile () {
     mapic run mile npm test || mapic_test_failed "$@"
     exit 0;
 }
-mapic_test_mapicjs () {
+mapic_test_js () {
     echo "Testing Mapic.js"
     mapic_test_ensure_data_mapicjs
     mapic run engine bash public/test/test.sh || mapic_test_failed "$@"
