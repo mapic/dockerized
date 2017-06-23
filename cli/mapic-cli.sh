@@ -168,9 +168,7 @@ initialize () {
         MAPIC_ROOT_FOLDER="$(dirname "$MAPIC_CLI_FOLDER")"
 
         # set color file
-        # MAPIC_COLOR_FILE=$MAPIC_CLI_FOLDER/.mapic.colors
-
-        # echo "MAPIC_COLOR_FILE: $MAPIC_COLOR_FILE"
+        MAPIC_COLOR_FILE=$MAPIC_CLI_FOLDER/.mapic.colors
 
         # set config folder
         MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
@@ -205,10 +203,10 @@ initialize () {
     # source env file
     set -o allexport
     source $MAPIC_ENV_FILE
-    # source $MAPIC_COLOR_FILE
+    source $MAPIC_COLOR_FILE
 
     # mark [debug mode]
-    test ! -z $MAPIC_DEBUG && print_debug
+    test "$MAPIC_DEBUG" == "true" && print_debug
 
     # mark that we're in a cli
     MAPIC_CLI=true
@@ -218,7 +216,7 @@ corrupted_install () {
     exit 1 
 }
 print_debug () {
-    printf "${c_dot}[debug mode]${c_reset}\n"
+    printf "${c_dot_cyan}[debug mode]${c_reset}\n"
 }
 install_osx_tools () {
     
@@ -227,14 +225,17 @@ install_osx_tools () {
     JQ=$(which jq)
     GREP=$(which grep)
 
-    echo "Installing OSX Tools"
-    echo "SED: $SED"
-    echo "BREW: $BREW"
-    echo "JQ: $JQ"
-    echo "GREP: $GREP"
-    echo "TRAVIS: $TRAVIS"
-    echo "CI: $CI"
-    echo "MAPIC_TRAVIS: $MAPIC_TRAVIS"
+    if [[ "$MAPIC_DEBUG" == true ]]; then
+
+        echo "Installing OSX Tools"
+        echo "SED: $SED"
+        echo "BREW: $BREW"
+        echo "JQ: $JQ"
+        echo "GREP: $GREP"
+        echo "TRAVIS: $TRAVIS"
+        echo "CI: $CI"
+        echo "MAPIC_TRAVIS: $MAPIC_TRAVIS"
+    fi
 
     SEDV=$(sed --version | grep "sed (GNU sed)")
     echo "SED VERSION: $SEDV"
@@ -280,12 +281,12 @@ get_mapic_host_os () {
     esac
 }
 mapic_debug () {
-    if [ -z $MAPIC_DEBUG ]; then
-        echo "Debug mode is on"
-        write_env MAPIC_DEBUG true
-    else 
+    if [[ "$MAPIC_DEBUG" == "true" ]]; then
         echo "Debug mode is off"
         write_env MAPIC_DEBUG
+    else
+        echo "Debug mode is on"
+        write_env MAPIC_DEBUG true
     fi
 }
 mapic_edit () {
@@ -322,7 +323,7 @@ mapic_env_usage () {
 mapic_env () {
 
     # debug mode: show env with 'mapic env'
-    if [ "$MAPIC_DEBUG" = true ] && test -z $2; then
+    if [[ "$MAPIC_DEBUG" == "true" ]] && test -z $2; then
         echo "(Mapic DEBUG mode: Showing ENV instead of help screen.)"
         echo ""
         mapic_env_get
@@ -935,7 +936,6 @@ mapic_dns_set () {
 mapic_status () {
     cd $MAPIC_CLI_FOLDER/management
     bash mapic-status.sh
-    exit 1
 }
 
 #   / /____  _____/ /_
