@@ -292,7 +292,7 @@ ecco () {
 mapic_version () {
    
     echo ""
-    ecco 1 "Mapic version"
+    echo "Mapic version"
     echo ""
 
     # git versions    
@@ -301,29 +301,29 @@ mapic_version () {
     GIT=$(git log --pretty=format:"%h (%ar)" -1)
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
     ecco 4 "mapic/mapic"
-    ecco 1 "branch: $BRANCH"
-    ecco 1 "commit: $GIT"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
 
     cd $MAPIC_ROOT_FOLDER/mile
     GIT=$(git log --pretty=format:"%h (%ar)" -1)
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
     ecco 4 "mapic/mile"
-    ecco 1 "branch: $BRANCH"
-    ecco 1 "commit: $GIT"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
    
     cd $MAPIC_ROOT_FOLDER/engine
     GIT=$(git log --pretty=format:"%h (%ar)" -1)
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
     ecco 4 "mapic/engine"
-    ecco 1 "branch: $BRANCH"
-    ecco 1 "commit: $GIT"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
 
     cd $MAPIC_ROOT_FOLDER/mapic.js
     GIT=$(git log --pretty=format:"%h (%ar)" -1)
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
     ecco 4 "mapic/mapic.js"
-    ecco 1 "branch: $BRANCH"
-    ecco 1 "commit: $GIT"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
 
 
 
@@ -353,7 +353,7 @@ mapic_version () {
     # engine version    2.0.0
     # mile version      2.0.0
     # mapic.js version  2.0.0
-    
+
     echo ""
 }
                   
