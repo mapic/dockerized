@@ -26,6 +26,7 @@ install:
   - cd cli
   - sudo bash mapic-cli.sh
   - sudo mapic install docker
+  - mapic version
 
 script:
   - mapic domain localhost

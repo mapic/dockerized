@@ -21,22 +21,15 @@
 #       (For "cool" ascii art text, see: http://patorjk.com/software/taag/#p=display&f=Slant&t=mapic)
 #       (Tracking issue: https://github.com/mapic/mapic/issues/27)
 #
+#       For printing colors, see the ecco() function (eg. ecco 12 "this is color 12"), and the .mapic.colors env file.
 #
 #   / /_____  ____/ /___ 
 #  / __/ __ \/ __  / __ \
 # / /_/ /_/ / /_/ / /_/ /
 # \__/\____/\__,_/\____/ 
 #
-# 1. (DONE!) Create an ENV.sh file to source each time mapic-cli is run. 
-#    That way we don't have to worry about globals, just our own env file.
-#    Need to clean up this ENV across Mapic
-# 2. (DONE!) Prompt and contiune on missing $MAPIC_DOMAIN 
-# 3. Install flow, work seamlessly with `mapic install [OPTIONS]`. Also for travis (`mapic install --travis [OPTIONS]`)
-# 4. Create own repo for mapic-cli eventually
-#
-#   Currnetly working on: 1. sed -i not cross-comp 
-#                         2. .mapic.env-e file is cause of sed bug
-#
+#   1. Move all config into ENV
+#   2. Make Windows compatible
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
@@ -206,7 +199,7 @@ initialize () {
     source $MAPIC_COLOR_FILE
 
     # mark [debug mode]
-    test "$MAPIC_DEBUG" == "true" && print_debug
+    test "$MAPIC_DEBUG" == "true" && ecco 82 "debug mode"
 
     # mark that we're in a cli
     MAPIC_CLI=true
@@ -214,9 +207,6 @@ initialize () {
 corrupted_install () {
     echo "Install is corrupted. Try downloading fresh from https://github.com/mapic/cli"
     exit 1 
-}
-print_debug () {
-    printf "${c_dot_cyan}[debug mode]${c_reset}\n"
 }
 install_osx_tools () {
     
@@ -294,12 +284,77 @@ mapic_edit () {
     echo "$MAPIC_DEFAULT_EDITOR $MAPIC_CLI_FOLDER/mapic-cli.sh"
     $MAPIC_DEFAULT_EDITOR $MAPIC_CLI_FOLDER/mapic-cli.sh
 }
+ecco () {
+    COLOR="c_"$1
+    TEXT=${@:2}
+    printf "${!COLOR}${TEXT}${c_reset}\n" 
+}
 mapic_version () {
-    echo "Mapic version:"
+   
+    echo ""
+    ecco 1 "Mapic version"
+    echo ""
+
+    # git versions    
+    ecco 41 "Git"
+    cd $MAPIC_ROOT_FOLDER
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mapic"
+    ecco 1 "branch: $BRANCH"
+    ecco 1 "commit: $GIT"
+
+    cd $MAPIC_ROOT_FOLDER/mile
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mile"
+    ecco 1 "branch: $BRANCH"
+    ecco 1 "commit: $GIT"
+   
+    cd $MAPIC_ROOT_FOLDER/engine
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/engine"
+    ecco 1 "branch: $BRANCH"
+    ecco 1 "commit: $GIT"
+
+    cd $MAPIC_ROOT_FOLDER/mapic.js
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mapic.js"
+    ecco 1 "branch: $BRANCH"
+    ecco 1 "commit: $GIT"
+
+
+
+    # shorter version
+    # cd $MAPIC_ROOT_FOLDER
+    # GIT=$(git log --pretty=format:"%h" -1)
+    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    # echo "  mapic/mapic:    $GIT @  $BRANCH"
+
+    # cd $MAPIC_ROOT_FOLDER/mile
+    # GIT=$(git log --pretty=format:"%h" -1)
+    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    # echo "  mapic/mile:     $GIT @  $BRANCH"
+   
+    # cd $MAPIC_ROOT_FOLDER/engine
+    # GIT=$(git log --pretty=format:"%h" -1)
+    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    # echo "  mapic/engine:   $GIT @  $BRANCH"
+
+    # cd $MAPIC_ROOT_FOLDER/mapic.js
+    # GIT=$(git log --pretty=format:"%h" -1)
+    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    # echo "  mapic/mapic.js: $GIT @  $BRANCH"
+
+
     # mapic version     2.0.0
     # engine version    2.0.0
     # mile version      2.0.0
     # mapic.js version  2.0.0
+    
+    echo ""
 }
                   
 #  / _ \/ __ \ | / /
