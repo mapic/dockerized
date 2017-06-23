@@ -27,6 +27,7 @@ install:
   - sudo bash mapic-cli.sh
   - sudo mapic install docker
   - mapic version
+  - docker swarm init
 
 script:
   - mapic domain localhost
