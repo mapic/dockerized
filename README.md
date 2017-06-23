@@ -1,5 +1,5 @@
 # Mapic 
-[![GitHub release](https://img.shields.io/github/release/mapic/mapic.svg)](https://github.com/mapic/mapic/releases) [![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=v2.0)](https://travis-ci.org/mapic/mapic) [![Travis branch](https://img.shields.io/travis/rust-lang/rust/master.svg?label=build@master)](https://travis-ci.org/mapic/mapic/builds)  [![Twitter Follow](https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow)](https://twitter.com/mapic_io) 
+[![GitHub release](https://img.shields.io/github/release/mapic/mapic.svg)](https://github.com/mapic/mapic/releases) [![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=v2.0)](https://travis-ci.org/mapic/mapic/branches) [![Travis branch](https://img.shields.io/travis/rust-lang/rust/master.svg?label=build@master)](https://travis-ci.org/mapic/mapic/builds)  [![Twitter Follow](https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow)](https://twitter.com/mapic_io) 
 
 Mapic is an Open Source Web Map Engine. 
 
