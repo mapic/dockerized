@@ -1,75 +1,105 @@
-# Mapic
-
-Mapic is an open source mapping library and geoserver. Learn more @ http://mapic.io.
-
-For a techincal overview, please see [Mapic Technical Overview](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
-
-## What's in the box
-Mapic consists of:   
-1. [Mapic Engine](https://github.com/mapic/engine)  
-2. [Mapic Tileserver](https://github.com/mapic/mile)    
-3. [Mapic Client library](https://github.com/mapic/mapic.js)    
-4. [Mapic SDK](https://github.com/mapic/sdk) (for interacting with API programmatically)
-
-
-Mapic is built on Docker. Docker Images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
+<p align="center">
+    <img width="300px" src="https://user-images.githubusercontent.com/2197944/27542704-5e1f18c6-5a88-11e7-96bb-9e36ca6e4c93.png">
+</p>
+<p align="center">
+    <a href="https://github.com/mapic/mapic/releases"><img src="https://img.shields.io/github/release/mapic/mapic.svg" alt="Downloads"></a>
+    <a href="https://travis-ci.org/mapic/mapic/branches"><img src="https://travis-ci.org/mapic/mapic.svg?branch=v2.0" alt="Downloads"></a>
+    <a href="https://travis-ci.org/mapic/mapic/builds"><img src="https://img.shields.io/travis/rust-lang/rust/master.svg?label=build@master" alt="Downloads"></a>
+    <a href="https://twitter.com/mapic_io"><img src="https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow" alt="Downloads"></a>
+</p>
+<p align="center">
+    Mapic is an Open Source Web Map Engine.
+</p>
+<p align="center">
+    Learn more @ https://mapic.io. For a technical overview, see the <a href="https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview">wiki</a>.
+</p>
 
 ## Install
 
-Install dependencies: [Docker](https://docs.docker.com/engine/installation/), [Docker Compose](https://docs.docker.com/compose/install/) and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) on Linux, OSX or Windows.
+#### Install the Mapic CLI:
+On OSX or Ubuntu:
 
-#### Install to localhost
-Clone repository and run install:
 ```bash
-git clone git://github.com/mapic/mapic.git
-cd mapic
-./install-to-localhost.sh
+# install mapic cli
+curl -sSL https://get.mapic.io  | sh
+
+# show options
+mapic help
+
 ```
 
-#### Install to custom domain
-Run normal install above, then see [mapic/config-domain.example.com](https://github.com/mapic/config-domain.example.com) for instructions on changing configs for custom domain.
+#### Install and start on `localhost`:
+```bash
 
+# configure localhost
+mapic domain localhost
+
+# install mapic
+mapic install stable
+
+# start mapic
+mapic start
+
+```
 
 ## Usage
-1. Install (see above).
-2. Run `./restart-mapic.sh`. (First run might take a few minutes due to installation of dependencies.)
-3. Open your browser @ https://localhost.
-4. Stop server with `./stop-mapic.sh`.
 
-#### Create User
-While you are running the server in one terminal , open another terminal and do as follows (read instructions).
+#### Manage Mapic server
+Commands for managing the Mapic server. See `mapic help` for all options.
 
 ```bash
-# create user
-docker exec -it localhost_engine_1 node scripts/create_user.js user@domain.com username firstName lastName [optional password]
+# start server
+mapic start
 
-# make user super
-docker exec -it localhost_engine_1 node scripts/make_super.js user@domain.com
+# open web
+open https://localhost
+
+# tail logs
+mapic logs
+
+# stop mapic server
+mapic stop
+
+# restart mapic server
+mapic restart
 ```
 
-## Libraries
-Mapic consists of:   
-1. [Mapic Engine](https://github.com/mapic/engine)  
-2. [Mapic Tileserver](https://github.com/mapic/mile)    
-3. [Mapic Client library](https://github.com/mapic/mapic.js)    
-4. [Mapic SDK](https://github.com/mapic/sdk) (for interacting with API programmatically)
+#### SDK: Interact with Mapic API
+Commands for interacting with any running Mapic server. 
+```bash
+# create user
+mapic user create
 
-Mapic is built on Docker. Docker Images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/dashboard/).
-For a techincal overview, please see [Mapic Technical Overview](https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview).
+# promote to superuser
+mapic user super 
+
+# upload data
+mapic upload
+
+# see help for more commands and options
+mapic help
+```
 
 ## Depends
-[Docker](https://docs.docker.com/engine/installation/): `>= 1.9.0`  
-[Docker Compose](https://docs.docker.com/compose/install/): `>= 1.5.2`  
-[Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [Docker](https://docs.docker.com/engine/installation/) `>= 1.9.0`  
+- [Docker Compose](https://docs.docker.com/compose/install/) `>= 1.5.2`  
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-## Licence
+The Mapic CLI will attempt to install these automatically on Ubuntu and OSX.
+
+Mapic is built on Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
+
+
+## Licence 
 Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations and NGO's, as well as for-profit businesses.
 
-Mapic is licenced under the [GPLv3 licence](https://github.com/mapic/mapic/blob/master/LICENCE.md)
+Mapic is licensed under the [AGPL licence](https://github.com/mapic/mapic/blob/master/LICENCE).
 
 ## Project contributors
+- [Frano Cetinic](https://github.com/franocetinic)
 - [Jørgen Evil Ekvoll](https://github.com/jorgenevil)
 - [Magdalini Fotiadou](https://github.com/mft74)
+- [Terrence Lam](https://github.com/skyuplam)
 - [Sandro Santilli](https://github.com/strk)
 - [Knut Ole Sjøli](https://github.com/knutole)
 - [Shahjada Talukdar](https://github.com/destromas1)
