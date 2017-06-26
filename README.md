@@ -1,4 +1,5 @@
-# Mapic 
+<img width="300px" src="https://user-images.githubusercontent.com/2197944/27542704-5e1f18c6-5a88-11e7-96bb-9e36ca6e4c93.png">
+
 [![GitHub release](https://img.shields.io/github/release/mapic/mapic.svg)](https://github.com/mapic/mapic/releases) [![Build Status](https://travis-ci.org/mapic/mapic.svg?branch=v2.0)](https://travis-ci.org/mapic/mapic/branches) [![Travis branch](https://img.shields.io/travis/rust-lang/rust/master.svg?label=build@master)](https://travis-ci.org/mapic/mapic/builds)  [![Twitter Follow](https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow)](https://twitter.com/mapic_io) 
 
 Mapic is an Open Source Web Map Engine. 
@@ -7,7 +8,7 @@ Learn more @ https://mapic.io. For a technical overview, see the [wiki](https://
 
 ## Install
 
-#### Install the Mapic CLI:
+### Install the Mapic CLI:
 On OSX or Ubuntu:
 
 ```bash
@@ -19,13 +20,13 @@ mapic help
 
 ```
 
-#### Install and start on `localhost`:
+### Install and start on localhost:
 ```bash
 
 # configure localhost
 mapic domain localhost
 
-# install mapic
+# install latest stable mapic
 mapic install stable
 
 # start mapic
@@ -35,7 +36,7 @@ mapic start
 
 ## Usage
 
-#### Manage Mapic server
+### Manage Mapic server
 Commands for managing the Mapic server. See `mapic help` for all options.
 
 ```bash
@@ -55,8 +56,8 @@ mapic stop
 mapic restart
 ```
 
-#### SDK: Interact with Mapic API
-Commands for interacting with any running Mapic server. 
+### Interact with the Mapic API
+Commands for interacting with any running Mapic server's API. 
 ```bash
 # create user
 mapic user create
@@ -72,9 +73,9 @@ mapic help
 ```
 
 ## Depends
-- [Docker](https://docs.docker.com/engine/installation/) `>= 1.9.0`  
-- [Docker Compose](https://docs.docker.com/compose/install/) `>= 1.5.2`  
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [Docker](https://docs.docker.com/engine/installation/) 
+- [Docker Machine](https://docs.docker.com/machine/install-machine/)
 
 The Mapic CLI will attempt to install these automatically on Ubuntu and OSX.
 
