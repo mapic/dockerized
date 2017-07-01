@@ -179,6 +179,9 @@ initialize () {
         # ensure editor
         ensure_editor
 
+        # determine public ip
+        MAPIC_IP=$(curl ipinfo.io/ip)
+
         # now everything should work, time to write ENV
         write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
         write_env MAPIC_CLI_FOLDER $MAPIC_CLI_FOLDER
@@ -186,6 +189,7 @@ initialize () {
         write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
         write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
         write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
+        write_env MAPIC_IP $MAPIC_IP
 
     fi
 
@@ -204,7 +208,7 @@ initialize () {
     MAPIC_CLI=true
 }
 corrupted_install () {
-    echo "Install is corrupted. Try downloading fresh from https://github.com/mapic/cli"
+    echo "Install is corrupted. Try downloading fresh with `curl -sSL https://get.mapic.io | sh`"
     exit 1 
 }
 install_osx_tools () {
