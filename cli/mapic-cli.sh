@@ -496,7 +496,9 @@ mapic_env_prompt () {
     fi
 
     # set env
-    mapic env set "$ENV_KEY" "$ENV_VALUE" 
+    # mapic env set "$ENV_KEY" "$ENV_VALUE" 
+    write_env "$ENV_KEY" "$ENV_VALUE" 
+    echo $ENV_VALUE
 }
 
 usage () {
@@ -504,6 +506,10 @@ usage () {
     exit 1
 }
 failed () {
+    echo "Something went wrong: $1"
+    exit 1
+}
+abort () {
     echo "Something went wrong: $1"
     exit 1
 }
@@ -657,6 +663,7 @@ mapic_install () {
     case "$2" in
         stable)     mapic_install_stable "$@";;
         master)     mapic_install_master "$@";;
+        branch)     mapic_install_branch "$@";;
         docker)     mapic_install_docker "$@";;
         jq)         mapic_install_jq "$@";;
         node)       mapic_install_node "$@";;
@@ -674,7 +681,7 @@ mapic_install_stable () {
     git checkout $LATEST
 
     # install current branch
-    mapic_install_branch
+    mapic_install_current_branch
 }
 mapic_install_master () {
 
@@ -683,13 +690,30 @@ mapic_install_master () {
     git checkout master
 
     # install current branch
-    mapic_install_branch
+    mapic_install_current_branch
 }
 mapic_install_travis () {
     # install whatever branch is designated in travis
-    mapic_install_branch
+    mapic_install_current_branch
+}
+mapic_install_branch_usage () {
+    echo ""
+    echo "Usage: mapic install branch [GIT-BRANCH]"
+    echo ""
+    exit 1
 }
 mapic_install_branch () {
+    # install mapic with current git branch
+    test -z "$3" && mapic_install_branch_usage
+
+    BRANCH=$3
+    echo "Using git branch $BRANCH"
+
+    git checkout $BRANCH || abort "Failed to checkout $BRANCH. Aborting!" 
+
+    mapic_install_current_branch
+}
+mapic_install_current_branch () {
 
     # ensure MAPIC_DOMAIN
     test -z $MAPIC_DOMAIN && mapic env prompt MAPIC_DOMAIN "Domain for Mapic. (Example: maps.mapic.io)" localhost
@@ -709,12 +733,7 @@ mapic_install_branch () {
     bash init-submodules.sh
 
     # create ssl
-    cd $MAPIC_CLI_FOLDER/install
-    if [ $MAPIC_DOMAIN = "localhost" ]; then
-        bash create-ssl-localhost.sh
-    else 
-        bash create-ssl-public-domain.sh
-    fi
+    mapic_ssl_create
 
     # update config
     cd $MAPIC_CLI_FOLDER/install
@@ -944,10 +963,10 @@ mapic_ssl () {
 }
 mapic_ssl_create () {
     if [ $MAPIC_DOMAIN = "localhost" ]; then
-        cd $MAPIC_CLI_FOLDER/install
+        cd $MAPIC_CLI_FOLDER/ssl
         bash create-ssl-localhost.sh
     else 
-        cd $MAPIC_CLI_FOLDER/install
+        cd $MAPIC_CLI_FOLDER/ssl
         bash create-ssl-public-domain.sh
     fi
 }
@@ -956,7 +975,7 @@ mapic_ssl_scan () {
         echo "SSLLabs scan not supported on localhost."
         exit 1
     fi
-    cd $MAPIC_CLI_FOLDER/install/ssl
+    cd $MAPIC_CLI_FOLDER/ssl
     bash ssllabs-scan.sh "https://$MAPIC_DOMAIN"
 }
 
