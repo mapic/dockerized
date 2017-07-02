@@ -169,7 +169,7 @@ initialize () {
         cp $MAPIC_CLI_FOLDER/.mapic.default.env /usr/local/bin/.mapic.env 
 
         # create symlink for global mapic
-        create_mapic_symlink
+        _create_mapic_symlink
 
         # install dependencies on osx
         if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
@@ -177,7 +177,7 @@ initialize () {
         fi
 
         # ensure editor
-        ensure_editor
+        _ensure_editor
 
         # determine public ip
         MAPIC_IP=$(curl ipinfo.io/ip)
@@ -450,8 +450,9 @@ mapic_env_prompt () {
     fi
 
     # set env
-    # mapic env set "$ENV_KEY" "$ENV_VALUE" 
     _write_env "$ENV_KEY" "$ENV_VALUE" 
+
+    # return value
     echo $ENV_VALUE
 }
 
@@ -467,13 +468,13 @@ abort () {
     echo "Something went wrong: $1"
     exit 1
 }
-create_mapic_symlink () {
+_create_mapic_symlink () {
     unlink /usr/local/bin/mapic >/dev/null 2>&1
     ln -s $MAPIC_CLI_FOLDER/mapic-cli.sh /usr/local/bin/mapic >/dev/null 2>&1
     chmod +x /usr/local/bin/mapic >/dev/null 2>&1
     echo "Self-registered as global command (/usr/local/bin/mapic)"
 }
-ensure_editor () {
+_ensure_editor () {
     if [ -z $MAPIC_DEFAULT_EDITOR ]; then
         MAPIC_DEFAULT_EDITOR=nano
         
@@ -500,9 +501,10 @@ mapic_ps () {
 #  (__  ) /_/ /_/ / /  / /_  
 # /____/\__/\__,_/_/   \__/  
 mapic_start () {
-    cd $MAPIC_CLI_FOLDER/management
-    # bash start-mapic.sh
-    bash mapic-up.sh
+    COMPOSEFILE=$MAPIC_CONFIG_FOLDER/stack.yml
+    docker stack rm mapic
+    docker stack deploy --compose-file=$COMPOSEFILE mapic 
+    echo "Mapic is up."
 }
 mapic_restart () {
     mapic_stop
@@ -510,9 +512,8 @@ mapic_restart () {
     mapic_start
 }
 mapic_stop () {
-    cd $MAPIC_CLI_FOLDER/management
-    # bash stop-mapic.sh
-    bash mapic-down.sh
+    docker stack rm mapic
+    echo "Mapic is down."
 }
 mapic_flush () {
     cd $MAPIC_CLI_FOLDER/management
@@ -530,14 +531,20 @@ mapic_create_storage () {
 #         /____/        
 mapic_logs () {
     if [ "$2" == "dump" ]; then
-        # dump logs to disk
-        cd $MAPIC_CLI_FOLDER/management
-        bash dump-logs.sh
+        _dump_logs
     else
-        # print logs to console
-        cd $MAPIC_CLI_FOLDER/management
-        bash show-logs.sh
+        _show_logs 
     fi
+}
+_dump_logs () {
+    # dump logs to disk
+    cd $MAPIC_CLI_FOLDER/management
+    bash dump-logs.sh
+}
+_show_logs () {
+    # print logs to console
+    cd $MAPIC_CLI_FOLDER/management
+    bash show-logs.sh
 }
                      
 #  _      __(_) /___/ /
@@ -548,8 +555,6 @@ mapic_wild () {
     echo "\"$@\" is not a Mapic command. See 'mapic help' for available commands."
     exit 1
 }
-
-    
 mapic_domain_usage () {
     echo ""
     echo "Usage: mapic domain [domain]"
@@ -719,8 +724,6 @@ mapic_install_branch () {
     sleep 10
 
     git checkout $BRANCH || abort "Failed to checkout branch $BRANCH. Aborting!" 
-
-
 
     mapic_install_current_branch
 }
