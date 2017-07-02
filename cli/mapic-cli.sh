@@ -300,34 +300,7 @@ mapic_version () {
     echo ""
 
     # git versions    
-    ecco 41 "Git"
-    cd $MAPIC_ROOT_FOLDER
-    GIT=$(git log --pretty=format:"%h (%ar)" -1)
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mapic"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
-
-    cd $MAPIC_ROOT_FOLDER/mile
-    GIT=$(git log --pretty=format:"%h (%ar)" -1)
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mile"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
-   
-    cd $MAPIC_ROOT_FOLDER/engine
-    GIT=$(git log --pretty=format:"%h (%ar)" -1)
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/engine"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
-
-    cd $MAPIC_ROOT_FOLDER/mapic.js
-    GIT=$(git log --pretty=format:"%h (%ar)" -1)
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mapic.js"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
+    _print_branches
 
 
 
@@ -715,26 +688,37 @@ mapic_install_travis () {
     mapic_install_current_branch
 }
 _print_branches () {
-    cd $MAPIC_ROOT_FOLDER/mile
-    MILE_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    MILE_COMMIT=$(git rev-parse HEAD)
-    cd $MAPIC_ROOT_FOLDER/engine
-    ENGINE_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ENGINE_COMMIT=$(git rev-parse HEAD)
+    echo ""
+    ecco 41 "Git branches:"
     cd $MAPIC_ROOT_FOLDER
-    MAPIC_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    MAPIC_COMMIT=$(git rev-parse HEAD)
-    echo "mapic/mapic  "
-    echo "branch: $MAPIC_BRANCH"
-    echo "commit: $MAPIC_COMMIT"
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mapic"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
+
+    cd $MAPIC_ROOT_FOLDER/mile
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mile"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
+   
+    cd $MAPIC_ROOT_FOLDER/engine
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/engine"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
+
+    cd $MAPIC_ROOT_FOLDER/mapic.js
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mapic.js"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
+
     echo ""
-    echo "mapic/engine "
-    echo "branch: $ENGINE_BRANCH"
-    echo "commit: $ENGINE_COMMIT"
-    echo ""
-    echo "mapic/mile   "
-    echo "branch: $MILE_BRANCH"
-    echo "commit: $MAPIC_COMMIT"
 }
 mapic_install_branch_usage () {
     echo ""
@@ -1070,8 +1054,8 @@ mapic_status () {
     # print debug
     echo "debug:"
     echo "TRAVIS: $TRAVIS"
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    echo "BRANCH: $BRANCH"
+    
+    _print_branches
 
     # show stack status
     docker stack services mapic
