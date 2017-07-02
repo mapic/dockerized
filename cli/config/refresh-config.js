@@ -1,18 +1,12 @@
-
-
 var fs = require("fs");
 var crypto = require("crypto");
 
 // set config folder
-// var CONFIG_FOLDER           = process.env.MAPIC_ROOT_FOLDER + '/cli/config/files/';
-var CONFIG_FOLDER           = '/config/';
-var MONGO_JSON_PATH         = CONFIG_FOLDER + "mongo.json";
-var MILE_CONFIG_PATH        = CONFIG_FOLDER + "mile.config.js";
-var ENGINE_CONFIG_PATH      = CONFIG_FOLDER + "engine.config.js";
-var REDIS_LAYERS_CONF_PATH  = CONFIG_FOLDER + "redis.layers.conf";
-var REDIS_STATS_CONF_PATH   = CONFIG_FOLDER + "redis.stats.conf";
-var REDIS_TOKENS_CONF_PATH  = CONFIG_FOLDER + "redis.tokens.conf";
-var REDIS_TEMP_CONF_PATH    = CONFIG_FOLDER + "redis.temp.conf";
+var CONFIG_FOLDER       = '/config/';
+var MONGO_JSON_PATH     = CONFIG_FOLDER + "mongo.json";
+var MILE_CONFIG_PATH    = CONFIG_FOLDER + "mile.config.js";
+var ENGINE_CONFIG_PATH  = CONFIG_FOLDER + "engine.config.js";
+var REDIS_CONFIG_PATH   = CONFIG_FOLDER + "redis.conf";
 
 // check if folder exists
 if (!fs.existsSync(CONFIG_FOLDER)) {
@@ -63,8 +57,5 @@ content = content.toString('utf8');
 fs.writeFileSync(ENGINE_CONFIG_PATH , engineJsonStr, 'utf-8');
 
 console.log("Configuring Redis...");
-updateRedisConfig(REDIS_LAYERS_CONF_PATH);
-updateRedisConfig(REDIS_STATS_CONF_PATH);
-updateRedisConfig(REDIS_TOKENS_CONF_PATH);
-updateRedisConfig(REDIS_TEMP_CONF_PATH);
+updateRedisConfig(REDIS_CONFIG_PATH);
 

@@ -8,25 +8,25 @@ module.exports = {
     },
     "port": 3001,
     "mongo": {
-      "url": "mongodb://mapic_mongo_user:a9b4f5c35a487c3208a2952628f9489f66f8e283e1dd9c1bd06cbcea3d7b14c963c157acf2a2d9b0654761c52dc89a78d84cf2b08367721e936785cbb7dc94cc@mongo/mapic"
+      "url": "mongodb://mapic_mongo_user:d8681b45e4f89f279ce0b6eae7e03410509e79db56a67fff5c486f4fe36857cc02c2931d89aee56aa1bd928de4c7bc3cc440bd0a13549dafa6092c919c52ed89@mongo/mapic"
     },
     "redis": {
       "layers": {
         "port": 6379,
         "host": "redislayers",
-        "auth": "e50cc8c747526de7c05f6c0ebb46cd0d015aad6f11b9ae7efe1784b19314d3319c756445154ebf08e97884cf09fc69a2f0a6a16957dbdcdb48da00587e97a21c",
+        "auth": "fa77e0bdcffbecd6680081cfebaeb14ce9658918d8446d7df6c2f5f480d6a0a407a13f711b243756af99f5c6e8dad736883a53aadb7a6b012b67c4760ae0c823",
         "db": 1
       },
       "stats": {
         "port": 6379,
         "host": "redisstats",
-        "auth": "e50cc8c747526de7c05f6c0ebb46cd0d015aad6f11b9ae7efe1784b19314d3319c756445154ebf08e97884cf09fc69a2f0a6a16957dbdcdb48da00587e97a21c",
+        "auth": "fa77e0bdcffbecd6680081cfebaeb14ce9658918d8446d7df6c2f5f480d6a0a407a13f711b243756af99f5c6e8dad736883a53aadb7a6b012b67c4760ae0c823",
         "db": 1
       },
       "temp": {
         "port": 6379,
         "host": "redistemp",
-        "auth": "e50cc8c747526de7c05f6c0ebb46cd0d015aad6f11b9ae7efe1784b19314d3319c756445154ebf08e97884cf09fc69a2f0a6a16957dbdcdb48da00587e97a21c",
+        "auth": "fa77e0bdcffbecd6680081cfebaeb14ce9658918d8446d7df6c2f5f480d6a0a407a13f711b243756af99f5c6e8dad736883a53aadb7a6b012b67c4760ae0c823",
         "db": 1
       }
     },
@@ -159,7 +159,7 @@ module.exports = {
       "mediaLibrary": false,
       "account": true
     },
-    "attribution": "<a href='http://mapic.io' target='_blank'>Powered by Mapic.io</a>",
+    "attribution": "<a href='https://mapic.io' target='_blank'>Powered by Mapic.io</a>",
     "logos": {
       "projectDefault": "/css/images/grinders/BG-grinder-small-grayDark-on-white.gif",
       "portalLogo": "css/logos/web-logo.png",

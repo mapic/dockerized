@@ -68,17 +68,6 @@ services:
         aliases:
           - redislayers.docker
 
-  redisstats:
-    image: redis:latest
-    volumes:
-      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      - redis_stats_store_localhost:/data
-    command: "redis-server /mapic/config/redis.conf"
-    networks:
-      mapic:
-        aliases:
-          - redisstats.docker
-
   redistokens:
     image: redis:latest
     volumes:
@@ -89,6 +78,17 @@ services:
       mapic:
         aliases:
           - redistokens.docker
+
+  redisstats:
+    image: redis:latest
+    volumes:
+      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+      - redis_stats_store_localhost:/data
+    command: "redis-server /mapic/config/redis.conf"
+    networks:
+      mapic:
+        aliases:
+          - redisstats.docker
 
   redistemp:
     image: redis:latest
