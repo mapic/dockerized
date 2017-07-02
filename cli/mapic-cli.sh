@@ -655,12 +655,15 @@ mapic_install_usage () {
     echo "Usage: mapic install [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  stable      Install latest stable version of Mapic"
-    echo "  master      Install master (dev) branch of Mapic"
-    echo "  docker      Install Docker"
-    echo "  jq          Install JQ (dependency)"
-    echo "  node        Install NodeJS (not a dependency)"
+    echo "  stable          Install latest stable version of Mapic"
+    echo "  master          Install master (dev) branch of Mapic"
+    echo "  branch [BRANCH] Install custom branch of Mapic"
+    # echo "  travis          Used by Travis build of Mapic"
+    echo "  docker          Install Docker"
+    echo "  jq              Install JQ (dependency)"
+    echo "  node            Install NodeJS (not a dependency)"
     echo ""
+    _print_branches
     exit 1
 }
 mapic_install () {
@@ -735,23 +738,28 @@ mapic_install_branch () {
     BRANCH=$3
     echo "Using git branch $BRANCH"
 
-    git checkout $BRANCH || abort "Failed to checkout $BRANCH. Aborting!" 
+    # notify
+    echo ""
+    echo "Installing Mapic on branch $BRANCH to domain $MAPIC_DOMAIN"
+    echo ""
+    echo "Press Ctrl-C in next 10 seconds to cancel."
+    sleep 10
+
+    git checkout $BRANCH || abort "Failed to checkout branch $BRANCH. Aborting!" 
+    
+
 
     mapic_install_current_branch
 }
-mapic_install_current_branch () {
-
+_ensure_mapic_domain () {
     # ensure MAPIC_DOMAIN
     if [ -z "$MAPIC_DOMAIN" ]; then
         MAPIC_DOMAIN=$(mapic env prompt MAPIC_DOMAIN "Please provide a valid domain for the SSL certficate")
     fi
+}
+mapic_install_current_branch () {
 
-    # notify
-    echo ""
-    echo "Installing Mapic to $MAPIC_DOMAIN"
-    echo ""
-    echo "Press Ctrl-C in next 10 seconds to cancel."
-    sleep 10
+    
 
     # init submodules
     _init_submodules
@@ -774,7 +782,7 @@ _init_submodules () {
     cd $MAPIC_ROOT_FOLDER
     git submodule init
     git submodule update --recursive --remote
-    git submodule foreach --recursive git checkout master
+    # git submodule foreach --recursive git checkout master
 
     # install yarn modules
     docker run -it --rm -v $MAPIC_ROOT_FOLDER:/mapic_tmp -w /mapic_tmp mapic/xenial:latest yarn install 
