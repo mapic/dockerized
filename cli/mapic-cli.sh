@@ -183,13 +183,13 @@ initialize () {
         MAPIC_IP=$(curl ipinfo.io/ip)
 
         # now everything should work, time to write ENV
-        write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
-        write_env MAPIC_CLI_FOLDER $MAPIC_CLI_FOLDER
-        write_env MAPIC_HOST_OS $MAPIC_HOST_OS
-        write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
-        write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
-        write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
-        write_env MAPIC_IP $MAPIC_IP
+        _write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
+        _write_env MAPIC_CLI_FOLDER $MAPIC_CLI_FOLDER
+        _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
+        _write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
+        _write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
+        _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
+        _write_env MAPIC_IP $MAPIC_IP
 
     fi
 
@@ -277,10 +277,10 @@ get_mapic_host_os () {
 mapic_debug () {
     if [[ "$MAPIC_DEBUG" == "true" ]]; then
         echo "Debug mode is off"
-        write_env MAPIC_DEBUG
+        _write_env MAPIC_DEBUG
     else
         echo "Debug mode is on"
-        write_env MAPIC_DEBUG true
+        _write_env MAPIC_DEBUG true
     fi
 }
 mapic_edit () {
@@ -353,33 +353,9 @@ mapic_env_usage () {
     exit 0
 }
 mapic_env () {
-
-    # debug mode: show env with 'mapic env'
-    if [[ "$MAPIC_DEBUG" == "true" ]] && test -z $2; then
-        echo "(Mapic DEBUG mode: Showing ENV instead of help screen.)"
-        echo ""
-        mapic_env_get
-        exit 0
-    fi
-
-    test -z $2 && mapic_env_usage
-    case "$2" in
-        get)        mapic_env_get "$@";;
-        set)        mapic_env_set "$@";;
-        edit)       mapic_env_edit "$@";;
-        file)       mapic_env_file "$@";;
-        prompt)     mapic_env_prompt "$@";;
-        *)          mapic_env_usage;
-    esac 
+    mapic_config "$@"
 }
-mapic_env_set_usage () {
-    echo ""
-    echo "Usage: mapic env set KEY VALUE"
-    echo ""
-    echo "Use with caution. Variables are sourced to Mapic environment."
-    echo ""
-    exit 0
-}
+
 mapic_env_set_help () {
     echo ""
     echo "Usage: mapic env set KEY VALUE"
@@ -408,14 +384,14 @@ mapic_env_set () {
     FLAG=$5
 
     # update env file
-    write_env $3 $4
+    _write_env $3 $4
  
     # confirm new variable
     [[ "$FLAG" = "" ]] && mapic env get $3
     [[ "$FLAG" = "value" ]] && echo $4
 }
 # fn used internally to write to env file
-write_env () {
+_write_env () {
     test -z $1 && failed "missing arg"
 
     # add or replace line in .mapic.env
@@ -475,7 +451,7 @@ mapic_env_prompt () {
 
     # set env
     # mapic env set "$ENV_KEY" "$ENV_VALUE" 
-    write_env "$ENV_KEY" "$ENV_VALUE" 
+    _write_env "$ENV_KEY" "$ENV_VALUE" 
     echo $ENV_VALUE
 }
 
@@ -506,7 +482,7 @@ ensure_editor () {
             MAPIC_DEFAULT_EDITOR=rsub
         fi
 
-        write_env MAPIC_DEFAULT_EDITOR $MAPIC_DEFAULT_EDITOR
+        _write_env MAPIC_DEFAULT_EDITOR $MAPIC_DEFAULT_EDITOR
     fi
 }
                
@@ -589,7 +565,7 @@ mapic_domain () {
     [ -z "$1" ] && mapic_domain_usage
     [ -z "$2" ] && mapic_domain_usage
     DOMAIN=$2
-    write_env MAPIC_DOMAIN $DOMAIN
+    _write_env MAPIC_DOMAIN $DOMAIN
     echo ""
     echo "Current Mapic domain is $DOMAIN"
 }
@@ -744,7 +720,7 @@ mapic_install_branch () {
 
     git checkout $BRANCH || abort "Failed to checkout branch $BRANCH. Aborting!" 
 
-    
+
 
     mapic_install_current_branch
 }
@@ -1146,11 +1122,10 @@ mapic_config_usage () {
     echo ""
     echo "Options:"
     echo "  refresh                 Refresh Mapic configuration files"
-    echo "  set                     Set an environment variable. See 'mapic config set --help' for more."
-    echo "  get                     Get an environment variable. Do 'mapic config get' to list all variables."
-    echo "  get                     Get an environment variable. Do 'mapic config get' to list all variables."
-    echo "  edit                    Edit config directly in your favorite editor."
-    echo "  file                    Returns absolute path of Mapic config file, useful for scripts and 'docker run --env-file $(mapic config file) ...'"
+    echo "  get                     Get an environment variable. Do 'mapic config get' to list all variables"
+    echo "  set                     Set an environment variable. See 'mapic config set --help' for more"
+    echo "  edit                    Edit config directly in your favorite editor"
+    echo "  file                    Returns absolute path of Mapic config file"
     echo ""
     exit 1   
 }
