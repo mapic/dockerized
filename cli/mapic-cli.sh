@@ -756,8 +756,6 @@ _ensure_mapic_domain () {
 }
 mapic_install_current_branch () {
 
-    
-
     # init submodules
     _init_submodules
 
