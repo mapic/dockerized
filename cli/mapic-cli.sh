@@ -660,6 +660,7 @@ mapic_install_stable () {
     LATEST=$(git describe --tags `git rev-list --tags --max-count=1`)
     echo "Checking out $LATEST..."
     git checkout $LATEST
+    git submodule update --remote
 
     # install current branch
     mapic_install_current_branch
@@ -669,6 +670,7 @@ mapic_install_master () {
     echo "Checking out master..."
     cd $MAPIC_ROOT_FOLDER
     git checkout master
+    git submodule update --remote
 
     # install current branch
     mapic_install_current_branch
@@ -742,7 +744,7 @@ mapic_install_branch () {
 
     git checkout $BRANCH || abort "Failed to checkout branch $BRANCH. Aborting!" 
 
-
+    
 
     mapic_install_current_branch
 }
@@ -778,6 +780,7 @@ _init_submodules () {
     git submodule init
     git submodule update --recursive --remote
     # git submodule foreach --recursive git checkout master
+
     _print_branches
 
     # install yarn modules
