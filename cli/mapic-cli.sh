@@ -32,7 +32,7 @@
 #   2. Make Windows compatible
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
-
+MAPIC_CLI_VERSION=17.7.1
 
 
 
@@ -148,10 +148,10 @@ initialize () {
         # we're not installed, so let's do that
 
         # check for .mapic.env
-        test ! -f mapic-cli.sh && corrupted_install
+        test ! -f mapic-cli.sh && _corrupted_install
 
         # check for default env
-        test ! -f .mapic.default.env && corrupted_install 
+        test ! -f .mapic.default.env && _corrupted_install 
 
         # set cli folder
         MAPIC_CLI_FOLDER="$( cd "$(dirname "$0")" ; pwd -P )"
@@ -173,7 +173,7 @@ initialize () {
 
         # install dependencies on osx
         if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
-            install_osx_tools
+            _install_osx_tools
         fi
 
         # ensure editor
@@ -208,11 +208,11 @@ initialize () {
     MAPIC_CLI=true
 
 }
-corrupted_install () {
+_corrupted_install () {
     echo "Install is corrupted. Try downloading fresh with `curl -sSL https://get.mapic.io | sh`"
     exit 1 
 }
-install_osx_tools () {
+_install_osx_tools () {
     
     SED=$(which sed)
     BREW=$(which brew)
@@ -220,7 +220,6 @@ install_osx_tools () {
     GREP=$(which grep)
 
     if [[ "$MAPIC_DEBUG" == true ]]; then
-
         echo "Installing OSX Tools"
         echo "SED: $SED"
         echo "BREW: $BREW"
@@ -296,42 +295,14 @@ ecco () {
 mapic_version () {
    
     echo ""
-    echo "Mapic version"
-    echo ""
+    ecco 58 "Version"
+    echo "  Mapic:        $MAPIC_VERSION"
+    echo "  Mapic CLI:    $MAPIC_CLI_VERSION"
+    echo "  Mapic Engine: $MAPIC_ENGINE_VERSION"
+    echo "  Mapic Mile:   $MAPIC_MILE_VERSION"
 
     # git versions    
     _print_branches
-
-
-
-    # shorter version
-    # cd $MAPIC_ROOT_FOLDER
-    # GIT=$(git log --pretty=format:"%h" -1)
-    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    # echo "  mapic/mapic:    $GIT @  $BRANCH"
-
-    # cd $MAPIC_ROOT_FOLDER/mile
-    # GIT=$(git log --pretty=format:"%h" -1)
-    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    # echo "  mapic/mile:     $GIT @  $BRANCH"
-   
-    # cd $MAPIC_ROOT_FOLDER/engine
-    # GIT=$(git log --pretty=format:"%h" -1)
-    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    # echo "  mapic/engine:   $GIT @  $BRANCH"
-
-    # cd $MAPIC_ROOT_FOLDER/mapic.js
-    # GIT=$(git log --pretty=format:"%h" -1)
-    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    # echo "  mapic/mapic.js: $GIT @  $BRANCH"
-
-
-    # mapic version     2.0.0
-    # engine version    2.0.0
-    # mile version      2.0.0
-    # mapic.js version  2.0.0
-
-    echo ""
 }
                   
 #  / _ \/ __ \ | / /
