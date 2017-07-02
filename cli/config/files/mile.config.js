@@ -4,19 +4,19 @@ module.exports = {
     "layers": {
       "port": 6379,
       "host": "redislayers",
-      "auth": "d01914d02eaf5968cd953f732fa224b7f8b646f3c22b32ef8689b041c44f96369fac40b27d0e97515f8d17d09b6a6f0cf12c90cdd52f0f59f67409a55d5c26d4",
+      "auth": "e50cc8c747526de7c05f6c0ebb46cd0d015aad6f11b9ae7efe1784b19314d3319c756445154ebf08e97884cf09fc69a2f0a6a16957dbdcdb48da00587e97a21c",
       "db": 2
     },
     "stats": {
       "port": 6379,
       "host": "redisstats",
-      "auth": "d01914d02eaf5968cd953f732fa224b7f8b646f3c22b32ef8689b041c44f96369fac40b27d0e97515f8d17d09b6a6f0cf12c90cdd52f0f59f67409a55d5c26d4",
+      "auth": "e50cc8c747526de7c05f6c0ebb46cd0d015aad6f11b9ae7efe1784b19314d3319c756445154ebf08e97884cf09fc69a2f0a6a16957dbdcdb48da00587e97a21c",
       "db": 2
     },
     "temp": {
       "port": 6379,
       "host": "redistemp",
-      "auth": "d01914d02eaf5968cd953f732fa224b7f8b646f3c22b32ef8689b041c44f96369fac40b27d0e97515f8d17d09b6a6f0cf12c90cdd52f0f59f67409a55d5c26d4",
+      "auth": "e50cc8c747526de7c05f6c0ebb46cd0d015aad6f11b9ae7efe1784b19314d3319c756445154ebf08e97884cf09fc69a2f0a6a16957dbdcdb48da00587e97a21c",
       "db": 2
     }
   },
