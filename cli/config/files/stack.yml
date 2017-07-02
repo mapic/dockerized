@@ -27,14 +27,6 @@ services:
       mapic:
         aliases:
           - engine.docker
-    # links:
-    #   - mongo
-    #   - redislayers
-    #   - redisstats
-    #   - redistemp
-    #   - redistokens
-    #   - postgis
-    
 
   mile: 
     image: mapic/geo:latest
@@ -43,9 +35,6 @@ services:
       MAPIC_PRODMODE: 'false'
     working_dir: /mapic/mile 
     command: ./start-server.sh
-
-    # expose:
-      # - "3001"
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - ${MAPIC_ROOT_FOLDER}/mile:/mapic/mile
@@ -54,19 +43,12 @@ services:
       mapic:
         aliases:
           - mile.docker
-    # links: 
-    #   - engine 
-    #   - redislayers
-    #   - redisstats
-    #   - redistokens
-    #   - redistemp
-    #   - postgis
-    
   
   nginx:
     image: mapic/nginx:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+    command: "nginx -c /mapic/config/nginx.conf"
     ports:
       - 443:443
       - 80:80
@@ -79,9 +61,8 @@ services:
     image: redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      # - ../../../config/${MAPIC_DOMAIN}:/mapic/config
       - redis_layers_store_localhost:/data
-    command: "redis-server /mapic/config/redis.layers.conf"
+    command: "redis-server /mapic/config/redis.conf --appendonly yes"
     networks:
       mapic:
         aliases:
@@ -91,9 +72,8 @@ services:
     image: redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      # - ../../../config/${MAPIC_DOMAIN}:/mapic/config
       - redis_stats_store_localhost:/data
-    command: "redis-server /mapic/config/redis.stats.conf"
+    command: "redis-server /mapic/config/redis.conf"
     networks:
       mapic:
         aliases:
@@ -103,9 +83,8 @@ services:
     image: redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      # - ../../../config/${MAPIC_DOMAIN}:/mapic/config
       - redis_tokens_store_localhost:/data
-    command: "redis-server /mapic/config/redis.tokens.conf"
+    command: "redis-server /mapic/config/redis.conf --appendonly yes"
     networks:
       mapic:
         aliases:
@@ -115,8 +94,7 @@ services:
     image: redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      # - ../../../config/${MAPIC_DOMAIN}:/mapic/config
-    command: "redis-server /mapic/config/redis.temp.conf"
+    command: "redis-server /mapic/config/redis.conf"
     networks:
       mapic:
         aliases:
@@ -126,7 +104,6 @@ services:
     image: mapic/mongo:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      # - ../../../config/${MAPIC_DOMAIN}:/mapic/config
       - mongo_store_localhost:/data/db
     networks:
       mapic:
@@ -137,7 +114,6 @@ services:
     image: mapic/postgis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      # - ../../../config/${MAPIC_DOMAIN}:/mapic/config
       - postgis_store_localhost:/var/lib/postgresql
     networks:
       mapic:
