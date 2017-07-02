@@ -717,13 +717,24 @@ mapic_install_travis () {
 _print_branches () {
     cd $MAPIC_ROOT_FOLDER/mile
     MILE_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    MILE_COMMIT=$(git rev-parse HEAD)
     cd $MAPIC_ROOT_FOLDER/engine
     ENGINE_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ENGINE_COMMIT=$(git rev-parse HEAD)
     cd $MAPIC_ROOT_FOLDER
     MAPIC_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    echo "mapic/mapic  branch: $MAPIC_BRANCH"
-    echo "mapic/engine branch: $ENGINE_BRANCH"
-    echo "mapic/mile   branch: $MILE_BRANCH"
+    MAPIC_COMMIT=$(git rev-parse HEAD)
+    echo "mapic/mapic  "
+    echo "branch: $MAPIC_BRANCH"
+    echo "commit: $MAPIC_COMMIT"
+    echo ""
+    echo "mapic/engine "
+    echo "branch: $ENGINE_BRANCH"
+    echo "commit: $ENGINE_COMMIT"
+    echo ""
+    echo "mapic/mile   "
+    echo "branch: $MILE_BRANCH"
+    echo "commit: $MAPIC_COMMIT"
 }
 mapic_install_branch_usage () {
     echo ""
@@ -746,7 +757,7 @@ mapic_install_branch () {
     sleep 10
 
     git checkout $BRANCH || abort "Failed to checkout branch $BRANCH. Aborting!" 
-    
+
 
 
     mapic_install_current_branch
@@ -783,6 +794,7 @@ _init_submodules () {
     git submodule init
     git submodule update --recursive --remote
     # git submodule foreach --recursive git checkout master
+    _print_branches
 
     # install yarn modules
     docker run -it --rm -v $MAPIC_ROOT_FOLDER:/mapic_tmp -w /mapic_tmp mapic/xenial:latest yarn install 
