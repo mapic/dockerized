@@ -206,6 +206,7 @@ initialize () {
 
     # mark that we're in a cli
     MAPIC_CLI=true
+
 }
 corrupted_install () {
     echo "Install is corrupted. Try downloading fresh with `curl -sSL https://get.mapic.io | sh`"
@@ -668,10 +669,10 @@ mapic_install () {
         stable)     mapic_install_stable "$@";;
         master)     mapic_install_master "$@";;
         branch)     mapic_install_branch "$@";;
+        travis)     mapic_install_travis "$@";;
         docker)     mapic_install_docker "$@";;
         jq)         mapic_install_jq "$@";;
         node)       mapic_install_node "$@";;
-        travis)     mapic_install_travis "$@";;
         *)          mapic_install_usage;
     esac 
 }
@@ -689,16 +690,37 @@ mapic_install_stable () {
 }
 mapic_install_master () {
 
-    cd $MAPIC_ROOT_FOLDER
     echo "Checking out master..."
+    cd $MAPIC_ROOT_FOLDER
     git checkout master
 
     # install current branch
     mapic_install_current_branch
 }
 mapic_install_travis () {
+    # travis will set the mapic/mapic branch automatically on PR builds
+    # but mile/engine must match branch if possible
+    # so 1. need to get branch name
+    # 
+
+    # print branches
+    _print_branches
+
+    # checkout branch
+
     # install whatever branch is designated in travis
     mapic_install_current_branch
+}
+_print_branches () {
+    cd $MAPIC_ROOT_FOLDER/mile
+    MILE_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    cd $MAPIC_ROOT_FOLDER/engine
+    ENGINE_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    cd $MAPIC_ROOT_FOLDER
+    MAPIC_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    echo "mapic/mapic  branch: $MAPIC_BRANCH"
+    echo "mapic/engine branch: $ENGINE_BRANCH"
+    echo "mapic/mile   branch: $MILE_BRANCH"
 }
 mapic_install_branch_usage () {
     echo ""
@@ -720,10 +742,9 @@ mapic_install_branch () {
 mapic_install_current_branch () {
 
     # ensure MAPIC_DOMAIN
-    test -z $MAPIC_DOMAIN && mapic env prompt MAPIC_DOMAIN "Domain for Mapic. (Example: maps.mapic.io)" localhost
-    
-    # save env
-    write_env MAPIC_DOMAIN $MAPIC_DOMAIN
+    if [ -z "$MAPIC_DOMAIN" ]; then
+        MAPIC_DOMAIN=$(mapic env prompt MAPIC_DOMAIN "Please provide a valid domain for the SSL certficate")
+    fi
 
     # notify
     echo ""
@@ -733,8 +754,7 @@ mapic_install_current_branch () {
     sleep 10
 
     # init submodules
-    cd $MAPIC_CLI_FOLDER/install
-    bash init-submodules.sh
+    _init_submodules
 
     # create ssl
     mapic_ssl_create
@@ -747,6 +767,17 @@ mapic_install_current_branch () {
     cd $MAPIC_CLI_FOLDER/install
     bash create-storage-containers.sh
 
+}
+
+_init_submodules () {
+    # init submodules
+    cd $MAPIC_ROOT_FOLDER
+    git submodule init
+    git submodule update --recursive --remote
+    git submodule foreach --recursive git checkout master
+
+    # install yarn modules
+    docker run -it --rm -v $MAPIC_ROOT_FOLDER:/mapic_tmp -w /mapic_tmp mapic/xenial:latest yarn install 
 }
 mapic_install_jq () {
     DISTRO=$(lsb_release -si)
@@ -1013,8 +1044,17 @@ mapic_dns_set () {
 #  (__  ) /_/ /_/ / /_/ /_/ (__  ) 
 # /____/\__/\__,_/\__/\__,_/____/  
 mapic_status () {
-    cd $MAPIC_CLI_FOLDER/management
-    bash mapic-status.sh
+    # cd $MAPIC_CLI_FOLDER/management
+    # bash mapic-status.sh
+
+    # print debug
+    echo "debug:"
+    echo "TRAVIS: $TRAVIS"
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    echo "BRANCH: $BRANCH"
+
+    # show stack status
+    docker stack services mapic
 }
 
 #   / /____  _____/ /_
