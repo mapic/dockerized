@@ -713,13 +713,26 @@ mapic_install_current_branch () {
     mapic_ssl_create
 
     # update config
-    cd $MAPIC_CLI_FOLDER/install
-    bash update-config.sh
+    # cd $MAPIC_CLI_FOLDER/install
+    # bash update-config.sh
+    _update_config
 
     # create storage (todo: remove with deploy)
     cd $MAPIC_CLI_FOLDER/install
     bash create-storage-containers.sh
 
+}
+
+_update_config () {
+    docker run \
+    -it \
+    --rm \
+    --env-file $MAPIC_ENV_FILE \
+    -v $MAPIC_ROOT_FOLDER/cli/install:/tmp \
+    -v $MAPIC_ROOT_FOLDER/cli/config/files:/config \
+    -w /tmp \
+    node:6 \
+    node update-config.js
 }
 
 _init_submodules () {
@@ -1136,7 +1149,6 @@ mapic_config_refresh_usage () {
     exit 0
 }
 mapic_config_refresh () {
-    echo $1 $2 $3
     test -z "$3" && mapic_config_refresh_usage
     case "$3" in
         all)        mapic_config_refresh_all "$@";;

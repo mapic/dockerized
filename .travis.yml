@@ -25,14 +25,15 @@ matrix:
 install:
   - cd cli
   - sudo bash mapic-cli.sh
-  - sudo mapic install docker
   - mapic version
+  - sudo mapic install docker
   - docker version
   - sudo echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
   - sudo cp -f tmp-docker /etc/default/docker && rm tmp-docker
   - sudo service docker restart
   - docker version
   - docker swarm init
+  - git submodule update --remote
 
 script:
   - mapic domain localhost
