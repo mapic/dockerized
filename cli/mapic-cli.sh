@@ -474,9 +474,10 @@ mapic_ps () {
 # /____/\__/\__,_/_/   \__/  
 mapic_start () {
     COMPOSEFILE=$MAPIC_CONFIG_FOLDER/stack.yml
-    docker stack rm mapic
+    # docker stack rm mapic
     docker stack deploy --compose-file=$COMPOSEFILE mapic 
     echo "Mapic is up."
+    docker service ls
 }
 mapic_restart () {
     mapic_stop

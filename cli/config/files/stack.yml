@@ -58,7 +58,7 @@ services:
           - nginx.docker
 
   redislayers:
-    image: redis:latest
+    image: mapic/redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - redis_layers_store_localhost:/data
@@ -69,7 +69,7 @@ services:
           - redislayers.docker
 
   redistokens:
-    image: redis:latest
+    image: mapic/redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - redis_tokens_store_localhost:/data
@@ -80,7 +80,7 @@ services:
           - redistokens.docker
 
   redisstats:
-    image: redis:latest
+    image: mapic/redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - redis_stats_store_localhost:/data
@@ -91,7 +91,7 @@ services:
           - redisstats.docker
 
   redistemp:
-    image: redis:latest
+    image: mapic/redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
     command: "redis-server /mapic/config/redis.conf"
