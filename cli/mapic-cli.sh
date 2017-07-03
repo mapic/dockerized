@@ -164,9 +164,6 @@ initialize () {
         # set config folder
         MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
 
-        # refresh config
-        _refresh_config
-
         # cp default env file
         cp $MAPIC_CLI_FOLDER/.mapic.default.env /usr/local/bin/.mapic.env 
 
@@ -715,6 +712,9 @@ mapic_install_branch () {
 }
 _install_mapic () {
 
+    # refresh config
+    _refresh_config
+
     # ensure domain config
     _ensure_mapic_domain
 
@@ -781,7 +781,7 @@ _refresh_config () {
     # replace old config with defaults
     cd $MAPIC_CLI_FOLDER/config
     rm -rf files/
-    cp -rf default-files/ files
+    cp -r default-files/ files
     chmod +w files
 
     docker run \
