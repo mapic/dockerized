@@ -4,19 +4,19 @@ module.exports = {
     "layers": {
       "port": 6379,
       "host": "redislayers",
-      "auth": "57665cc148dc9e9887c7046d9ccaaa9cb4f5b759d9182036d8c81a709d2ef029a3b4dcf431d4ce8a9d4cc3be06fb83acbdc8a3019e2a84bf770903e18b8f1b33",
+      "auth": "8687eb298aa834637669e3569792598deabb795080be69cfc353497bc550eaacceee067cd90a92e514dced701de4d1d517d775238537aeadda0dbade9380f3f9",
       "db": 2
     },
     "stats": {
       "port": 6379,
       "host": "redisstats",
-      "auth": "57665cc148dc9e9887c7046d9ccaaa9cb4f5b759d9182036d8c81a709d2ef029a3b4dcf431d4ce8a9d4cc3be06fb83acbdc8a3019e2a84bf770903e18b8f1b33",
+      "auth": "8687eb298aa834637669e3569792598deabb795080be69cfc353497bc550eaacceee067cd90a92e514dced701de4d1d517d775238537aeadda0dbade9380f3f9",
       "db": 2
     },
     "temp": {
       "port": 6379,
       "host": "redistemp",
-      "auth": "57665cc148dc9e9887c7046d9ccaaa9cb4f5b759d9182036d8c81a709d2ef029a3b4dcf431d4ce8a9d4cc3be06fb83acbdc8a3019e2a84bf770903e18b8f1b33",
+      "auth": "8687eb298aa834637669e3569792598deabb795080be69cfc353497bc550eaacceee067cd90a92e514dced701de4d1d517d775238537aeadda0dbade9380f3f9",
       "db": 2
     }
   },
