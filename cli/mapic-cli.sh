@@ -1070,9 +1070,15 @@ mapic_status () {
     _print_branches
 
     # show stack status
+    _print_stack
+}
+_print_stack () {
+    docker stack services mapic
+    docker node ls
+    docker node ps
+    docker stack ps mapic
     docker stack services mapic
 }
-
 #   / /____  _____/ /_
 #  / __/ _ \/ ___/ __/
 # / /_/  __(__  ) /_  
