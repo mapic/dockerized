@@ -8,25 +8,25 @@ module.exports = {
     },
     "port": 3001,
     "mongo": {
-      "url": "mongodb://mapic_mongo_user:160af6fcf8cecd40cae8239fb1bff64569d49ffe59cb7cdd096a5c7310eaf4245638e07773e865dfae38c9aa01d4df58d9f5c759137eb995b56958d1f9f55bd1@mongo/mapic"
+      "url": "mongodb://mapic_mongo_user:AUTH@mongo/mapic"
     },
     "redis": {
       "layers": {
         "port": 6379,
         "host": "redislayers",
-        "auth": "8687eb298aa834637669e3569792598deabb795080be69cfc353497bc550eaacceee067cd90a92e514dced701de4d1d517d775238537aeadda0dbade9380f3f9",
+        "auth": "AUTH",
         "db": 1
       },
       "stats": {
         "port": 6379,
         "host": "redisstats",
-        "auth": "8687eb298aa834637669e3569792598deabb795080be69cfc353497bc550eaacceee067cd90a92e514dced701de4d1d517d775238537aeadda0dbade9380f3f9",
+        "auth": "AUTH",
         "db": 1
       },
       "temp": {
         "port": 6379,
         "host": "redistemp",
-        "auth": "8687eb298aa834637669e3569792598deabb795080be69cfc353497bc550eaacceee067cd90a92e514dced701de4d1d517d775238537aeadda0dbade9380f3f9",
+        "auth": "AUTH",
         "db": 1
       }
     },
@@ -49,13 +49,13 @@ module.exports = {
     },
     "phantomJS": {
       "user": "bot@localhost",
-      "auth": "94a528a30ae70008b4cc94c0fd6bb844"
+      "auth": "AUTH"
     },
     "nodemailer": {
       "service": "gmail",
       "auth": {
         "user": "GMAIL_ACCOUNT",
-        "pass": "PASSWORD"
+        "pass": "AUTH"
       },
       "bcc": [
         "hello@mapic.io"
@@ -75,8 +75,8 @@ module.exports = {
     },
     "portal": {
       "roles": {
-        "superAdmin": "role-c5bb12e0-ec5d-42e8-b8af-3bb573c70b49",
-        "portalAdmin": "role-4ae1b3ec-dc77-4069-9268-2f6d3f2d2385"
+        "superAdmin": "ROLE",
+        "portalAdmin": "ROLE"
       },
       "invite_only": false
     },
