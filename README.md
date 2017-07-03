@@ -6,8 +6,8 @@
     <a href="https://travis-ci.org/mapic/mapic/branches"><img src="https://travis-ci.org/mapic/mapic.svg?branch=v2.0.1" alt="Downloads"></a>
     <a href="https://travis-ci.org/mapic/mapic/builds"><img src="https://img.shields.io/travis/mapic/mapic/master.svg?branch=master&label=build%20@%20master" alt="Downloads"></a>
     <a href="https://snyk.io/test/github/mapic/mapic"><img src="https://snyk.io/test/github/mapic/mapic/badge.svg" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/mapic/mapic" style="max-width:100%;"/></a>
-    <a href="https://twitter.com/mapic_io"><img src="https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow" alt="Downloads"></a>
     <a href="https://www.codacy.com/app/knutole/mapic?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mapic/mapic&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/2937e86810b247e9966505c7ba4bac5f"/></a>
+    <a href="https://twitter.com/mapic_io"><img src="https://img.shields.io/twitter/follow/mapic_io.svg?style=social&label=Follow" alt="Downloads"></a>
 </p>
 <p align="center">
     Mapic is an Open Source Web Map Engine.
