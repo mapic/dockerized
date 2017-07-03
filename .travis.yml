@@ -12,6 +12,9 @@ notifications:
     on_success: change
     on_failure: change
 
+env:
+  - TRAVIS_PREVIOUS_SUCCESS=$(curl -s 'https://api.travis-ci.org/mapic/mapic.svg?branch=master' | grep pass)
+
 git:
   submodules: false
 
@@ -23,6 +26,7 @@ matrix:
       sudo: required
 
 install:
+  - echo "TRAVIS_PREVIOUS_SUCCESS: $TRAVIS_PREVIOUS_SUCCESS"
   - cd cli
   - sudo bash mapic-cli.sh
   - mapic version
