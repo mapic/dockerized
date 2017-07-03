@@ -32,7 +32,7 @@
 #   2. Make Windows compatible
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
-
+MAPIC_CLI_VERSION=17.7.1
 
 
 
@@ -52,14 +52,12 @@ mapic_cli_usage () {
     echo "  stop                Stop Mapic stack"
     echo "  status              Display status on running Mapic stack"
     echo "  logs                Show logs of running Mapic server"
-    echo "  logs dump           Dump logs of running Mapic server to disk"
     echo "  test                Run Mapic tests"
     echo ""
     echo "Commands:"
     echo "  install             Install Mapic"
     echo "  config              Configure Mapic"
     echo "  domain              Set Mapic domain"
-    echo "  env                 Get and set Mapic environment variables"
     echo "  dns                 Create or check DNS entries for Mapic"
     echo "  ssl                 Create or scan SSL certificates for Mapic"
     echo "  enter               Enter running container"
@@ -91,7 +89,11 @@ mapic_cli () {
     test -z "$1" && mapic_cli_usage
 
     # run internal mapic
-    m "$@"
+    if [[ "$TRAVIS" == "true" ]]; then
+        (set -x; m "$@")
+    else
+        m "$@"
+    fi
 }
 m () {
     
@@ -124,7 +126,7 @@ m () {
         env)        mapic_env "$@";;
         edit)       mapic_edit "$@";;
         version)    mapic_version "$@";;
-        create_storage) mapic_create_storage "$@";;
+        # create_storage) mapic_create_storage "$@";;
     
         *)          mapic_wild "$@";;
     esac
@@ -149,10 +151,10 @@ initialize () {
         # we're not installed, so let's do that
 
         # check for .mapic.env
-        test ! -f mapic-cli.sh && corrupted_install
+        test ! -f mapic-cli.sh && _corrupted_install
 
         # check for default env
-        test ! -f .mapic.default.env && corrupted_install 
+        test ! -f .mapic.default.env && _corrupted_install 
 
         # set cli folder
         MAPIC_CLI_FOLDER="$( cd "$(dirname "$0")" ; pwd -P )"
@@ -170,23 +172,27 @@ initialize () {
         cp $MAPIC_CLI_FOLDER/.mapic.default.env /usr/local/bin/.mapic.env 
 
         # create symlink for global mapic
-        create_mapic_symlink
+        _create_mapic_symlink
 
         # install dependencies on osx
         if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
-            install_osx_tools
+            _install_osx_tools
         fi
 
         # ensure editor
-        ensure_editor
+        _ensure_editor
+
+        # determine public ip
+        MAPIC_IP=$(curl ipinfo.io/ip)
 
         # now everything should work, time to write ENV
-        write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
-        write_env MAPIC_CLI_FOLDER $MAPIC_CLI_FOLDER
-        write_env MAPIC_HOST_OS $MAPIC_HOST_OS
-        write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
-        write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
-        write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
+        _write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
+        _write_env MAPIC_CLI_FOLDER $MAPIC_CLI_FOLDER
+        _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
+        _write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
+        _write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
+        _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
+        _write_env MAPIC_IP $MAPIC_IP
 
     fi
 
@@ -203,12 +209,25 @@ initialize () {
 
     # mark that we're in a cli
     MAPIC_CLI=true
+
 }
-corrupted_install () {
-    echo "Install is corrupted. Try downloading fresh from https://github.com/mapic/cli"
+usage () {
+    echo "Usage: mapic [COMMAND]"
+    exit 1
+}
+failed () {
+    echo "Something went wrong: $1"
+    exit 1
+}
+abort () {
+    echo "Something went wrong: $1"
+    exit 1
+}
+_corrupted_install () {
+    echo "Install is corrupted. Try downloading fresh with `curl -sSL https://get.mapic.io | sh`"
     exit 1 
 }
-install_osx_tools () {
+_install_osx_tools () {
     
     SED=$(which sed)
     BREW=$(which brew)
@@ -216,7 +235,6 @@ install_osx_tools () {
     GREP=$(which grep)
 
     if [[ "$MAPIC_DEBUG" == true ]]; then
-
         echo "Installing OSX Tools"
         echo "SED: $SED"
         echo "BREW: $BREW"
@@ -273,10 +291,10 @@ get_mapic_host_os () {
 mapic_debug () {
     if [[ "$MAPIC_DEBUG" == "true" ]]; then
         echo "Debug mode is off"
-        write_env MAPIC_DEBUG
+        _write_env MAPIC_DEBUG
     else
         echo "Debug mode is on"
-        write_env MAPIC_DEBUG true
+        _write_env MAPIC_DEBUG true
     fi
 }
 mapic_edit () {
@@ -290,124 +308,96 @@ ecco () {
     printf "${!COLOR}${TEXT}${c_reset}\n" 
 }
 mapic_version () {
-   
     echo ""
-    echo "Mapic version"
-    echo ""
+    ecco 58 "Version"
+    echo "  Mapic:        $MAPIC_VERSION"
+    echo "  Mapic CLI:    $MAPIC_CLI_VERSION"
+    echo "  Mapic Engine: $MAPIC_ENGINE_VERSION"
+    echo "  Mapic Mile:   $MAPIC_MILE_VERSION"
 
     # git versions    
-    ecco 41 "Git"
-    cd $MAPIC_ROOT_FOLDER
-    GIT=$(git log --pretty=format:"%h (%ar)" -1)
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mapic"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
-
-    cd $MAPIC_ROOT_FOLDER/mile
-    GIT=$(git log --pretty=format:"%h (%ar)" -1)
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mile"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
-   
-    cd $MAPIC_ROOT_FOLDER/engine
-    GIT=$(git log --pretty=format:"%h (%ar)" -1)
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/engine"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
-
-    cd $MAPIC_ROOT_FOLDER/mapic.js
-    GIT=$(git log --pretty=format:"%h (%ar)" -1)
-    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mapic.js"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
-
-
-
-    # shorter version
-    # cd $MAPIC_ROOT_FOLDER
-    # GIT=$(git log --pretty=format:"%h" -1)
-    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    # echo "  mapic/mapic:    $GIT @  $BRANCH"
-
-    # cd $MAPIC_ROOT_FOLDER/mile
-    # GIT=$(git log --pretty=format:"%h" -1)
-    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    # echo "  mapic/mile:     $GIT @  $BRANCH"
-   
-    # cd $MAPIC_ROOT_FOLDER/engine
-    # GIT=$(git log --pretty=format:"%h" -1)
-    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    # echo "  mapic/engine:   $GIT @  $BRANCH"
-
-    # cd $MAPIC_ROOT_FOLDER/mapic.js
-    # GIT=$(git log --pretty=format:"%h" -1)
-    # BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    # echo "  mapic/mapic.js: $GIT @  $BRANCH"
-
-
-    # mapic version     2.0.0
-    # engine version    2.0.0
-    # mile version      2.0.0
-    # mapic.js version  2.0.0
-
-    echo ""
+    _print_branches
 }
                   
-#  / _ \/ __ \ | / /
-# /  __/ / / / |/ / 
-# \___/_/ /_/|___/  
-mapic_env_usage () {
+#   _________  ____  / __(_)___ _
+#  / ___/ __ \/ __ \/ /_/ / __ `/
+# / /__/ /_/ / / / / __/ / /_/ / 
+# \___/\____/_/ /_/_/ /_/\__, /  
+#                       /____/   
+mapic_config_usage () {
     echo ""
-    echo "Usage: mapic env COMMAND"
+    echo "Usage: mapic config [OPTIONS]"
     echo ""
-    echo "Commands:"
-    echo "  set [key] [value]       Set an environment variable. See 'mapic env set --help' for more."
-    echo "  get [key]               Get an environment variable. Do 'mapic get' to list all variables."
-    echo "  edit                    Edit ENV directly in your favorite editor. (Set editor with MAPIC_DEFAULT_EDITOR env, "
-    echo "  file                    Returns absolute path of Mapic ENV file, useful for scripts and '--env-file'"
-    echo "                          eg. 'mapic env set MAPIC_DEFAULT_EDITOR nano')"
+    echo "Options:"
+    echo "  refresh     Refresh Mapic configuration files"
+    echo "  get         Get an environment variable."
+    echo "  set         Set an environment variable. See 'mapic config set --help' for more"
+    echo "  list        List current config settings"
+    echo "  edit        Edit config directly in your favorite editor"
+    echo "  file        Returns absolute path of Mapic config file"
     echo ""
-    echo "Use with caution. Variables are sourced to Mapic environment."
-    echo ""
-    exit 0
+    exit 1   
 }
-mapic_env () {
-
-    # debug mode: show env with 'mapic env'
-    if [[ "$MAPIC_DEBUG" == "true" ]] && test -z $2; then
-        echo "(Mapic DEBUG mode: Showing ENV instead of help screen.)"
-        echo ""
-        mapic_env_get
-        exit 0
-    fi
-
-    test -z $2 && mapic_env_usage
-    case "$2" in
-        get)        mapic_env_get "$@";;
-        set)        mapic_env_set "$@";;
-        edit)       mapic_env_edit "$@";;
-        file)       mapic_env_file "$@";;
-        prompt)     mapic_env_prompt "$@";;
-        *)          mapic_env_usage;
+mapic_config () {
+    test -z "$2" && mapic_config_usage
+     case "$2" in
+        refresh)    mapic_config_refresh "$@";;
+        set)        mapic_config_set "$@";;
+        get)        mapic_config_get "$@";;
+        list)       mapic_config_list;;
+        edit)       mapic_config_edit "$@";;
+        file)       mapic_config_file "$@";;
+        prompt)     mapic_config_prompt "$@";; 
+        *)          mapic_config_usage;;
     esac 
 }
-mapic_env_set_usage () {
+mapic_config_refresh_usage () {
     echo ""
-    echo "Usage: mapic env set KEY VALUE"
+    echo "Usage: mapic config refresh [OPTIONS]"
     echo ""
-    echo "Use with caution. Variables are sourced to Mapic environment."
+    echo "Attempts to reset configuration to default and working condition."
+    echo ""
+    echo "Options:"
+    echo "  all         Refresh all Mapic configuration files"
+    echo "  engine      Refresh Mapic Engine config"
+    echo "  mile        Refresh Mapic Mile config"
+    echo "  mapicjs     Refresh Mapic.js config"
+    echo "  nginx       Refresh NGINX config"
+    echo "  redis       Refresh Redis config"
+    echo "  mongo       Refresh Mongo config"
+    echo "  postgis     Refresh PostGIS config"
+    echo "  slack       Refresh Slack config"
     echo ""
     exit 0
 }
-mapic_env_set_help () {
+mapic_config_refresh () {
+    _refresh_config
+}
+mapic_api_configure () {
+    # todo: remove/merge
+    m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with (eg. maps.mapic.io)"
+    m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
+    m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
+
+    mapic_api_display_config
+}
+mapic_api_display_config () {
+    # todo: remove/merge
     echo ""
-    echo "Usage: mapic env set KEY VALUE"
+    echo "Mapic API config:"
+    echo "  Domain:   $MAPIC_API_DOMAIN"
+    echo "  Username: $MAPIC_API_USERNAME"
+    echo "  Auth:     $MAPIC_API_AUTH"
+}
+mapic_env () {
+    echo "Deprecated! Todo: change to `mapic config ... `"
+    mapic_config "$@"
+}
+mapic_config_set_help () {
     echo ""
-    echo "Example: mapic env set MAPIC_DOMAIN localhost"
+    echo "Usage: mapic config set KEY VALUE"
+    echo ""
+    echo "Example: mapic config set MAPIC_DOMAIN localhost"
     echo ""
     echo "Possible environment variables options:"
     echo "  MAPIC_DOMAIN                    The domain which Mapic is running on, eg. 'maps.mapic.io' "
@@ -419,26 +409,82 @@ mapic_env_set_help () {
     echo "  MAPIC_DEBUG                     Debug switch, used arbitrarily."
     echo "  MAPIC_ROOT_FOLDER               Folder where 'mapic' root lives. Set automatically."
     echo ""
-    echo "  See 'mapic env get' for all variables"
+    echo "  See 'mapic config list' for all variables"
     echo ""
     exit 0
 }
-mapic_env_set () {
-    test -z $3 && mapic_env_set_usage
-    test -z $4 && mapic_env_set_usage
+mapic_config_set () {
+    test -z $3 && mapic_config_set_usage
+    test -z $4 && mapic_config_set_usage
 
     # undocumented flags
     FLAG=$5
 
     # update env file
-    write_env $3 $4
+    _write_env $3 $4
  
     # confirm new variable
     [[ "$FLAG" = "" ]] && mapic env get $3
     [[ "$FLAG" = "value" ]] && echo $4
 }
+mapic_config_get_usage () {
+    echo ""
+    echo "Usage: mapic config get [KEY]"
+    echo ""
+    echo "Example: `mapic config get MAPIC_DOMAIN`"
+    echo ""
+    exit 1
+}
+mapic_config_get () {
+    test -z $3 && mapic_config_get_usage
+    cat $MAPIC_ENV_FILE | grep "$3="
+}
+mapic_config_list () {
+    cat $MAPIC_ENV_FILE
+}
+mapic_config_edit () {
+    # edit .mapic.env
+    $MAPIC_DEFAULT_EDITOR $MAPIC_ENV_FILE
+}
+mapic_config_file () {
+    echo "$MAPIC_ENV_FILE"
+}
+mapic_config_prompt_usage () {
+    echo ""
+    echo "Usage: mapic env prompt ENV_KEY [MESSAGE] [DEFAULT_VALUE]"
+    echo ""
+    echo "Prompt user for Mapic environment variable and set it permanently"
+    echo ""
+    echo "Options:"
+    echo "  ENV_KEY         The environment key to set"
+    echo "  MESSAGE         A message to diplay at prompt"
+    echo "  DEFAULT_VALUE   The default provided value"
+    echo ""
+    exit 1
+}
+mapic_config_prompt () {
+    ENV_KEY=$3
+    MSG=$4
+    DEFAULT_VALUE=$5
+    test -z $ENV_KEY && mapic_config_prompt_usage
+
+    # prompt
+    echo ""
+    if [ $MAPIC_HOST_OS == "osx" ]; then
+        # hack: (-i) not valid on osx
+        read -e -p "$ENV_KEY $MSG: " ENV_VALUE 
+    else
+        read -e -p "$ENV_KEY $MSG: " -i "$DEFAULT_VALUE" ENV_VALUE 
+    fi
+
+    # set env
+    _write_env "$ENV_KEY" "$ENV_VALUE" 
+
+    # return value
+    echo $ENV_VALUE
+}
 # fn used internally to write to env file
-write_env () {
+_write_env () {
     test -z $1 && failed "missing arg"
 
     # add or replace line in .mapic.env
@@ -453,68 +499,13 @@ write_env () {
         echo "$1"="$2" >> $MAPIC_ENV_FILE
     fi
 }
-mapic_env_get () {
-    if [ -z $3 ]
-    then
-        cat $MAPIC_ENV_FILE 
-    else 
-        cat $MAPIC_ENV_FILE | grep "$3="
-    fi
-}
-mapic_env_edit () {
-    # edit .mapic.env
-    $MAPIC_DEFAULT_EDITOR $MAPIC_ENV_FILE
-}
-mapic_env_file () {
-    echo "$MAPIC_ENV_FILE"
-}
-mapic_env_prompt_usage () {
-    echo ""
-    echo "Usage: mapic env prompt ENV_KEY [MESSAGE] [DEFAULT_VALUE]"
-    echo ""
-    echo "Prompt user for Mapic environment variable and set it permanently"
-    echo ""
-    echo "Options:"
-    echo "  ENV_KEY         The environment key to set"
-    echo "  MESSAGE         A message to diplay at prompt"
-    echo "  DEFAULT_VALUE   The default provided value"
-    echo ""
-    exit 1
-}
-mapic_env_prompt () {
-    ENV_KEY=$3
-    MSG=$4
-    DEFAULT_VALUE=$5
-    test -z $ENV_KEY && mapic_env_prompt_usage
-
-    # prompt
-    echo ""
-    if [ $MAPIC_HOST_OS == "osx" ]; then
-        # hack: (-i) not valid on osx
-        read -e -p "$ENV_KEY $MSG: " ENV_VALUE 
-    else
-        read -e -p "$ENV_KEY $MSG: " -i "$DEFAULT_VALUE" ENV_VALUE 
-    fi
-
-    # set env
-    mapic env set "$ENV_KEY" "$ENV_VALUE" 
-}
-
-usage () {
-    echo "Usage: mapic [COMMAND]"
-    exit 1
-}
-failed () {
-    echo "Something went wrong: $1"
-    exit 1
-}
-create_mapic_symlink () {
+_create_mapic_symlink () {
     unlink /usr/local/bin/mapic >/dev/null 2>&1
     ln -s $MAPIC_CLI_FOLDER/mapic-cli.sh /usr/local/bin/mapic >/dev/null 2>&1
     chmod +x /usr/local/bin/mapic >/dev/null 2>&1
     echo "Self-registered as global command (/usr/local/bin/mapic)"
 }
-ensure_editor () {
+_ensure_editor () {
     if [ -z $MAPIC_DEFAULT_EDITOR ]; then
         MAPIC_DEFAULT_EDITOR=nano
         
@@ -523,7 +514,8 @@ ensure_editor () {
             MAPIC_DEFAULT_EDITOR=rsub
         fi
 
-        write_env MAPIC_DEFAULT_EDITOR $MAPIC_DEFAULT_EDITOR
+        # save
+        _write_env MAPIC_DEFAULT_EDITOR $MAPIC_DEFAULT_EDITOR
     fi
 }
                
@@ -541,8 +533,11 @@ mapic_ps () {
 #  (__  ) /_/ /_/ / /  / /_  
 # /____/\__/\__,_/_/   \__/  
 mapic_start () {
-    cd $MAPIC_CLI_FOLDER/management
-    bash start-mapic.sh
+    COMPOSEFILE=$MAPIC_CONFIG_FOLDER/stack.yml
+    # docker stack rm mapic
+    docker stack deploy --compose-file=$COMPOSEFILE mapic 
+    echo "Mapic is up."
+    docker service ls
 }
 mapic_restart () {
     mapic_stop
@@ -550,16 +545,12 @@ mapic_restart () {
     mapic_start
 }
 mapic_stop () {
-    cd $MAPIC_CLI_FOLDER/management
-    bash stop-mapic.sh
+    docker stack rm mapic
+    echo "Mapic is down."
 }
 mapic_flush () {
     cd $MAPIC_CLI_FOLDER/management
     bash flush-mapic.sh
-}
-mapic_create_storage () {
-    cd $MAPIC_CLI_FOLDER/install
-    bash create-storage-containers.sh
 }
 
 #    / /___  ____ ______
@@ -568,14 +559,28 @@ mapic_create_storage () {
 # /_/\____/\__, /____/  
 #         /____/        
 mapic_logs () {
-    if [ "$2" == "dump" ]; then
-        # dump logs to disk
-        cd $MAPIC_CLI_FOLDER/management
-        bash dump-logs.sh
+    if [[ "$TRAVIS" == "true" ]]; then
+        # stream logs
+        docker service logs -f mapic_mile         &
+        docker service logs -f mapic_postgis      &
+        docker service logs -f mapic_redistokens  &
+        docker service logs -f mapic_redislayers  &
+        docker service logs -f mapic_mongo        &
+        docker service logs -f mapic_redisstats   &
+        docker service logs -f mapic_nginx        &
+        docker service logs -f mapic_engine       &
+        docker service logs -f mapic_redistemp    & 
     else
-        # print logs to console
-        cd $MAPIC_CLI_FOLDER/management
-        bash show-logs.sh
+        # print current logs
+        docker service logs mapic_redistokens
+        docker service logs mapic_redislayers
+        docker service logs mapic_redisstats 
+        docker service logs mapic_redistemp  
+        docker service logs mapic_mongo      
+        docker service logs mapic_nginx      
+        docker service logs mapic_postgis    
+        docker service logs mapic_mile       
+        docker service logs mapic_engine     
     fi
 }
                      
@@ -587,8 +592,6 @@ mapic_wild () {
     echo "\"$@\" is not a Mapic command. See 'mapic help' for available commands."
     exit 1
 }
-
-    
 mapic_domain_usage () {
     echo ""
     echo "Usage: mapic domain [domain]"
@@ -604,7 +607,7 @@ mapic_domain () {
     [ -z "$1" ] && mapic_domain_usage
     [ -z "$2" ] && mapic_domain_usage
     DOMAIN=$2
-    write_env MAPIC_DOMAIN $DOMAIN
+    _write_env MAPIC_DOMAIN $DOMAIN
     echo ""
     echo "Current Mapic domain is $DOMAIN"
 }
@@ -643,11 +646,13 @@ mapic_install_usage () {
     echo "Usage: mapic install [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  stable      Install latest stable version of Mapic"
-    echo "  master      Install master (dev) branch of Mapic"
-    echo "  docker      Install Docker"
-    echo "  jq          Install JQ (dependency)"
-    echo "  node        Install NodeJS (not a dependency)"
+    echo "  stable              Install latest stable version of Mapic"
+    echo "  master              Install bleeding edge Mapic"
+    echo "  branch [GIT-BRANCH] Install custom git branch of Mapic"
+    # echo "  travis              Used by Travis build of Mapic"
+    echo "  docker              Install Docker"
+    echo "  jq                  Install JQ (dependency)"
+    echo "  node                Install NodeJS (not a dependency)"
     echo ""
     exit 1
 }
@@ -656,10 +661,11 @@ mapic_install () {
     case "$2" in
         stable)     mapic_install_stable "$@";;
         master)     mapic_install_master "$@";;
+        branch)     mapic_install_branch "$@";;
+        travis)     mapic_install_travis "$@";;
         docker)     mapic_install_docker "$@";;
         jq)         mapic_install_jq "$@";;
         node)       mapic_install_node "$@";;
-        travis)     mapic_install_travis "$@";;
         *)          mapic_install_usage;
     esac 
 }
@@ -668,61 +674,142 @@ mapic_install_stable () {
     # checkout latest stable tag
     cd $MAPIC_ROOT_FOLDER
     git fetch --tags
-    LATEST=$(git describe --tags `git rev-list --tags --max-count=1`)
-    echo "Checking out $LATEST..."
-    git checkout $LATEST
-
+    STABLE=$(git describe --tags `git rev-list --tags --max-count=1`)
+    echo "Checking out $STABLE..."
+    git checkout $STABLE
+    
     # install current branch
-    mapic_install_branch
+    _install_mapic
 }
 mapic_install_master () {
 
-    cd $MAPIC_ROOT_FOLDER
     echo "Checking out master..."
+    cd $MAPIC_ROOT_FOLDER
     git checkout master
-
+   
     # install current branch
-    mapic_install_branch
+    _install_mapic
 }
 mapic_install_travis () {
+    # if [[ "$TRAVIS" != "true" ]]; then
+    #     abort "This command is only available from a Travis environment"
+    # fi
+
     # install whatever branch is designated in travis
-    mapic_install_branch
+    _install_mapic
+}
+mapic_install_branch_usage () {
+    echo ""
+    echo "Usage: mapic install branch [GIT-BRANCH]"
+    echo ""
+    exit 1
 }
 mapic_install_branch () {
+    test -z "$3" && mapic_install_branch_usage
+    BRANCH=$3
 
-    # ensure MAPIC_DOMAIN
-    test -z $MAPIC_DOMAIN && mapic env prompt MAPIC_DOMAIN "Domain for Mapic. (Example: maps.mapic.io)" localhost
-    
-    # save env
-    write_env MAPIC_DOMAIN $MAPIC_DOMAIN
+    # checkout branch
+    git checkout $BRANCH || abort "Failed to checkout branch $BRANCH. Aborting!" 
 
-    # notify
+    # install mapic on current branch
+    _install_mapic
+}
+_install_mapic () {
+
+    # refresh config
+    _refresh_config
+
+    # ensure domain config
+    _ensure_mapic_domain
+
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
     echo ""
-    echo "Installing Mapic to $MAPIC_DOMAIN"
+    echo "Installing Mapic on branch $BRANCH to domain $MAPIC_DOMAIN"
     echo ""
     echo "Press Ctrl-C in next 10 seconds to cancel."
     sleep 10
 
-    # init submodules
-    cd $MAPIC_CLI_FOLDER/install
-    bash init-submodules.sh
+    # update submodules
+    # todo: this one might need to be skipped for travis build 
+    # when testing mapic/engine, mapic/mile PR's etc,
+    _update_submodules
 
     # create ssl
-    cd $MAPIC_CLI_FOLDER/install
-    if [ $MAPIC_DOMAIN = "localhost" ]; then
-        bash create-ssl-localhost.sh
-    else 
-        bash create-ssl-public-domain.sh
+    _create_ssl
+
+    # refresh config
+    _refresh_config
+
+}
+_ensure_mapic_domain () {
+    # ensure MAPIC_DOMAIN
+    if [ -z "$MAPIC_DOMAIN" ]; then
+        MAPIC_DOMAIN=$(mapic env prompt MAPIC_DOMAIN "Please provide a valid domain for the Mapic install")
     fi
+}
+_print_branches () {
+    echo ""
+    ecco 41 "Git branches:"
+    cd $MAPIC_ROOT_FOLDER
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mapic"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
 
-    # update config
-    cd $MAPIC_CLI_FOLDER/install
-    bash update-config.sh
+    cd $MAPIC_ROOT_FOLDER/mile
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mile"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
+   
+    cd $MAPIC_ROOT_FOLDER/engine
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/engine"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
 
-    # create storage (todo: remove with deploy)
-    cd $MAPIC_CLI_FOLDER/install
-    bash create-storage-containers.sh
+    cd $MAPIC_ROOT_FOLDER/mapic.js
+    GIT=$(git log --pretty=format:"%h (%ar)" -1)
+    BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+    ecco 4 "mapic/mapic.js"
+    ecco 0 "branch: $BRANCH"
+    ecco 0 "commit: $GIT"
 
+    echo ""
+}
+_refresh_config () {
+
+    # replace old config with defaults
+    cd $MAPIC_CLI_FOLDER/config
+    yes | cp -rf default-files/ files
+    chmod +w files
+
+    docker run \
+    -it \
+    --rm \
+    --env-file $MAPIC_ENV_FILE \
+    -v $MAPIC_ROOT_FOLDER/cli/config:/tmp \
+    -v $MAPIC_ROOT_FOLDER/cli/config/files:/config \
+    -w /tmp \
+    node:6 \
+    node refresh-config.js
+}
+_update_submodules () {
+
+    # init submodules
+    cd $MAPIC_ROOT_FOLDER
+    git submodule init
+    git submodule update --remote
+
+    # debug: show branchs
+    _print_branches
+}
+_yarn_mapic () {
+    # install yarn modules
+    docker run -it --rm -v $MAPIC_ROOT_FOLDER:/mapic_tmp -w /mapic_tmp mapic/xenial:latest yarn install 
 }
 mapic_install_jq () {
     DISTRO=$(lsb_release -si)
@@ -885,21 +972,7 @@ mapic_api_user_super () {
         bash promote-super.sh "${@:4}"
     fi
 }
-mapic_api_configure () {
-    m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with (eg. maps.mapic.io)"
-    m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
-    m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
 
-    mapic_api_display_config
-}
-
-mapic_api_display_config () {
-    echo ""
-    echo "Mapic API config:"
-    echo "  Domain:   $MAPIC_API_DOMAIN"
-    echo "  Username: $MAPIC_API_USERNAME"
-    echo "  Auth:     $MAPIC_API_AUTH"
-}
 
 #   / ___/ / / / __ \
 #  / /  / /_/ / / / /
@@ -936,26 +1009,26 @@ mapic_ssl_usage () {
 mapic_ssl () {
     test -z "$2" && mapic_ssl_usage
     case "$2" in
-        create)     mapic_ssl_create;;
-        scan)       mapic_ssl_scan;;
+        create)     _create_ssl;;
+        scan)       _scan_ssl;;
         *)          mapic_ssl_usage;
     esac 
 }
-mapic_ssl_create () {
+_create_ssl () {
     if [ $MAPIC_DOMAIN = "localhost" ]; then
-        cd $MAPIC_CLI_FOLDER/install
+        cd $MAPIC_CLI_FOLDER/ssl
         bash create-ssl-localhost.sh
     else 
-        cd $MAPIC_CLI_FOLDER/install
+        cd $MAPIC_CLI_FOLDER/ssl
         bash create-ssl-public-domain.sh
     fi
 }
-mapic_ssl_scan () {
+_scan_ssl () {
     if [ $MAPIC_DOMAIN = "localhost" ]; then
         echo "SSLLabs scan not supported on localhost."
         exit 1
     fi
-    cd $MAPIC_CLI_FOLDER/install/ssl
+    cd $MAPIC_CLI_FOLDER/ssl
     bash ssllabs-scan.sh "https://$MAPIC_DOMAIN"
 }
 
@@ -975,13 +1048,15 @@ mapic_dns_usage () {
 mapic_dns () {
     test -z "$2" && mapic_dns_usage
     case "$2" in
-        create)     mapic_dns_set;;
+        create)     _set_dns;;
         *)          mapic_dns_usage;
     esac 
 }
-mapic_dns_set () {
-    cd $MAPIC_CLI_FOLDER/dns
-    bash create-dns-entries-route-53.sh
+_set_dns () {
+    # cd $MAPIC_CLI_FOLDER/dns
+    # bash create-dns-entries-route-53.sh
+    WDR=/usr/src/app
+    docker run -it -p 80:80 -p 443:443 --env-file $MAPIC_ENV_FILE --volume $PWD:$WDR -w $WDR node:6 sh entrypoint.sh
 }
 
 #    _____/ /_____ _/ /___  _______
@@ -989,8 +1064,12 @@ mapic_dns_set () {
 #  (__  ) /_/ /_/ / /_/ /_/ (__  ) 
 # /____/\__/\__,_/\__/\__,_/____/  
 mapic_status () {
-    cd $MAPIC_CLI_FOLDER/management
-    bash mapic-status.sh
+    
+    # print branches
+    _print_branches
+
+    # show stack status
+    docker stack services mapic
 }
 
 #   / /____  _____/ /_
@@ -1066,110 +1145,7 @@ mapic_test_download_data () {
     fi
 }
 
-#   _________  ____  / __(_)___ _
-#  / ___/ __ \/ __ \/ /_/ / __ `/
-# / /__/ /_/ / / / / __/ / /_/ / 
-# \___/\____/_/ /_/_/ /_/\__, /  
-#                       /____/   
-mapic_config_usage () {
-    echo ""
-    echo "Usage: mapic config [OPTIONS]"
-    echo ""
-    echo "Options:"
-    echo "  refresh                 Refresh Mapic configuration files"
-    echo "  set                     Set an environment variable. See 'mapic config set --help' for more."
-    echo "  get                     Get an environment variable. Do 'mapic config get' to list all variables."
-    echo "  get                     Get an environment variable. Do 'mapic config get' to list all variables."
-    echo "  edit                    Edit config directly in your favorite editor."
-    echo "  file                    Returns absolute path of Mapic config file, useful for scripts and 'docker run --env-file $(mapic config file) ...'"
-    echo ""
-    exit 1   
-}
-mapic_config () {
-    test -z "$2" && mapic_config_usage
-     case "$2" in
-        refresh)    mapic_config_refresh "$@";;
-        set)        mapic_env_set "$@";;
-        get)        mapic_env_get "$@";;
-        list)       mapic_env_get;;
-        edit)       mapic_env_edit "$@";;
-        file)       mapic_env_file "$@";;
-        prompt)     mapic_env_prompt "$@";; 
-        *)          mapic_config_usage;;
-    esac 
-}
-mapic_config_refresh_usage () {
-    echo ""
-    echo "Usage: mapic config refresh [OPTIONS]"
-    echo ""
-    echo "Attempts to reset configuration to default and working condition."
-    echo ""
-    echo "Options:"
-    echo "  all         Refresh all Mapic configuration files"
-    echo "  engine      Refresh Mapic Engine config"
-    echo "  mile        Refresh Mapic Mile config"
-    echo "  mapicjs     Refresh Mapic.js config"
-    echo "  nginx       Refresh NGINX config"
-    echo "  redis       Refresh Redis config"
-    echo "  mongo       Refresh Mongo config"
-    echo "  postgis     Refresh PostGIS config"
-    echo "  slack       Refresh Slack config"
-    echo ""
-    exit 0
-}
-mapic_config_refresh () {
-    echo $1 $2 $3
-    test -z "$3" && mapic_config_refresh_usage
-    case "$3" in
-        all)        mapic_config_refresh_all "$@";;
-        engine)     mapic_config_refresh_engine "$@";;
-        mile)       mapic_config_refresh_mile "$@";;
-        mapicjs)    mapic_config_refresh_mapicjs "$@";;
-        nginx)      mapic_config_refresh_nginx "$@";;
-        redis)      mapic_config_refresh_redis "$@";;
-        mongo)      mapic_config_refresh_mongo "$@";;
-        postgis)    mapic_config_refresh_postgis "$@";;
-        slack)      mapic_config_refresh_slack "$@";;
-        *)          mapic_config_refresh_usage "$@";;
-    esac 
-}
-mapic_config_refresh_all () {
-    cd $MAPIC_CLI_FOLDER
-    bash configure-mapic.sh || failed "$@"
-}
-mapic_config_refresh_nginx () {
-    echo "Not yet supported."
-    exit 0;
-}
-mapic_config_refresh_postgis () {
-    echo "Not yet supported."
-    exit 0;
-}
-mapic_config_refresh_redis () {
-    echo "Not yet supported."
-    exit 0;
-}   
-mapic_config_refresh_mongo () {
-    echo "Not yet supported."
-    exit 0;
-}
-mapic_config_refresh_mile () {
-    echo "Not yet supported."
-    exit 0;
-}
-mapic_config_refresh_mapicjs () {
-    echo "Not yet supported."
-    exit 0;
-}
-mapic_config_refresh_engine () {
-    echo "Not yet supported."
-    exit 0;
-}
-mapic_config_refresh_slack () {
-    echo "Not yet supported."
-    exit 0;
-}
-                        
+                 
 #   / __ `/ ___/ _ \/ __ \
 #  / /_/ / /  /  __/ /_/ /
 #  \__, /_/   \___/ .___/ 

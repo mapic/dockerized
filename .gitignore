@@ -13,3 +13,4 @@ cli/.mapic.env
 tmp/
 tmp/*
 open-data
+cli/config/files/*

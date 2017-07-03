@@ -8,25 +8,25 @@ module.exports = {
     },
     "port": 3001,
     "mongo": {
-      "url": "mongodb://mapic_mongo_user:28d0c7f3a5464a24c0b5c0369dfb470928b2421552f04c9e33403a3c01de26995e05e68167adf7ed209c4a97c25ef28decf35b10f0fb4506c5a40e86a08ec2ec@mongo/mapic"
+      "url": "mongodb://mapic_mongo_user:AUTH@mongo/mapic"
     },
     "redis": {
       "layers": {
         "port": 6379,
         "host": "redislayers",
-        "auth": "d01914d02eaf5968cd953f732fa224b7f8b646f3c22b32ef8689b041c44f96369fac40b27d0e97515f8d17d09b6a6f0cf12c90cdd52f0f59f67409a55d5c26d4",
+        "auth": "AUTH",
         "db": 1
       },
       "stats": {
         "port": 6379,
         "host": "redisstats",
-        "auth": "d01914d02eaf5968cd953f732fa224b7f8b646f3c22b32ef8689b041c44f96369fac40b27d0e97515f8d17d09b6a6f0cf12c90cdd52f0f59f67409a55d5c26d4",
+        "auth": "AUTH",
         "db": 1
       },
       "temp": {
         "port": 6379,
         "host": "redistemp",
-        "auth": "d01914d02eaf5968cd953f732fa224b7f8b646f3c22b32ef8689b041c44f96369fac40b27d0e97515f8d17d09b6a6f0cf12c90cdd52f0f59f67409a55d5c26d4",
+        "auth": "AUTH",
         "db": 1
       }
     },
@@ -49,13 +49,13 @@ module.exports = {
     },
     "phantomJS": {
       "user": "bot@localhost",
-      "auth": "94a528a30ae70008b4cc94c0fd6bb844"
+      "auth": "AUTH"
     },
     "nodemailer": {
       "service": "gmail",
       "auth": {
         "user": "GMAIL_ACCOUNT",
-        "pass": "PASSWORD"
+        "pass": "AUTH"
       },
       "bcc": [
         "hello@mapic.io"
@@ -75,8 +75,8 @@ module.exports = {
     },
     "portal": {
       "roles": {
-        "superAdmin": "role-c5bb12e0-ec5d-42e8-b8af-3bb573c70b49",
-        "portalAdmin": "role-4ae1b3ec-dc77-4069-9268-2f6d3f2d2385"
+        "superAdmin": "ROLE",
+        "portalAdmin": "ROLE"
       },
       "invite_only": false
     },
@@ -159,7 +159,7 @@ module.exports = {
       "mediaLibrary": false,
       "account": true
     },
-    "attribution": "<a href='http://mapic.io' target='_blank'>Powered by Mapic.io</a>",
+    "attribution": "<a href='https://mapic.io' target='_blank'>Powered by Mapic.io</a>",
     "logos": {
       "projectDefault": "/css/images/grinders/BG-grinder-small-grayDark-on-white.gif",
       "portalLogo": "css/logos/web-logo.png",

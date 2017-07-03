@@ -19,16 +19,20 @@ abort () {
 
 
 # todo: check if 443 is available, offer to shut down
-# put MAPIC_USER_EMAIL somwhere permanently
+
+if [ -z "$MAPIC_USER_EMAIL" ]; then
+    MAPIC_USER_EMAIL=$(mapic env prompt MAPIC_USER_EMAIL "Please provide a valid email address for the SSL certificate")
+fi
+
+if [ -z "$MAPIC_DOMAIN" ]; then
+    MAPIC_DOMAIN=$(mapic env prompt MAPIC_DOMAIN "Please provide a valid domain for the SSL certficate")
+fi
 
 test -z "$MAPIC_USER_EMAIL" && usage MAPIC_USER_EMAIL # check email
-test -z "$MAPIC_ROOT_FOLDER" && usage "MAPIC_ROOT_FOLDER" # check MAPIC_ROOT_FOLDER is set
 test -z "$MAPIC_DOMAIN" && usage "MAPIC_DOMAIN" # check MAPIC_ROOT_FOLDER is set
-
     
 # certbot-auto
-cd $MAPIC_CLI_FOLDER/install
-ls -l
+cd $MAPIC_CLI_FOLDER/ssl
 ./certbot certonly \
     --standalone \
     --agree-tos \
@@ -49,7 +53,7 @@ ls -l
     --domain  grid-c-"$MAPIC_DOMAIN"   \
     --domain  grid-d-"$MAPIC_DOMAIN"   || abort
    
-CERT_PATH=$MAPIC_ROOT_FOLDER/config/$MAPIC_DOMAIN
+CERT_PATH=$MAPIC_ROOT_FOLDER/config/files
 
 echo "Created certificates, moving them to $CERT_PATH"
 cp /etc/letsencrypt/live/"$MAPIC_DOMAIN"/privkey.pem $CERT_PATH/ssl_certificate.key
