@@ -782,6 +782,7 @@ _refresh_config () {
     cd $MAPIC_CLI_FOLDER/config
     rm -rf files/
     cp -rf default-files/ files
+    chmod +w files
 
     docker run \
     -it \
