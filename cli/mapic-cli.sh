@@ -88,10 +88,11 @@ mapic_cli () {
     # check 
     test -z "$1" && mapic_cli_usage
 
-    # run internal mapic
-    if [[ "$TRAVIS" == "true" ]]; then
+    if [[ "$TRAVIS" == "true" && -z "$TRAVIS_PREVIOUS_SUCCESS" ]]; then
+        # run internal mapic with heavy bash debug
         (set -x; m "$@")
     else
+        # run internal mapic
         m "$@"
     fi
 }
