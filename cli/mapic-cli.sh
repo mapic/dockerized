@@ -774,6 +774,12 @@ _print_branches () {
     echo ""
 }
 _refresh_config () {
+
+    # replace old config with defaults
+    cd $MAPIC_CLI_FOLDER/config
+    rm -rf files/
+    cp -rf default-files/ files
+
     docker run \
     -it \
     --rm \
