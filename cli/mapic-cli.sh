@@ -164,6 +164,9 @@ initialize () {
         # set config folder
         MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
 
+        # refresh config
+        _refresh_config
+
         # cp default env file
         cp $MAPIC_CLI_FOLDER/.mapic.default.env /usr/local/bin/.mapic.env 
 
