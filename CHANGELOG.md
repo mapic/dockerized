@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [17.7](https://github.com/mapic/mapic/releases/tag/v17.7)
+Released: 2017-07-03
+### `mapic/mapic`
+- Many additions to Mapic CLI
+- Swarm mode: Mapic is now running on Swarm, but on single node only.
+- Config files are written automatically, all config handled by CLI
+- New versioning scheme: Year.Month
+
 ## [2.0.1](https://github.com/mapic/mapic/releases/tag/v2.0.1)
 Released: 2017-06-23
 

@@ -32,7 +32,7 @@
 #   2. Make Windows compatible
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
-MAPIC_CLI_VERSION=17.7.1
+MAPIC_CLI_VERSION=17.7
 
 
 
