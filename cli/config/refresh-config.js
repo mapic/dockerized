@@ -16,15 +16,19 @@ if (!fs.existsSync(CONFIG_FOLDER)) {
 
 // helper fn
 var updateRedisConfig = function (filePath) {
+    console.log('filePath', filePath);
     var lines = fs.readFileSync(filePath).toString().split("\n");
+    console.log('lines:', lines);
     for(var i in lines) {
         var lineText = lines[i];
+        console.log(lineText)
         if (lineText.indexOf('requirepass') > -1){
             lines[i] = "requirepass " + redisPassString;
             break;
         }
     }
     lines = lines.join('\n');
+    console.log('writing lines:', lines);
     fs.writeFileSync(filePath, lines, 'utf-8');  
 };
 

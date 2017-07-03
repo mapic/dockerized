@@ -8,25 +8,25 @@ module.exports = {
     },
     "port": 3001,
     "mongo": {
-      "url": "mongodb://mapic_mongo_user:d8681b45e4f89f279ce0b6eae7e03410509e79db56a67fff5c486f4fe36857cc02c2931d89aee56aa1bd928de4c7bc3cc440bd0a13549dafa6092c919c52ed89@mongo/mapic"
+      "url": "mongodb://mapic_mongo_user:c8738ac47f08f89389b59312279fbd387230c112c5e3c70663b6a3fd117b733434052569460d201c6ba0dd6380c4c8868f1b8845cc6373b5696739254ef7d2d7@mongo/mapic"
     },
     "redis": {
       "layers": {
         "port": 6379,
         "host": "redislayers",
-        "auth": "fa77e0bdcffbecd6680081cfebaeb14ce9658918d8446d7df6c2f5f480d6a0a407a13f711b243756af99f5c6e8dad736883a53aadb7a6b012b67c4760ae0c823",
+        "auth": "57665cc148dc9e9887c7046d9ccaaa9cb4f5b759d9182036d8c81a709d2ef029a3b4dcf431d4ce8a9d4cc3be06fb83acbdc8a3019e2a84bf770903e18b8f1b33",
         "db": 1
       },
       "stats": {
         "port": 6379,
         "host": "redisstats",
-        "auth": "fa77e0bdcffbecd6680081cfebaeb14ce9658918d8446d7df6c2f5f480d6a0a407a13f711b243756af99f5c6e8dad736883a53aadb7a6b012b67c4760ae0c823",
+        "auth": "57665cc148dc9e9887c7046d9ccaaa9cb4f5b759d9182036d8c81a709d2ef029a3b4dcf431d4ce8a9d4cc3be06fb83acbdc8a3019e2a84bf770903e18b8f1b33",
         "db": 1
       },
       "temp": {
         "port": 6379,
         "host": "redistemp",
-        "auth": "fa77e0bdcffbecd6680081cfebaeb14ce9658918d8446d7df6c2f5f480d6a0a407a13f711b243756af99f5c6e8dad736883a53aadb7a6b012b67c4760ae0c823",
+        "auth": "57665cc148dc9e9887c7046d9ccaaa9cb4f5b759d9182036d8c81a709d2ef029a3b4dcf431d4ce8a9d4cc3be06fb83acbdc8a3019e2a84bf770903e18b8f1b33",
         "db": 1
       }
     },
