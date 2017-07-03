@@ -26,7 +26,7 @@ matrix:
       sudo: required
 
 install:
-  - echo "TRAVIS_PREVIOUS_SUCCESS: $TRAVIS_PREVIOUS_SUCCESS"
+  - echo TRAVIS_PREVIOUS_SUCCESS: $TRAVIS_PREVIOUS_SUCCESS
   - cd cli
   - sudo bash mapic-cli.sh
   - mapic version
