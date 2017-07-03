@@ -89,7 +89,11 @@ mapic_cli () {
     test -z "$1" && mapic_cli_usage
 
     # run internal mapic
-    m "$@"
+    if [[ "$TRAVIS" == "true" ]]; then
+        (set -x; m "$@")
+    else
+        m "$@"
+    fi
 }
 m () {
     
