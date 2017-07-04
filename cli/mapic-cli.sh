@@ -336,6 +336,7 @@ mapic_travis_usage () {
     exit 1
 }
 mapic_travis () {
+    echo "mapic_travis $@"
     test -z "$2" && mapic_travis_usage
     case "$2" in
         install)    mapic_travis_install "$@";;
@@ -346,11 +347,11 @@ mapic_travis () {
 mapic_travis_install () {
     mapic_version
     # sudo mapic install docker
-    sudo mapic_install_docker_ubuntu
+    mapic_install_docker_ubuntu
     docker version
-    sudo echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
-    sudo cp -f tmp-docker /etc/default/docker && rm tmp-docker
-    sudo service docker restart
+    echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
+    cp -f tmp-docker /etc/default/docker && rm tmp-docker
+    service docker restart
     docker version
     docker swarm init
     git submodule update --remote
