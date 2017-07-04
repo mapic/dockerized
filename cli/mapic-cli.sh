@@ -344,8 +344,9 @@ mapic_travis () {
     esac 
 }
 mapic_travis_install () {
-    mapic version
-    sudo mapic install docker
+    mapic_version
+    # sudo mapic install docker
+    sudo mapic_install_docker_ubuntu
     docker version
     sudo echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
     sudo cp -f tmp-docker /etc/default/docker && rm tmp-docker
@@ -353,35 +354,36 @@ mapic_travis_install () {
     docker version
     docker swarm init
     git submodule update --remote
-    mapic domain localhost
-    mapic install travis
+    # mapic domain localhost
+    _write_env MAPIC_DOMAIN localhost
+    _install_mapic
 }
 mapic_travis_script () {
-    mapic start
-    mapic status
-    mapic logs
+    mapic_start
+    mapic_status
+    mapic_logs
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
+    mapic_status
     sleep 60
-    mapic status
-    mapic test all
-    mapic stop
+    mapic_status
+    mapic_test_all
+    mapic_stop
 }
 
 #   _________  ____  / __(_)___ _
