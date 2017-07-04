@@ -1,4 +1,7 @@
-language: bash
+# language: bash
+language: node_js
+node_js: '6' # or another
+cache: yarn
 
 notifications:
   email:
