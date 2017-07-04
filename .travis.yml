@@ -32,7 +32,7 @@ install:
   # - echo "TRAVIS_PREVIOUS_SUCCESS $TRAVIS_PREVIOUS_SUCCESS"
   - cd cli
   - sudo bash mapic-cli.sh
-  - mapic version
+  # - mapic version
   - mapic travis install
   # - sudo mapic install docker
   # - docker version
@@ -44,30 +44,31 @@ install:
   # - git submodule update --remote
 
 script:
+  - mapic travis script
   # - mapic domain localhost
   # - mapic install travis
-  - mapic start
-  - mapic status
-  - mapic logs
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - sleep 60
-  - mapic status
-  - mapic test all
-  - mapic stop
+  # - mapic start
+  # - mapic status
+  # - mapic logs
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - sleep 60
+  # - mapic status
+  # - mapic test all
+  # - mapic stop

@@ -331,20 +331,20 @@ mapic_travis_usage () {
     echo ""
     echo "Commands:"
     echo "  install     Install dependencies for Travis build"
+    echo "  script      Run Travis build script"
     echo ""
     exit 1
 }
 mapic_travis () {
-    echo "mapic travis: $0 $1 $2 "
-    echo "2: $2"
-
     test -z "$2" && mapic_travis_usage
-     case "$2" in
+    case "$2" in
         install)    mapic_travis_install "$@";;
+        script)     mapic_travis_script "$@";;
         *)          mapic_travis_usage;;
     esac 
 }
 mapic_travis_install () {
+    mapic version
     sudo mapic install docker
     docker version
     sudo echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
@@ -355,6 +355,33 @@ mapic_travis_install () {
     git submodule update --remote
     mapic domain localhost
     mapic install travis
+}
+mapic_travis_script () {
+    mapic start
+    mapic status
+    mapic logs
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    sleep 60
+    mapic status
+    mapic test all
+    mapic stop
 }
 
 #   _________  ____  / __(_)___ _
