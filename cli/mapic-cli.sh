@@ -89,9 +89,12 @@ mapic_cli () {
     # check 
     test -z "$1" && mapic_cli_usage
 
-    if [[ "$TRAVIS" == "true" && -z "$TRAVIS_PREVIOUS_SUCCESS" ]]; then
-        # run internal mapic with heavy bash debug
-        (set -x; m "$@")
+    if [[ "$TRAVIS" == "true" ]];then
+        TRAVIS_PREVIOUS_SUCCESS=$(curl -s 'https://api.travis-ci.org/mapic/mapic.svg?branch=master' | grep pass)
+        if [[ -z "$TRAVIS_PREVIOUS_SUCCESS" ]]; then
+            # run internal mapic with heavy bash debug
+            (set -x; m "$@")
+        fi
     else
         # run internal mapic
         m "$@"
@@ -123,6 +126,7 @@ m () {
         grep)       mapic_grep "$@";;
         debug)      mapic_debug "$@";;
         domain)     mapic_domain "$@";;
+        travis)     mapic_travis "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
         -h)         mapic_cli_usage;;
@@ -321,7 +325,35 @@ mapic_version () {
     # git versions    
     _print_branches
 }
-                  
+mapic_travis_usage () {
+    echo ""
+    echo "Usage: mapic travis COMMAND"
+    echo ""
+    echo "Commands:"
+    echo "  install     Install dependencies for Travis build"
+    echo ""
+    exit 1
+}
+mapic_travis () {
+    test -z "$2" && mapic_travis_usage
+     case "$2" in
+        refresh)    mapic_travis_install "$@";;
+        *)          mapic_travis_usage;;
+    esac 
+}
+mapic_travis_install () {
+    sudo mapic install docker
+    docker version
+    sudo echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
+    sudo cp -f tmp-docker /etc/default/docker && rm tmp-docker
+    sudo service docker restart
+    docker version
+    docker swarm init
+    git submodule update --remote
+    mapic domain localhost
+    mapic install travis
+}
+
 #   _________  ____  / __(_)___ _
 #  / ___/ __ \/ __ \/ /_/ / __ `/
 # / /__/ /_/ / / / / __/ / /_/ / 
