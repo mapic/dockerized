@@ -55,8 +55,9 @@ mapic_cli_usage () {
     echo "  test                Run Mapic tests"
     echo ""
     echo "Commands:"
+    echo "  configure           Automatically configure Mapic"
     echo "  install             Install Mapic"
-    echo "  config              Configure Mapic"
+    echo "  config              View and edit Mapic config"
     echo "  domain              Set Mapic domain"
     echo "  dns                 Create or check DNS entries for Mapic"
     echo "  ssl                 Create or scan SSL certificates for Mapic"
@@ -118,6 +119,7 @@ m () {
         test)       mapic_test "$@";;
         home)       mapic_home "$@";;
         config)     mapic_config "$@";;
+        configure)  mapic_configure "$@";;
         grep)       mapic_grep "$@";;
         debug)      mapic_debug "$@";;
         domain)     mapic_domain "$@";;
@@ -325,6 +327,9 @@ mapic_version () {
 # / /__/ /_/ / / / / __/ / /_/ / 
 # \___/\____/_/ /_/_/ /_/\__, /  
 #                       /____/   
+mapic_configure () {
+    echo "todo"
+}
 mapic_config_usage () {
     echo ""
     echo "Usage: mapic config [OPTIONS]"
