@@ -28,10 +28,14 @@ matrix:
       dist: trusty
       sudo: required
 
-install:
-  # - echo "TRAVIS_PREVIOUS_SUCCESS $TRAVIS_PREVIOUS_SUCCESS"
+before_install:
   - cd cli
   - sudo bash mapic-cli.sh
+  
+install:
+  # - echo "TRAVIS_PREVIOUS_SUCCESS $TRAVIS_PREVIOUS_SUCCESS"
+  # - cd cli
+  # - sudo bash mapic-cli.sh
   # - mapic version
   - mapic travis install
   # - sudo mapic install docker
