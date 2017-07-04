@@ -90,11 +90,11 @@ mapic_cli () {
     test -z "$1" && mapic_cli_usage
 
     if [[ "$TRAVIS" == "true" ]];then
-        TRAVIS_PREVIOUS_SUCCESS=$(curl -s 'https://api.travis-ci.org/mapic/mapic.svg?branch=master' | grep pass)
-        if [[ -z "$TRAVIS_PREVIOUS_SUCCESS" ]]; then
+        # TRAVIS_PREVIOUS_SUCCESS=$(curl -s 'https://api.travis-ci.org/mapic/mapic.svg?branch=master' | grep pass)
+        # if [[ -z "$TRAVIS_PREVIOUS_SUCCESS" ]]; then
             # run internal mapic with heavy bash debug
             (set -x; m "$@")
-        fi
+        # fi
     else
         # run internal mapic
         m "$@"

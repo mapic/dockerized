@@ -1,7 +1,7 @@
-# language: bash
-language: node_js
-node_js: '6' # or another
-cache: yarn
+language: bash
+# language: node_js
+# node_js: '6' # or another
+# cache: yarn
 
 notifications:
   email:
@@ -28,15 +28,17 @@ matrix:
       dist: trusty
       sudo: required
 
-before_install:
-  - cd cli
-  - sudo bash mapic-cli.sh
+# before_install:
+#   - cd cli
+#   - sudo bash mapic-cli.sh
 
 install:
   # - echo "TRAVIS_PREVIOUS_SUCCESS $TRAVIS_PREVIOUS_SUCCESS"
   # - cd cli
   # - sudo bash mapic-cli.sh
   # - mapic version
+  - cd cli
+  - sudo bash mapic-cli.sh
   - sudo mapic travis install
   # - sudo mapic install docker
   # - docker version
