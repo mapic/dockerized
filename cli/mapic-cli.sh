@@ -335,9 +335,12 @@ mapic_travis_usage () {
     exit 1
 }
 mapic_travis () {
+    echo "mapic travis: $0 $1 $2 "
+    echo "2: $2"
+
     test -z "$2" && mapic_travis_usage
      case "$2" in
-        refresh)    mapic_travis_install "$@";;
+        install)    mapic_travis_install "$@";;
         *)          mapic_travis_usage;;
     esac 
 }
