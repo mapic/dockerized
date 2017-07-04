@@ -31,13 +31,13 @@ matrix:
 before_install:
   - cd cli
   - sudo bash mapic-cli.sh
-  
+
 install:
   # - echo "TRAVIS_PREVIOUS_SUCCESS $TRAVIS_PREVIOUS_SUCCESS"
   # - cd cli
   # - sudo bash mapic-cli.sh
   # - mapic version
-  - mapic travis install
+  - sudo mapic travis install
   # - sudo mapic install docker
   # - docker version
   # - sudo echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
@@ -48,7 +48,7 @@ install:
   # - git submodule update --remote
 
 script:
-  - mapic travis script
+  - sudo mapic travis script
   # - mapic domain localhost
   # - mapic install travis
   # - mapic start
