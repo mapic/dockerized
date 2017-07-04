@@ -1,81 +1,27 @@
 language: bash
-# language: node_js
-# node_js: '6' # or another
-# cache: yarn
 
 notifications:
-  email:
-    recipients:
-      - knutole@mapic.io
-    on_success: change
-    on_failure: change
   slack:
     rooms:
       - mapic-io:NKaii0z3tRkeDyXaDbRauRFp
-    on_success: change
-    on_failure: change
 
-# env:
-  # - TRAVIS_PREVIOUS_SUCCESS=$(curl -s 'https://api.travis-ci.org/mapic/mapic.svg?branch=master' | grep pass)
+# git:
+  # submodules: false
 
-git:
-  submodules: false
+# matrix:
+#   include:
+#     - os: linux
+#       dist: trusty
+#       sudo: required
 
-matrix:
-  fast_finish: true
-  include:
-    - os: linux
-      dist: trusty
-      sudo: required
-
-# before_install:
-#   - cd cli
-#   - sudo bash mapic-cli.sh
+dist: trusty
+sudo: required
 
 install:
-  # - echo "TRAVIS_PREVIOUS_SUCCESS $TRAVIS_PREVIOUS_SUCCESS"
-  # - cd cli
-  # - sudo bash mapic-cli.sh
-  # - mapic version
   - cd cli
   - sudo bash mapic-cli.sh
   - mapic version
   - sudo mapic travis install
-  # - sudo mapic install docker
-  # - docker version
-  # - sudo echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
-  # - sudo cp -f tmp-docker /etc/default/docker && rm tmp-docker
-  # - sudo service docker restart
-  # - docker version
-  # - docker swarm init
-  # - git submodule update --remote
 
 script:
   - sudo mapic travis script
-  # - mapic domain localhost
-  # - mapic install travis
-  # - mapic start
-  # - mapic status
-  # - mapic logs
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - sleep 60
-  # - mapic status
-  # - mapic test all
-  # - mapic stop
