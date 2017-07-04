@@ -89,14 +89,10 @@ mapic_cli () {
     # check 
     test -z "$1" && mapic_cli_usage
 
+    # run internal mapic
     if [[ "$TRAVIS" == "true" ]];then
-        # TRAVIS_PREVIOUS_SUCCESS=$(curl -s 'https://api.travis-ci.org/mapic/mapic.svg?branch=master' | grep pass)
-        # if [[ -z "$TRAVIS_PREVIOUS_SUCCESS" ]]; then
-            # run internal mapic with heavy bash debug
-            (set -x; m "$@")
-        # fi
+        (set -x; m "$@")
     else
-        # run internal mapic
         m "$@"
     fi
 }
@@ -345,19 +341,30 @@ mapic_travis () {
     esac 
 }
 mapic_travis_install () {
+
+    # print version
     mapic_version
-    # sudo mapic install docker
+
+    # install docker
     mapic_install_docker_ubuntu
     docker version
-    echo 'DOCKER_OPTS="--experimental=true"' >> tmp-docker
-    cp -f tmp-docker /etc/default/docker && rm tmp-docker
+
+    # put docker in experimental mode
+    echo 'DOCKER_OPTS="--experimental=true"' >> /tmp/tmp-docker
+    cp -f /tmp/tmp-docker /etc/default/docker && rm /tmp/tmp-docker
     service docker restart
+
+    # print version
     docker version
-    docker swarm init
-    git submodule update --remote
-    # mapic domain localhost
+
+    # set localhost
     _write_env MAPIC_DOMAIN localhost
+
+    # install
     _install_mapic
+}
+_init_docker_swarm () {
+    docker swarm init || abort "Docker Swarm is currently only available in experimental mode. Please put Docker in experimental mode and try again."
 }
 mapic_travis_script () {
     mapic_start
@@ -811,6 +818,8 @@ _install_mapic () {
     # refresh config
     _refresh_config
 
+    # init docker swarm
+    _init_docker_swarm
 }
 _ensure_mapic_domain () {
     # ensure MAPIC_DOMAIN

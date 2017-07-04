@@ -5,15 +5,6 @@ notifications:
     rooms:
       - mapic-io:NKaii0z3tRkeDyXaDbRauRFp
 
-# git:
-  # submodules: false
-
-# matrix:
-#   include:
-#     - os: linux
-#       dist: trusty
-#       sudo: required
-
 dist: trusty
 sudo: required
 
