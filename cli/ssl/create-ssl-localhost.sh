@@ -20,10 +20,11 @@ docker run --rm -it --name openssl \
         -keyout /certs/ssl_certificate.key \
         -out /certs/ssl_certificate.pem \
         -subj "/C=NO/ST=Oslo/L=Oslo/O=Mapic/OU=IT Department/CN=localhost" || abort "Failed to create SSL certificates"
-        # -subj "/C=NO/ST=Oslo/L=Oslo/O=Mapic/OU=IT Department/CN=localhost" 2>"${PIPE}" 1>"${PIPE}"
 
 # create crypto
-if test -f $MAPIC_CONFIG_FOLDER/dhparams.pem; then
+echo "Looking for DHParams: $MAPIC_CONFIG_FOLDER"
+
+if  [[ -f "$MAPIC_CONFIG_FOLDER/dhparams.pem" ]]; then
   echo 'Using pre-existing Strong Diffie-Hellmann Group'
 else
   echo 'Creating Strong Diffie-Hellmann Group'

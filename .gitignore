@@ -1,6 +1,7 @@
 saved_images/*
 *.key
 *.pem
+!dhparams.pem
 npm-debug.log
 *.ignore.*
 node_modules/
