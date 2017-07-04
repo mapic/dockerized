@@ -39,6 +39,7 @@ install:
   # - mapic version
   - cd cli
   - sudo bash mapic-cli.sh
+  - mapic version
   - sudo mapic travis install
   # - sudo mapic install docker
   # - docker version
