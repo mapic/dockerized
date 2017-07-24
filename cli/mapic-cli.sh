@@ -129,7 +129,6 @@ m () {
         env)        mapic_env "$@";;
         edit)       mapic_edit "$@";;
         version)    mapic_version "$@";;
-        # create_storage) mapic_create_storage "$@";;
     
         *)          mapic_wild "$@";;
     esac
@@ -347,12 +346,6 @@ mapic_travis_install () {
 
     # install docker
     mapic_install_docker_ubuntu
-    docker version
-
-    # put docker in experimental mode
-    echo 'DOCKER_OPTS="--experimental=true"' >> /tmp/tmp-docker
-    cp -f /tmp/tmp-docker /etc/default/docker && rm /tmp/tmp-docker
-    service docker restart
 
     # print version
     docker version
@@ -400,7 +393,7 @@ mapic_travis_script () {
 # \___/\____/_/ /_/_/ /_/\__, /  
 #                       /____/   
 mapic_configure () {
-    echo "todo"
+    _refresh_config
 }
 mapic_config_usage () {
     echo ""
@@ -769,10 +762,6 @@ mapic_install_master () {
     _install_mapic
 }
 mapic_install_travis () {
-    # if [[ "$TRAVIS" != "true" ]]; then
-    #     abort "This command is only available from a Travis environment"
-    # fi
-
     # install whatever branch is designated in travis
     _install_mapic
 }
@@ -862,6 +851,9 @@ _print_branches () {
 }
 _refresh_config () {
 
+    ecco 5 "Refreshing configuration..."
+    ecco 3 "MAPIC_DOMAIN: $MAPIC_DOMAIN"
+
     # replace old config with defaults
     cd $MAPIC_CLI_FOLDER/config
     yes | cp -rf default-files/ files
@@ -876,6 +868,8 @@ _refresh_config () {
     -w /tmp \
     node:6 \
     node refresh-config.js
+
+    ecco 2 "Mapic configuration updated!"
 }
 _update_submodules () {
 
@@ -931,6 +925,11 @@ mapic_install_docker_ubuntu () {
     echo "Installing Docker!"
     cd $MAPIC_CLI_FOLDER/install
     bash install-docker-ubuntu.sh
+
+    # put docker in experimental mode for swarm
+    # see https://github.com/moby/moby/issues/30585#issuecomment-280822231
+    echo '{"experimental":true}' >> /etc/docker/daemon.json
+    sudo systemctl restart docker
 }
 
 #   ____ _____  (_)
@@ -1133,7 +1132,7 @@ mapic_dns () {
     esac 
 }
 _set_dns () {
-    # cd $MAPIC_CLI_FOLDER/dns
+    cd $MAPIC_CLI_FOLDER/dns
     # bash create-dns-entries-route-53.sh
     WDR=/usr/src/app
     docker run -it -p 80:80 -p 443:443 --env-file $MAPIC_ENV_FILE --volume $PWD:$WDR -w $WDR node:6 sh entrypoint.sh
