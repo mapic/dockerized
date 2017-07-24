@@ -1151,10 +1151,20 @@ mapic_status () {
     _print_stack
 }
 _print_stack () {
+    echo ""
+    ecco 6 "docker stack services mapic:"
     docker stack services mapic
+    echo ""
+    ecco 6 "docker node ls:"
     docker node ls
+    echo ""
+    ecco 6 "docker node ps:"
     docker node ps
+    echo ""
+    ecco 6 "docker stack ps:"
     docker stack ps mapic
+    echo ""
+    ecco 6 "docker services mapic:"
     docker stack services mapic
 }
 #   / /____  _____/ /_
