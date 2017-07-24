@@ -53,7 +53,7 @@ cd $MAPIC_CLI_FOLDER/ssl
     --domain  grid-c-"$MAPIC_DOMAIN"   \
     --domain  grid-d-"$MAPIC_DOMAIN"   || abort
    
-CERT_PATH=$MAPIC_ROOT_FOLDER/config/files
+CERT_PATH=$MAPIC_ROOT_FOLDER/cli/config/files
 
 echo "Created certificates, moving them to $CERT_PATH"
 cp /etc/letsencrypt/live/"$MAPIC_DOMAIN"/privkey.pem $CERT_PATH/ssl_certificate.key
