@@ -67,6 +67,7 @@ ops.push(function (data, callback) {
 
     // get hosted zone
     var hosted_zone = _.find(data.HostedZones, function (d) {
+        console.log('d', d);
         return d['Name'] == MAPIC_AWS_HOSTED_ZONE_DOMAIN + '.';
     });
 
