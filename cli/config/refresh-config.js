@@ -69,5 +69,6 @@ var result = nginxConfig.replace(/server_name                 localhost;/g, repl
 var result2 = result.replace(/server_name localhost;/g, replace_text);
 fs.writeFileSync(NGINX_CONFIG_PATH, result2, 'utf8')
 
-
+// todo: 
+// engine domains (localhost / dev.mapic.io)
 
