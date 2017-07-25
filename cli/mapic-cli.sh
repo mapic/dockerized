@@ -969,17 +969,22 @@ _refresh_config () {
     ecco 8 "Mapic configuration updated!"
 }
 _print_config () {
+    
+    # check if aws creds are set
     if [[ -n "$MAPIC_AWS_ACCESSKEYID" && -n "$MAPIC_AWS_SECRETACCESSKEY" ]]; then
         AWS_SET=true
     else
         AWS_SET=false
     fi
-    echo "    Domain:               $MAPIC_DOMAIN"
-    echo "    IP:                   $MAPIC_IP"
-    echo "    Email:                $MAPIC_USER_EMAIL"
-    echo "    AWS credentials set:  $AWS_SET"
-    echo "    Google Analytics ID:  $MAPIC_GA_ID"
+
     echo ""
+    ecco 6 "Configuration:"
+    echo   "  Domain:               $MAPIC_DOMAIN"
+    echo   "  IP:                   $MAPIC_IP"
+    echo   "  Email:                $MAPIC_USER_EMAIL"
+    echo   "  AWS credentials set:  $AWS_SET"
+    echo   "  Google Analytics ID:  $MAPIC_GA_ID"
+    echo   ""
 }
 _update_submodules () {
 
@@ -1260,14 +1265,13 @@ _set_dns () {
 mapic_status () {
     
     # print branches
-    _print_branches
+    # _print_branches
 
     # show stack status
     _print_stack
 
     # show config
-    echo ""
-    ecco 6 "Configuration:"
+   
     _print_config
 }
 _print_stack () {

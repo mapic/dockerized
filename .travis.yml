@@ -14,7 +14,7 @@ install:
   - mapic version
   - sudo mapic travis install
   - mapic domain localhost
-  - mapic configure
+  - sudo mapic configure
 
 script:
   - sudo mapic travis start
