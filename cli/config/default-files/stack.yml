@@ -62,7 +62,7 @@ services:
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - redis_layers_store_localhost:/data
-    command: "redis-server /mapic/config/redis.conf"
+    command: "redis-server /mapic/config/redis.layers.conf"
     networks:
       mapic:
         aliases:
@@ -73,7 +73,7 @@ services:
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - redis_stats_store_localhost:/data
-    command: "redis-server /mapic/config/redis.conf"
+    command: "redis-server /mapic/config/redis.stats.conf"
     networks:
       mapic:
         aliases:
@@ -84,7 +84,7 @@ services:
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - redis_tokens_store_localhost:/data
-    command: "redis-server /mapic/config/redis.conf"
+    command: "redis-server /mapic/config/redis.tokens.conf"
     networks:
       mapic:
         aliases:
@@ -94,7 +94,7 @@ services:
     image: redis:latest
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-    command: "redis-server /mapic/config/redis.conf"
+    command: "redis-server /mapic/config/redis.temp.conf"
     networks:
       mapic:
         aliases:
