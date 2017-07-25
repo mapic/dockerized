@@ -366,7 +366,7 @@ mapic_travis_install () {
     mapic_configure
 }
 _init_docker_swarm () {
-    docker swarm init
+    docker swarm init --advertise-addr $MAPIC_IP
      # || abort "Docker Swarm is currently only available in experimental mode. Please put Docker in experimental mode and try again."
 }
 mapic_travis_start () {
