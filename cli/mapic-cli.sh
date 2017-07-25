@@ -947,6 +947,7 @@ _refresh_config () {
 
     # replace old config with defaults
     cd $MAPIC_CLI_FOLDER/config
+    rm -rf files
     yes | cp -rf default-files files
     chmod +w files
     ls -la
