@@ -1046,7 +1046,7 @@ mapic_install_docker_ubuntu () {
     # put docker in experimental mode for swarm
     # see https://github.com/moby/moby/issues/30585#issuecomment-280822231
     echo '{"experimental":true}' >> /etc/docker/daemon.json
-    sudo systemctl restart docker
+    sudo systemctl restart docker || service docker restart
 }
 
 #   ____ _____  (_)
