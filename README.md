@@ -25,8 +25,8 @@ On OSX or Ubuntu:
 # install mapic cli
 curl -sSL https://get.mapic.io  | sh
 
-# show options
-mapic help
+# run mapic cli
+mapic
 
 ```
 
@@ -39,8 +39,11 @@ mapic domain localhost
 # install latest stable mapic
 mapic install stable
 
+# configure
+mapic configure
+
 # start mapic
-mapic start
+mapic up
 
 ```
 
@@ -51,19 +54,22 @@ Commands for managing the Mapic server. See `mapic help` for all options.
 
 ```bash
 # start server
-mapic start
+mapic up
 
 # open web
 open https://localhost
 
-# tail logs
+# show logs
 mapic logs
 
+# tail logs
+mapic logs postgis
+
 # stop mapic server
-mapic stop
+mapic down
 
 # restart mapic server
-mapic restart
+mapic reup
 ```
 
 ### Interact with the Mapic API

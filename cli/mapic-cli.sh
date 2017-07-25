@@ -47,11 +47,11 @@ mapic_cli_usage () {
     echo "A CLI for Mapic"
     echo ""
     echo "Management commands:"
-    echo "  start               Start Mapic stack"
-    echo "  restart             Stop, flush and start Mapic stack"
-    echo "  stop                Stop Mapic stack"
+    echo "  up                  Start Mapic stack"
+    echo "  down                Stop Mapic stack"
+    echo "  reup                Stop, flush and start Mapic stack"
     echo "  status              Display status on running Mapic stack"
-    echo "  logs                Show logs of running Mapic server"
+    echo "  logs [container]    Show logs of running Mapic server"
     echo "  test                Run Mapic tests"
     echo ""
     echo "Commands:"
@@ -104,8 +104,11 @@ m () {
         # documented API
         install)    mapic_install "$@";;
         start)      mapic_start;;
+        up)         mapic_start;;
         restart)    mapic_restart;;
+        reup)       mapic_restart;;
         stop)       mapic_stop;;
+        down)       mapic_stop;;
         status)     mapic_status "$@";;
         s)          mapic_status "$@";;
         logs)       mapic_logs "$@";;
