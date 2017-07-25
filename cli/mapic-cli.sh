@@ -103,12 +103,12 @@ m () {
 
         # documented API
         install)    mapic_install "$@";;
-        start)      mapic_start;;
-        up)         mapic_start;;
+        start)      mapic_up;;
+        up)         mapic_up;;
         restart)    mapic_restart;;
         reup)       mapic_restart;;
-        stop)       mapic_stop;;
-        down)       mapic_stop;;
+        stop)       mapic_down;;
+        down)       mapic_down;;
         status)     mapic_status "$@";;
         s)          mapic_status "$@";;
         logs)       mapic_logs "$@";;
@@ -361,13 +361,16 @@ mapic_travis_install () {
 
     # install
     _install_mapic
+
+    # configure
+    mapic_configure
 }
 _init_docker_swarm () {
     docker swarm init
      # || abort "Docker Swarm is currently only available in experimental mode. Please put Docker in experimental mode and try again."
 }
 mapic_travis_start () {
-    mapic_start
+    mapic_up
     mapic_status
     mapic_logs
     sleep 60
@@ -391,7 +394,7 @@ mapic_travis_start () {
     sleep 60
     mapic_status
     mapic_test_all
-    mapic_stop
+    mapic_down
 }
 
 mapic_volume_usage () {
@@ -664,7 +667,7 @@ mapic_ps () {
 #   / ___/ __/ __ `/ ___/ __/
 #  (__  ) /_/ /_/ / /  / /_  
 # /____/\__/\__,_/_/   \__/  
-mapic_start () {
+mapic_up () {
     COMPOSEFILE=$MAPIC_CONFIG_FOLDER/stack.yml
     # docker stack rm mapic
     docker stack deploy --compose-file=$COMPOSEFILE mapic 
@@ -672,11 +675,11 @@ mapic_start () {
     docker service ls
 }
 mapic_restart () {
-    mapic_stop
+    mapic_down
     mapic_flush
-    mapic_start
+    mapic_up
 }
-mapic_stop () {
+mapic_down () {
     docker stack rm mapic
     echo "Mapic is down."
 }
