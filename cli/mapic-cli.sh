@@ -59,6 +59,7 @@ mapic_cli_usage () {
     echo "  install             Install Mapic"
     echo "  config              View and edit Mapic config"
     echo "  domain              Set Mapic domain"
+    echo "  volume              See Mapic volumes"
     echo "  dns                 Create or check DNS entries for Mapic"
     echo "  ssl                 Create or scan SSL certificates for Mapic"
     echo "  enter               Enter running container"
@@ -119,6 +120,7 @@ m () {
         home)       mapic_home "$@";;
         config)     mapic_config "$@";;
         configure)  mapic_configure "$@";;
+        volume)     mapic_volume "$@";;
         grep)       mapic_grep "$@";;
         debug)      mapic_debug "$@";;
         domain)     mapic_domain "$@";;
@@ -357,7 +359,8 @@ mapic_travis_install () {
     _install_mapic
 }
 _init_docker_swarm () {
-    docker swarm init || abort "Docker Swarm is currently only available in experimental mode. Please put Docker in experimental mode and try again."
+    docker swarm init
+     # || abort "Docker Swarm is currently only available in experimental mode. Please put Docker in experimental mode and try again."
 }
 mapic_travis_script () {
     mapic_start
@@ -387,6 +390,60 @@ mapic_travis_script () {
     mapic_stop
 }
 
+mapic_volume_usage () {
+    echo ""
+    echo "Usage: mapic volume [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  ls      List volumes"
+    echo "  rm      Remove volumes (USE WITH CAUTION!)"
+    echo ""
+    exit 1
+}
+mapic_volume () {
+    test -z "$2" && mapic_volume_usage
+    case "$2" in
+        ls)    mapic_volume_ls "$@";;
+        rm)    mapic_volume_rm "$@";;
+        *)     mapic_volume_usage;;
+    esac
+}
+mapic_volume_ls () {
+    docker volume ls
+}
+mapic_volume_rm () {
+    if [[ -z "$3" ]]; then 
+        echo "Usage: mapic volume rm [volume]"
+        exit 1
+    fi
+    if [[ "$3" == "all" ]]; then
+
+        echo "WARNING: You are about to remove all mapic volumes. "
+        ecco 2 "This CANNOT BE UNDONE!"
+        read -p "Are you sure?  (y/n)" -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            echo ""
+            docker volume ls -q | grep mapic | while read line ; do docker volume rm $line ; done
+        else
+            echo "Nothing removed."
+        fi
+
+        exit 0
+    fi
+
+    # remove single volume
+    echo "WARNING: You are about to remove the volume $3. This CANNOT BE UNDONE!"
+    read -p "Are you sure?  (y/n)" -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        echo ""
+        docker volume rm $3
+    else
+        echo "Nothing removed."
+    fi
+}
+
 #   _________  ____  / __(_)___ _
 #  / ___/ __ \/ __ \/ /_/ / __ `/
 # / /__/ /_/ / / / / __/ / /_/ / 
@@ -411,7 +468,7 @@ mapic_config_usage () {
 }
 mapic_config () {
     test -z "$2" && mapic_config_usage
-     case "$2" in
+    case "$2" in
         refresh)    mapic_config_refresh "$@";;
         set)        mapic_config_set "$@";;
         get)        mapic_config_get "$@";;
@@ -628,8 +685,37 @@ mapic_flush () {
 #   / / __ \/ __ `/ ___/
 #  / / /_/ / /_/ (__  ) 
 # /_/\____/\__, /____/  
-#         /____/        
+#         /____/     
+mapic_logs_container_usage () {
+    echo ""
+    echo "Usage: mapic logs [container]"
+    echo ""
+    echo "  container      Tail logs of container"
+    echo ""
+    echo "Example: 'mapic logs mongo'"
+    echo ""
+    echo "Available containers are [mile, engine, postgis, nginx, mongo, redis]."
+    echo ""
+    exit 1
+}   
 mapic_logs () {
+    if [[ -n "$2" ]]; then
+        echo "2: $2"    
+        case "$2" in
+            mongo)          docker service logs -f mapic_mongo;;
+            mile)           docker service logs -f mapic_mile;;
+            postgis)        docker service logs -f mapic_postgis;;
+            nginx)          docker service logs -f mapic_nginx;;
+            engine)         docker service logs -f mapic_engine;;
+            redis)          docker service logs -f mapic_redislayers;;
+            redislayers)    docker service logs -f mapic_redislayers;;
+            redisstats)     docker service logs -f mapic_redisstats;;
+            redistokens)    docker service logs -f mapic_redistokens;;
+            redistemp)      docker service logs -f mapic_redistemp;;
+            *)              mapic_logs_container_usage;
+        esac 
+        exit
+    fi
     if [[ "$TRAVIS" == "true" ]]; then
         # stream logs
         docker service logs -f mapic_mile         &
@@ -681,6 +767,9 @@ mapic_domain () {
     _write_env MAPIC_DOMAIN $DOMAIN
     echo ""
     echo "Current Mapic domain is $DOMAIN"
+
+    # update config
+    mapic_configure
 }
 
 #   ___  ____  / /____  _____
@@ -783,13 +872,10 @@ mapic_install_branch () {
 }
 _install_mapic () {
 
-    # refresh config
-    _refresh_config
-
-    # ensure domain config
-    _ensure_mapic_domain
-
+    # get branch
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+
+    # wait ten seconds
     echo ""
     echo "Installing Mapic on branch $BRANCH to domain $MAPIC_DOMAIN"
     echo ""
@@ -797,8 +883,6 @@ _install_mapic () {
     sleep 10
 
     # update submodules
-    # todo: this one might need to be skipped for travis build 
-    # when testing mapic/engine, mapic/mile PR's etc,
     _update_submodules
 
     # create ssl
@@ -851,14 +935,15 @@ _print_branches () {
 }
 _refresh_config () {
 
-    ecco 5 "Refreshing configuration..."
-    ecco 3 "MAPIC_DOMAIN: $MAPIC_DOMAIN"
+    echo ""
+    ecco 8 "Refreshing configuration..."
 
     # replace old config with defaults
     cd $MAPIC_CLI_FOLDER/config
     yes | cp -rf default-files/ files
     chmod +w files
 
+    # update config files
     docker run \
     -it \
     --rm \
@@ -869,7 +954,25 @@ _refresh_config () {
     node:6 \
     node refresh-config.js
 
-    ecco 2 "Mapic configuration updated!"
+    # print config
+    _print_config
+
+  
+    # done    
+    ecco 8 "Mapic configuration updated!"
+}
+_print_config () {
+    if [[ -n "$MAPIC_AWS_ACCESSKEYID" && -n "$MAPIC_AWS_SECRETACCESSKEY" ]]; then
+        AWS_SET=true
+    else
+        AWS_SET=false
+    fi
+    echo "    Domain:               $MAPIC_DOMAIN"
+    echo "    IP:                   $MAPIC_IP"
+    echo "    Email:                $MAPIC_USER_EMAIL"
+    echo "    AWS credentials set:  $AWS_SET"
+    echo "    Google Analytics ID:  $MAPIC_GA_ID"
+    echo ""
 }
 _update_submodules () {
 
@@ -1094,6 +1197,11 @@ mapic_ssl () {
     esac 
 }
 _create_ssl () {
+
+    # ensure domain
+    _ensure_mapic_domain
+
+    # create certs
     if [ $MAPIC_DOMAIN = "localhost" ]; then
         cd $MAPIC_CLI_FOLDER/ssl
         bash create-ssl-localhost.sh
@@ -1149,23 +1257,25 @@ mapic_status () {
 
     # show stack status
     _print_stack
+
+    # show config
+    echo ""
+    ecco 6 "Configuration:"
+    _print_config
 }
 _print_stack () {
     echo ""
-    ecco 6 "docker stack services mapic:"
-    docker stack services mapic
-    echo ""
     ecco 6 "docker node ls:"
     docker node ls
-    echo ""
-    ecco 6 "docker node ps:"
-    docker node ps
     echo ""
     ecco 6 "docker stack ps:"
     docker stack ps mapic
     echo ""
     ecco 6 "docker services mapic:"
     docker stack services mapic
+    echo ""
+    ecco 6 "docker ps"
+    docker ps
 }
 #   / /____  _____/ /_
 #  / __/ _ \/ ___/ __/
