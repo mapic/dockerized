@@ -18,8 +18,8 @@ if (!fs.existsSync(CONFIG_FOLDER)) {
 }
 
 // helper fn
-var updateRedisConfig = function (filePath) {
-    var lines = fs.readFileSync(filePath).toString().split("\n");
+var updateRedisConfig = function (config) {
+    var lines = fs.readFileSync(config).toString().split("\n");
     for(var i in lines) {
         var lineText = lines[i];
         if (lineText.indexOf('requirepass') > -1){
@@ -28,7 +28,14 @@ var updateRedisConfig = function (filePath) {
         }
     }
     lines = lines.join('\n');
-    fs.writeFileSync(filePath, lines, 'utf-8');  
+    fs.writeFileSync(config, lines, 'utf-8');  
+};
+var addLineToRedisConfig = function (config, line) {
+    var lines = fs.readFileSync(config).toString('utf-8').split("\n");
+    var l = lines.length;
+    lines[l] = line
+    lines = lines.join('\n');
+    fs.writeFileSync(config, lines, 'utf-8');
 };
 
 var mongoPassString = crypto.randomBytes(64).toString('hex');
@@ -55,12 +62,12 @@ engineConfig.serverConfig.redis.layers.auth = redisPassString;
 engineConfig.serverConfig.redis.stats.auth = redisPassString;
 engineConfig.serverConfig.redis.temp.auth = redisPassString;
 
-// get env
 var MAPIC_DOMAIN = process.env.MAPIC_DOMAIN;
 var domain_split = MAPIC_DOMAIN.split('.').reverse();
 var MAPIC_ROOT_DOMAIN = domain_split[1] + '.' + domain_split[0];
 var MAPIC_SUBDOMAIN = domain_split.reverse()[0];
 var MAPIC_BASE_URL = 'https://' + MAPIC_DOMAIN;
+
 engineConfig.serverConfig.portalServer.uri = 'https://' + MAPIC_DOMAIN + '/';
 engineConfig.clientConfig.servers.portal = 'https://' + MAPIC_DOMAIN + '/';
 engineConfig.clientConfig.servers.subdomain = 'https://{s}.' + MAPIC_ROOT_DOMAIN + '/';
@@ -88,14 +95,8 @@ engineConfig.clientConfig.servers.utfgrid.subdomains = [
     'grid-d-' + MAPIC_SUBDOMAIN 
 ];
 
-
 var engineJsonStr = 'module.exports = ' + JSON.stringify(engineConfig, null, 2);
-var content = fs.readFileSync(ENGINE_CONFIG_PATH);
-content = content.toString('utf8');
 fs.writeFileSync(ENGINE_CONFIG_PATH , engineJsonStr, 'utf-8');
-
-// redis
-updateRedisConfig(REDIS_CONFIG_PATH);
 
 
 // nginx
@@ -106,6 +107,34 @@ var result = nginxConfig.replace(/server_name                 localhost;/g, repl
 var result2 = result.replace(/server_name localhost;/g, replace_text);
 fs.writeFileSync(NGINX_CONFIG_PATH, result2, 'utf8')
 
+// redis
+updateRedisConfig(REDIS_CONFIG_PATH);
+
+var redis_layers_config_path = CONFIG_FOLDER + "redis.layers.conf";
+var redis_tokens_config_path = CONFIG_FOLDER + "redis.tokens.conf";
+var redis_stats_config_path = CONFIG_FOLDER + "redis.stats.conf";
+var redis_temp_config_path = CONFIG_FOLDER + "redis.temp.conf";
+
+fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_layers_config_path));
+fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_tokens_config_path));
+fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_stats_config_path));
+fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_temp_config_path));
+
+// need to wait for file system 
+setTimeout(function () {
+
+    addLineToRedisConfig(redis_layers_config_path, 'appendonly yes')
+    addLineToRedisConfig(redis_layers_config_path, 'appendfsync everysec')
+    addLineToRedisConfig(redis_tokens_config_path, 'appendonly yes')
+    addLineToRedisConfig(redis_tokens_config_path, 'appendfsync everysec')
+    addLineToRedisConfig(redis_stats_config_path, 'appendonly yes')
+    addLineToRedisConfig(redis_stats_config_path, 'appendfsync everysec')
+
+}, 500)
+
+
 // todo: 
 // engine domains (localhost / dev.mapic.io)
+
+// redis saving!
 
