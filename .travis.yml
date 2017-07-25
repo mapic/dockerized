@@ -13,6 +13,8 @@ install:
   - sudo bash mapic-cli.sh
   - mapic version
   - sudo mapic travis install
+  - mapic domain localhost
+  - mapic configure
 
 script:
-  - sudo mapic travis script
+  - sudo mapic travis start

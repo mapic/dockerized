@@ -328,7 +328,7 @@ mapic_travis_usage () {
     echo ""
     echo "Commands:"
     echo "  install     Install dependencies for Travis build"
-    echo "  script      Run Travis build script"
+    echo "  start       Start with Travis logs etc."
     echo ""
     exit 1
 }
@@ -337,7 +337,7 @@ mapic_travis () {
     test -z "$2" && mapic_travis_usage
     case "$2" in
         install)    mapic_travis_install "$@";;
-        script)     mapic_travis_script "$@";;
+        start)     mapic_travis_start "$@";;
         *)          mapic_travis_usage;;
     esac 
 }
@@ -362,7 +362,7 @@ _init_docker_swarm () {
     docker swarm init
      # || abort "Docker Swarm is currently only available in experimental mode. Please put Docker in experimental mode and try again."
 }
-mapic_travis_script () {
+mapic_travis_start () {
     mapic_start
     mapic_status
     mapic_logs
