@@ -947,8 +947,10 @@ _refresh_config () {
 
     # replace old config with defaults
     cd $MAPIC_CLI_FOLDER/config
-    yes | cp -rf default-files/ files
+    yes | cp -rf default-files files
     chmod +w files
+    ls -la
+    ls -la files/
 
     # update config files
     docker run \
@@ -963,7 +965,6 @@ _refresh_config () {
 
     # print config
     _print_config
-
   
     # done    
     ecco 8 "Mapic configuration updated!"
