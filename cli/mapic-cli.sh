@@ -107,6 +107,7 @@ m () {
         restart)    mapic_restart;;
         stop)       mapic_stop;;
         status)     mapic_status "$@";;
+        s)          mapic_status "$@";;
         logs)       mapic_logs "$@";;
         enter)      mapic_enter "$@";;
         run)        mapic_run "$@";;
