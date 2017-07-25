@@ -9,8 +9,6 @@ var ENGINE_CONFIG_PATH  = CONFIG_FOLDER + "engine.config.js";
 var REDIS_CONFIG_PATH   = CONFIG_FOLDER + "redis.conf";
 var NGINX_CONFIG_PATH   = CONFIG_FOLDER + "nginx.conf";
 
-
-
 // check if folder exists
 if (!fs.existsSync(CONFIG_FOLDER)) {
     console.log(CONFIG_FOLDER, 'does not exist. Quitting!');
@@ -120,9 +118,9 @@ fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_tokens_co
 fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_stats_config_path));
 fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_temp_config_path));
 
-// need to wait for file system 
 setTimeout(function () {
 
+    // add saving to some redis dbs
     addLineToRedisConfig(redis_layers_config_path, 'appendonly yes')
     addLineToRedisConfig(redis_layers_config_path, 'appendfsync everysec')
     addLineToRedisConfig(redis_tokens_config_path, 'appendonly yes')
@@ -130,11 +128,4 @@ setTimeout(function () {
     addLineToRedisConfig(redis_stats_config_path, 'appendonly yes')
     addLineToRedisConfig(redis_stats_config_path, 'appendfsync everysec')
 
-}, 500)
-
-
-// todo: 
-// engine domains (localhost / dev.mapic.io)
-
-// redis saving!
-
+}, 500) // need to wait for file system 

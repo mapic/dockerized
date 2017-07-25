@@ -341,7 +341,7 @@ mapic_travis () {
     test -z "$2" && mapic_travis_usage
     case "$2" in
         install)    mapic_travis_install "$@";;
-        start)     mapic_travis_start "$@";;
+        start)      mapic_travis_start "$@";;
         *)          mapic_travis_usage;;
     esac 
 }
