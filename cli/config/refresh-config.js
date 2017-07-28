@@ -36,8 +36,13 @@ var addLineToRedisConfig = function (config, line) {
     fs.writeFileSync(config, lines, 'utf-8');
 };
 
-var mongoPassString = crypto.randomBytes(64).toString('hex');
-var redisPassString = crypto.randomBytes(64).toString('hex');
+// var mongoPassString = crypto.randomBytes(64).toString('hex');
+// var redisPassString = crypto.randomBytes(64).toString('hex');
+var redisPassString = process.env.MAPIC_REDIS_AUTH;
+var mongoPassString = process.env.MAPIC_MONGO_AUTH;
+
+console.log('redisPassString', redisPassString);
+console.log('mongoPassString', mongoPassString);
 
 // mongo
 var mongo_json = fs.readFileSync(MONGO_JSON_PATH);
@@ -46,12 +51,13 @@ mongo_config.password = mongoPassString;
 fs.writeFileSync(MONGO_JSON_PATH, JSON.stringify(mongo_config, null, 2) , 'utf-8');
 
 // mile
-var mileConfig = require(MILE_CONFIG_PATH);
-mileConfig.redis.layers.auth = redisPassString;
-mileConfig.redis.stats.auth = redisPassString;
-mileConfig.redis.temp.auth = redisPassString;
-var mileJsonStr = 'module.exports = ' + JSON.stringify(mileConfig, null, 2);
-fs.writeFileSync(MILE_CONFIG_PATH, mileJsonStr , 'utf-8');
+// var mileConfig = require(MILE_CONFIG_PATH);
+// mileConfig.redis.layers.auth = redisPassString;
+// mileConfig.redis.stats.auth = redisPassString;
+// mileConfig.redis.temp.auth = redisPassString;
+// var mileJsonStr = 'module.exports = ' + JSON.stringify(mileConfig, null, 2);
+// fs.writeFileSync(MILE_CONFIG_PATH, mileJsonStr , 'utf-8');
+
 
 // engine
 var engineConfig = require(ENGINE_CONFIG_PATH);

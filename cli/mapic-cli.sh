@@ -969,13 +969,21 @@ _refresh_config () {
     echo ""
     ecco 8 "Refreshing configuration..."
 
+    # create auth for redis/mongo
+    MAPIC_REDIS_AUTH=$(pwgen 40 1)
+    MAPIC_MONGO_AUTH=$(pwgen 40 1)
+    _write_env MAPIC_REDIS_AUTH $MAPIC_REDIS_AUTH
+    _write_env MAPIC_MONGO_AUTH $MAPIC_MONGO_AUTH
+
+    echo "  Created secure auths..."
+
     # replace old config with defaults
     cd $MAPIC_CLI_FOLDER/config
     rm -rf files
     yes | cp -rf default-files files
     chmod +w files
-    ls -la
-    ls -la files/
+    
+    echo "  Copied config files..."
 
     # update config files
     docker run \
@@ -987,6 +995,8 @@ _refresh_config () {
     -w /tmp \
     node:6 \
     node refresh-config.js
+
+    echo "  Updated config files..."
 
     # print config
     _print_config
