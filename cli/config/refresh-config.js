@@ -40,15 +40,20 @@ var addLineToRedisConfig = function (config, line) {
 // var redisPassString = crypto.randomBytes(64).toString('hex');
 var redisPassString = process.env.MAPIC_REDIS_AUTH;
 var mongoPassString = process.env.MAPIC_MONGO_AUTH;
+var mongoAlreadySet = (process.env.MAPIC_MONGO_AUTH_ALREADY_SET == true);
+console.log('mongoAlreadySet', mongoAlreadySet);
+console.log('process.env.MAPIC_MONGO_AUTH_ALREADY_SET', process.env.MAPIC_MONGO_AUTH_ALREADY_SET);
 
 console.log('redisPassString', redisPassString);
 console.log('mongoPassString', mongoPassString);
 
 // mongo
-var mongo_json = fs.readFileSync(MONGO_JSON_PATH);
-var mongo_config = JSON.parse(mongo_json);
-mongo_config.password = mongoPassString;
-fs.writeFileSync(MONGO_JSON_PATH, JSON.stringify(mongo_config, null, 2) , 'utf-8');
+if (!mongoAlreadySet) {
+    var mongo_json = fs.readFileSync(MONGO_JSON_PATH);
+    var mongo_config = JSON.parse(mongo_json);
+    mongo_config.password = mongoPassString;
+    fs.writeFileSync(MONGO_JSON_PATH, JSON.stringify(mongo_config, null, 2) , 'utf-8');
+}
 
 // mile
 // var mileConfig = require(MILE_CONFIG_PATH);
@@ -61,7 +66,9 @@ fs.writeFileSync(MONGO_JSON_PATH, JSON.stringify(mongo_config, null, 2) , 'utf-8
 
 // engine
 var engineConfig = require(ENGINE_CONFIG_PATH);
-engineConfig.serverConfig.mongo.url =  'mongodb://' + mongo_config.user + ':' + mongoPassString + '@mongo/' + mongo_config.database;
+if (!mongoAlreadySet) {
+    engineConfig.serverConfig.mongo.url =  'mongodb://' + mongo_config.user + ':' + mongoPassString + '@mongo/' + mongo_config.database;
+}
 engineConfig.serverConfig.redis.layers.auth = redisPassString;
 engineConfig.serverConfig.redis.stats.auth = redisPassString;
 engineConfig.serverConfig.redis.temp.auth = redisPassString;

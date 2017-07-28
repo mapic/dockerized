@@ -646,11 +646,15 @@ mapic_config_prompt () {
 _write_env () {
     test -z $1 && failed "missing arg"
 
+    echo "_write_env $1 $2"
+
     # add or replace line in .mapic.env
-    if grep -q "$1" "$MAPIC_ENV_FILE"; then
+    if grep -q "$1=" "$MAPIC_ENV_FILE"; then
+        echo "found so replace"
         # replace line
-        sed -i "/$1/c\\$1=$2" $MAPIC_ENV_FILE
+        sed -i "/$1=/c\\$1=$2" $MAPIC_ENV_FILE
     else
+        echo "new"
         # ensure newline
         sed -i -e '$a\' $MAPIC_ENV_FILE 
 
