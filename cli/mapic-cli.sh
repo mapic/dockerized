@@ -187,6 +187,11 @@ initialize () {
             _install_osx_tools
         fi
 
+        # install dependencies on linux
+        if [[ "$MAPIC_HOST_OS" == "linux" ]]; then
+            _install_linux_tools
+        fi
+
         # ensure editor
         _ensure_editor
 
@@ -235,12 +240,20 @@ _corrupted_install () {
     echo "Install is corrupted. Try downloading fresh with `curl -sSL https://get.mapic.io | sh`"
     exit 1 
 }
+_install_linux_tools () {
+    PWGEN=$(which pwgen)
+    if [ -z $PWGEN ]; then
+        apt-get update -y
+        apt-get install -y pwgen
+    fi
+}
 _install_osx_tools () {
     
     SED=$(which sed)
     BREW=$(which brew)
     JQ=$(which jq)
     GREP=$(which grep)
+    PWGEN=$(which pwgen)
 
     if [[ "$MAPIC_DEBUG" == true ]]; then
         echo "Installing OSX Tools"
@@ -248,6 +261,7 @@ _install_osx_tools () {
         echo "BREW: $BREW"
         echo "JQ: $JQ"
         echo "GREP: $GREP"
+        echo "PWGEN: $PWGEN"
         echo "TRAVIS: $TRAVIS"
         echo "CI: $CI"
         echo "MAPIC_TRAVIS: $MAPIC_TRAVIS"
@@ -282,6 +296,16 @@ _install_osx_tools () {
             GREPV=$(grep --version)
             echo "$GREPV installed"
         fi
+    fi
+
+    # pwget
+    if [ -z $PWGEN ]; then
+        cd $MAPIC_ROOT_FOLDER/tmp
+        wget "http://http.debian.net/debian/pool/main/p/pwgen/pwgen_2.07.orig.tar.gz"
+        tar xf pwgen_2.07.orig.tar.gz
+        cd pwget-2.07
+        ./configure
+        make && make install
     fi
 
     # jq
