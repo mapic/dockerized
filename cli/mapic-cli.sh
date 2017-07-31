@@ -1304,14 +1304,10 @@ _set_dns () {
 # /____/\__/\__,_/\__/\__,_/____/  
 mapic_status () {
     
-    # print branches
-    # _print_branches
-
     # show stack status
     _print_stack
 
     # show config
-   
     _print_config
 }
 _print_stack () {
@@ -1319,10 +1315,10 @@ _print_stack () {
     ecco 6 "docker node ls:"
     docker node ls
     echo ""
-    ecco 6 "docker stack ps:"
+    ecco 6 "docker stack ps mapic:"
     docker stack ps mapic
     echo ""
-    ecco 6 "docker services mapic:"
+    ecco 6 "docker stack services mapic:"
     docker stack services mapic
     echo ""
     ecco 6 "docker ps"
