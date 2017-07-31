@@ -1310,6 +1310,12 @@ mapic_status () {
     # show config
     _print_config
 }
+mapic_status_visualize () {
+    echo "todo"
+    # docker run -it -d -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
+    # note: don't run this in production, as it exposes docker remote api
+    # see: https://github.com/dockersamples/docker-swarm-visualizer/issues/66
+}
 _print_stack () {
     echo ""
     ecco 6 "docker node ls:"
