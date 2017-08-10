@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Replicating `mile` tileserver on 3 nodes
 - Bugfixes
 
+### `mapic/mile` 
+- Cleaned up stale ENV and naming
+
 
 ## [17.7](https://github.com/mapic/mapic/releases/tag/v17.7)
 Released: 2017-07-03
