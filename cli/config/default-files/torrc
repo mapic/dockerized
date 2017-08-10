@@ -1,0 +1,10 @@
+Nickname freespeech4thedumb01
+ContactInfo https://keybase.io/knutole
+ExitPolicy reject *:* 
+AccountingMax 100 GBytes
+RelayBandwidthRate 5 MBytes
+RelayBandwidthBurst 5 MBytes
+AccountingStart month 1 00:00
+DirPort 9030 
+ORPort 9001
+SOCKSPort 9050

@@ -78,6 +78,7 @@ mapic_cli_usage () {
     if [[ "$MAPIC_DEBUG" == "true" ]]; then
     echo "Undocumented:"
     echo "  edit                Edit mapic-cli.sh source file"
+    echo "  tor                 Tor Project relay settings"
     echo ""
     fi
     exit 0
@@ -135,6 +136,7 @@ m () {
         env)        mapic_env "$@";;
         edit)       mapic_edit "$@";;
         version)    mapic_version "$@";;
+        tor)        mapic_tor "$@";;
     
         *)          mapic_wild "$@";;
     esac
@@ -1421,6 +1423,35 @@ mapic_grep () {
     echo "[grep -rn \"$2\" $MAPIC_CLI_EXECUTED_FROM]:"
     grep -rn "$2" $MAPIC_CLI_EXECUTED_FROM
 }
+
+mapic_tor () {
+    test -z "$2" && mapic_tor_usage
+    case "$2" in
+        install)    mapic_tor_install;;
+        start)      mapic_tor_start;;
+        stop)       mapic_tor_stop;;
+        status)     mapic_tor_status;;
+        *)          mapic_tor_usage;
+    esac 
+    # ensure 
+}
+mapic_tor_usage () {
+    _tor_status
+}
+_tor_status () {
+    echo ""
+}
+
+mapic_tor_install () {
+    # install 
+    sudo apt-get update -y
+    sudo apt-get install -y tor tor-arm
+
+    # ok
+    # create torrc file
+
+}
+
 
 #   ___  ____  / /________  ______  ____  (_)___  / /_
 #  / _ \/ __ \/ __/ ___/ / / / __ \/ __ \/ / __ \/ __/
