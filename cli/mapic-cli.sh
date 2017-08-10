@@ -774,7 +774,7 @@ mapic_logs_container_usage () {
     echo ""
     echo "Example: 'mapic logs mongo'"
     echo ""
-    echo "Available containers are [mile, engine, postgis, nginx, mongo, redis]."
+    echo "Available containers are [mile, engine, postgis, nginx, mongo, redis, tor, viz]."
     echo ""
     exit 1
 }   
@@ -784,6 +784,8 @@ mapic_logs () {
         case "$2" in
             mongo)          docker service logs -f mapic_mongo;;
             mile)           docker service logs -f mapic_mile;;
+            tor)            docker service logs -f mapic_tor;;
+            viz)            docker service logs -f mapic_visualizer;;
             postgis)        docker service logs -f mapic_postgis;;
             nginx)          docker service logs -f mapic_nginx;;
             engine)         docker service logs -f mapic_engine;;
@@ -818,6 +820,8 @@ mapic_logs () {
         docker service logs mapic_postgis    
         docker service logs mapic_mile       
         docker service logs mapic_engine     
+        docker service logs mapic_tor     
+        docker service logs mapic_visualizer     
     fi
 }
                      
