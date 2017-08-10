@@ -786,8 +786,6 @@ mapic_logs () {
         case "$2" in
             mongo)          docker service logs -f mapic_mongo;;
             mile)           docker service logs -f mapic_mile;;
-            tor)            docker service logs -f mapic_tor;;
-            viz)            docker service logs -f mapic_visualizer;;
             postgis)        docker service logs -f mapic_postgis;;
             nginx)          docker service logs -f mapic_nginx;;
             engine)         docker service logs -f mapic_engine;;
@@ -822,7 +820,6 @@ mapic_logs () {
         docker service logs mapic_postgis    
         docker service logs mapic_mile       
         docker service logs mapic_engine     
-        docker service logs mapic_tor     
         docker service logs mapic_visualizer     
     fi
 }
@@ -1516,10 +1513,11 @@ mapic_tor_status () {
 }
 mapic_tor_start () {
     echo "Starting Tor relays..."
-    docker service create --mode global --detach --name tor-relay mapic/tor:latest
+    docker service create --mode global --detach -p 9001:9001 --name tor-relay mapic/tor:latest
 }
 mapic_tor_stop () {
-    echo ""
+    echo "Stopping Tor relays..."
+    docker service rm tor-relay
 }
 
 
