@@ -47,9 +47,9 @@ mapic_cli_usage () {
     echo "A CLI for Mapic"
     echo ""
     echo "Management commands:"
-    echo "  up                  Start Mapic stack"
-    echo "  down                Stop Mapic stack"
-    echo "  reup                Stop, flush and start Mapic stack"
+    echo "  start               Start Mapic stack"
+    echo "  stop                Stop Mapic stack"
+    echo "  restart             Stop, flush and start Mapic stack"
     echo "  status              Display status on running Mapic stack"
     echo "  logs [container]    Show logs of running Mapic server"
     echo "  test                Run Mapic tests"
@@ -68,6 +68,7 @@ mapic_cli_usage () {
     echo "  ps                  Show running containers"
     echo "  debug               Toggle debug mode"
     echo "  version             Display Mapic version"
+    echo "  info                Display Mapic info"
     echo ""
     echo "API commands:"
     echo "  user                Handle Mapic users"
@@ -136,6 +137,7 @@ m () {
         env)        mapic_env "$@";;
         edit)       mapic_edit "$@";;
         version)    mapic_version "$@";;
+        info)       mapic_info "$@";;
         tor)        mapic_tor "$@";;
     
         *)          mapic_wild "$@";;
@@ -340,6 +342,16 @@ ecco () {
     COLOR="c_"$1
     TEXT=${@:2}
     printf "${!COLOR}${TEXT}${c_reset}\n" 
+}
+mapic_info () {
+    echo ""
+    _print_config
+    ecco 6 "Docker:"
+    docker info 2>/dev/null | grep Swarm 
+    docker info 2>/dev/null | grep "Is Manager" 
+    docker info 2>/dev/null | grep "CPUs" 
+    docker info 2>/dev/null | grep "Total Memory" 
+
 }
 mapic_version () {
     echo ""
