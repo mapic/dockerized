@@ -18,7 +18,7 @@ services:
       MAPIC_PRODMODE: 'false'
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints: [node.labels.domain_node == true]
     working_dir: /mapic/engine 
     command: ./start-server.sh
     volumes:
@@ -37,9 +37,9 @@ services:
       MAPIC_DOMAIN: ${MAPIC_DOMAIN}
       MAPIC_PRODMODE: 'false'
       MAPIC_REDIS_AUTH: ${MAPIC_REDIS_AUTH}
-    # deploy:
-      # placement:
-        # constraints: [node.role == manager]
+    deploy:
+      placement:
+        constraints: [node.labels.mile == true]
     working_dir: /mapic/mile 
     command: ./start-server.sh
     volumes:
@@ -57,7 +57,7 @@ services:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints: [node.labels.domain_node == true]
     command: "nginx -c /mapic/config/nginx.conf"
     ports:
       - 443:443
@@ -74,7 +74,8 @@ services:
       - redis_layers_store_localhost:/data
     deploy:
       placement:
-        constraints: [node.role == manager]
+        # constraints: [node.role == manager]
+        constraints: [node.labels.domain_node == true]
     command: "redis-server /mapic/config/redis.layers.conf"
     networks:
       mapic:
@@ -88,7 +89,8 @@ services:
       - redis_stats_store_localhost:/data
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints: [node.labels.domain_node == true]
+        # constraints: [node.role == manager]
     command: "redis-server /mapic/config/redis.stats.conf"
     networks:
       mapic:
@@ -102,7 +104,8 @@ services:
       - redis_tokens_store_localhost:/data
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints: [node.labels.domain_node == true]
+        # constraints: [node.role == manager]
     command: "redis-server /mapic/config/redis.tokens.conf"
     networks:
       mapic:
@@ -115,7 +118,8 @@ services:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints: [node.labels.domain_node == true]
+        # constraints: [node.role == manager]
     command: "redis-server /mapic/config/redis.temp.conf"
     networks:
       mapic:
@@ -129,7 +133,8 @@ services:
       - mongo_store_localhost:/data/db
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints: [node.labels.domain_node == true]
+        # constraints: [node.role == manager]
     networks:
       mapic:
         aliases:
@@ -142,7 +147,8 @@ services:
       - postgis_store_localhost:/var/lib/postgresql
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints: [node.labels.domain_node == true]
+        # constraints: [node.role == manager]
     networks:
       mapic:
         aliases:
