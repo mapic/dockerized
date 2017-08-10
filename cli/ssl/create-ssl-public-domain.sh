@@ -57,5 +57,5 @@ cd $MAPIC_CLI_FOLDER/ssl
 CERT_PATH=$MAPIC_ROOT_FOLDER/cli/config/files
 
 echo "Created certificates, moving them to $CERT_PATH"
-cp /etc/letsencrypt/live/"$MAPIC_DOMAIN"/privkey.pem $CERT_PATH/ssl_certificate.key
-cp /etc/letsencrypt/live/"$MAPIC_DOMAIN"/fullchain.pem $CERT_PATH/ssl_certificate.pem
+cp /etc/letsencrypt/live/"$MAPIC_DOMAIN"/privkey.pem $CERT_PATH/privkey.key
+cp /etc/letsencrypt/live/"$MAPIC_DOMAIN"/fullchain.pem $CERT_PATH/fullchain.pem

@@ -37,9 +37,9 @@ services:
       MAPIC_DOMAIN: ${MAPIC_DOMAIN}
       MAPIC_PRODMODE: 'false'
       MAPIC_REDIS_AUTH: ${MAPIC_REDIS_AUTH}
-    deploy:
-      placement:
-        constraints: [node.role == manager]
+    # deploy:
+      # placement:
+        # constraints: [node.role == manager]
     working_dir: /mapic/mile 
     command: ./start-server.sh
     volumes:
