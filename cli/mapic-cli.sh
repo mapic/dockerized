@@ -374,14 +374,6 @@ mapic_info () {
    
     echo ""
 }
-mapic_visualizer () {
-    docker service create \
-      --name=mapic-swarm-visualizer \
-      --publish=8080:8080/tcp \
-      --constraint=node.labels.domain_node==true \
-      --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
-      mapic/swarm-visualizer
-}
 _print_docker_nodes () {
     docker node ls -q | xargs docker inspect --format='
     Node ({{.Spec.Role}})
