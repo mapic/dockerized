@@ -38,6 +38,7 @@ cd $MAPIC_CLI_FOLDER/ssl
     --agree-tos \
     --email "$MAPIC_USER_EMAIL" \
     --hsts \
+    --force-renew \
     --non-interactive \
     --domain "$MAPIC_DOMAIN"           \
     --domain proxy-a-"$MAPIC_DOMAIN"   \
