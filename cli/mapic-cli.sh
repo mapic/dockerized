@@ -434,7 +434,7 @@ mapic_travis_install () {
     _install_mapic
 
     # configure
-    mapic_configure
+    _mapic_configure
 }
 _init_docker_swarm () {
     docker swarm init --advertise-addr $MAPIC_IP
@@ -528,7 +528,29 @@ mapic_volume_rm () {
 # \___/\____/_/ /_/_/ /_/\__, /  
 #                       /____/   
 mapic_configure () {
+    test -z "$2" && _mapic_configure
+    case "$2" in
+        stack)      mapic_configure_stack "$@";;
+        *)          _mapic_configure;;
+    esac 
+}
+_mapic_configure () {
     _refresh_config
+    exit 0
+}
+mapic_configure_stack () {
+    cp $MAPIC_CLI_FOLDER/config/default-files/stack.yml $MAPIC_CONFIG_FOLDER/stack.yml
+    SEARCH="constraints: [node.ip = MAPIC_IP]"
+    REPLAC="constraints: [node.ip = $MAPIC_IP]"
+    echo "SEARCH $SEARCH"
+    echo "REP $REPLAC"
+    echo "$MAPIC_CONFIG_FOLDER"
+    # sed -i "/$1=/c\\$1=$2" $MAPIC_CONFIG_FOLDER/stack.yml
+    sed -i "/$SEARCH/c\\$REPLAC" $MAPIC_CONFIG_FOLDER/stack.yml
+    # cat $MAPIC_CONFIG_FOLDER/stack.yml
+    # _replace_line "node.ip = MAPIC_IP" "constraints: [node.ip = $MAPIC_IP]" $MAPIC_CONFIG_FOLDER/stack.yml
+    echo "Default stack copied!"
+    echo "TODO - not working!"
 }
 mapic_config_usage () {
     echo ""
@@ -697,16 +719,35 @@ _write_env () {
 
     # add or replace line in .mapic.env
     if grep -q "$1=" "$MAPIC_ENV_FILE"; then
-        echo "found so replace"
         # replace line
         sed -i "/$1=/c\\$1=$2" $MAPIC_ENV_FILE
     else
-        echo "new"
         # ensure newline
         sed -i -e '$a\' $MAPIC_ENV_FILE 
 
         # add to bottom
         echo "$1"="$2" >> $MAPIC_ENV_FILE
+    fi
+}
+_replace_line () {
+    test -z $1 && failed "Missing argum"
+    test -z $2 && failed "Missing argum"
+    test -z $3 && failed "Missing argum"
+
+    REPLACE_FILE=$3
+
+    echo "_write_env $1 $2"
+
+    # add or replace line in .mapic.env
+    if grep -q "$1=" "$REPLACE_FILE"; then
+        # replace line
+        sed -i "/$1=/c\\$1=$2" $REPLACE_FILE
+    else
+        # ensure newline
+        sed -i -e '$a\' $REPLACE_FILE 
+
+        # add to bottom
+        echo "$1"="$2" >> $REPLACE_FILE
     fi
 }
 _create_mapic_symlink () {
@@ -1513,7 +1554,7 @@ mapic_tor_status () {
 }
 mapic_tor_start () {
     echo "Starting Tor relays..."
-    docker service create --mode global --detach -p 9001:9001 --name tor-relay mapic/tor:latest
+    docker service create --mode global --detach -p 9001:9001 --name tor-relay mapic/tor-relay:latest
 }
 mapic_tor_stop () {
     echo "Stopping Tor relays..."
