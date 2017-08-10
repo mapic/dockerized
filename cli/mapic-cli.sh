@@ -80,6 +80,7 @@ mapic_cli_usage () {
     echo "Undocumented:"
     echo "  edit                Edit mapic-cli.sh source file"
     echo "  tor                 Tor Project relay settings"
+    echo "  viz                 Visualize Docker nodes graphically"
     echo ""
     fi
     exit 0
@@ -139,6 +140,7 @@ m () {
         version)    mapic_version "$@";;
         info)       mapic_info "$@";;
         tor)        mapic_tor "$@";;
+        viz)        mapic_viz "$@";;
     
         *)          mapic_wild "$@";;
     esac
@@ -1469,33 +1471,55 @@ mapic_grep () {
     echo "[grep -rn \"$2\" $MAPIC_CLI_EXECUTED_FROM]:"
     grep -rn "$2" $MAPIC_CLI_EXECUTED_FROM
 }
-
+mapic_viz () {
+    test -z "$2" && mapic_viz_usage
+    case "$2" in
+        start)      mapic_viz_start;;
+        stop)       mapic_viz_stop;;
+        status)     mapic_viz_status;;
+        *)          mapic_viz_usage;;
+    esac 
+}
+mapic_viz_usage () {
+    echo ""
+    echo "Usage: mapic viz start|stop|status"
+    echo ""
+    exit 1
+}
+mapic_viz_start () {
+   docker service create \
+     --name=swarm-visualizer \
+     --publish=8080:8080/tcp \
+     -- detach \
+     --constraint=node.labels.domain_node==true \
+     --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+     mapic/swarm-visualizer
+}
+mapic_viz_stop () {
+    echo ""
+}
 mapic_tor () {
     test -z "$2" && mapic_tor_usage
     case "$2" in
-        install)    mapic_tor_install;;
         start)      mapic_tor_start;;
         stop)       mapic_tor_stop;;
         status)     mapic_tor_status;;
-        *)          mapic_tor_usage;
+        *)          mapic_tor_usage;;
     esac 
-    # ensure 
 }
 mapic_tor_usage () {
-    _tor_status
+    mapic_tor_status
 }
-_tor_status () {
+mapic_tor_status () {
     echo ""
+    docker service ps tor-relay
 }
-
-mapic_tor_install () {
-    # install 
-    sudo apt-get update -y
-    sudo apt-get install -y tor tor-arm
-
-    # ok
-    # create torrc file
-
+mapic_tor_start () {
+    echo "Starting Tor relays..."
+    docker service create --mode global --detach --name tor-relay mapic/tor:latest
+}
+mapic_tor_stop () {
+    echo ""
 }
 
 
