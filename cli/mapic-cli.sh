@@ -344,14 +344,21 @@ ecco () {
     printf "${!COLOR}${TEXT}${c_reset}\n" 
 }
 mapic_info () {
-    echo ""
     _print_config
     ecco 6 "Docker:"
-    docker info 2>/dev/null | grep Swarm 
+    docker info 2>/dev/null | grep "Swarm" 
     docker info 2>/dev/null | grep "Is Manager" 
+    docker info 2>/dev/null | grep "Managers:" 
+    docker info 2>/dev/null | grep "Nodes:" 
+    docker info 2>/dev/null | grep "Containers:" 
     docker info 2>/dev/null | grep "CPUs" 
     docker info 2>/dev/null | grep "Total Memory" 
-
+    docker info 2>/dev/null | grep "Experimental" 
+    docker info 2>/dev/null | grep "Operating System" 
+    echo ""
+    ecco 6 "Docker nodes:"
+    docker node ls
+    echo ""
 }
 mapic_version () {
     echo ""
@@ -1037,7 +1044,6 @@ _print_config () {
     echo   "  IP:                   $MAPIC_IP"
     echo   "  Email:                $MAPIC_USER_EMAIL"
     echo   "  AWS credentials set:  $AWS_SET"
-    echo   "  Google Analytics ID:  $MAPIC_GA_ID"
     echo   ""
 }
 _update_submodules () {
