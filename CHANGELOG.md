@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Additions to Mapic CLI: `mapic tor`, `mapic info`
 - Implemented Tor Project relay-only on all nodes
 - Moved most configuration to ENV
-- Added visualizer for Docker nodes @ localhost
+- Added visualizer for Docker nodes @ localhost:8080
+    - Port 8080 is blocked in AWS, so only ssh tunnel can access visualizer
+    - Need to add `LocalForward 8080 localhost:8080` to /.ssh/config on your localhost
 - Replicating mode 
 - Bugfixes
 
