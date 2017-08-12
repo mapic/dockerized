@@ -156,8 +156,10 @@ initialize () {
     # get osx/linux
     get_mapic_host_os
 
-    # hardcoded env file
+    # hardcoded env files
     MAPIC_ENV_FILE=/usr/local/bin/.mapic.env
+    MAPIC_AWS_ENV_FILE=/usr/local/bin/.mapic.aws.env
+    MAPIC_API_ENV_FILE=/usr/local/bin/.mapic.api.env
 
     # check if we're properly installed
     if [ ! -f $MAPIC_ENV_FILE ]; then
@@ -184,6 +186,12 @@ initialize () {
 
         # cp default env file
         cp $MAPIC_CLI_FOLDER/.mapic.default.env /usr/local/bin/.mapic.env 
+        
+        # cp default aws env file
+        cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env /usr/local/bin/.mapic.aws.env 
+
+        # cp default api env file
+        cp $MAPIC_CLI_FOLDER/.mapic.default.api.env /usr/local/bin/.mapic.api.env 
 
         # create symlink for global mapic
         _create_mapic_symlink
@@ -718,8 +726,6 @@ mapic_config_prompt () {
 _write_env () {
     test -z $1 && failed "missing arg"
 
-    echo "_write_env $1 $2"
-
     # add or replace line in .mapic.env
     if grep -q "$1=" "$MAPIC_ENV_FILE"; then
         # replace line
@@ -739,7 +745,7 @@ _replace_line () {
 
     REPLACE_FILE=$3
 
-    echo "_write_env $1 $2"
+    echo "_replace_line $1 $2"
 
     # add or replace line in .mapic.env
     if grep -q "$1=" "$REPLACE_FILE"; then
