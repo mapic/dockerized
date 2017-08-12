@@ -71,8 +71,9 @@ mapic_cli_usage () {
     echo "  info                Display Mapic info"
     echo ""
     echo "API commands:"
-    echo "  user                Handle Mapic users"
-    echo "  upload              Upload data"  
+    echo "  api login           Authenticate with a Mapic API"
+    echo "  api user            Handle Mapic users"
+    echo "  api upload          Upload data"  
     echo ""
     
     # undocumented api
@@ -118,8 +119,8 @@ m () {
         enter)      mapic_enter "$@";;
         run)        mapic_run "$@";;
         api)        mapic_api "$@";;
-        user)       mapic_api_user "$@";;
-        upload)     mapic_api_upload "$@";;
+        # user)       mapic_api_user "$@";;
+        # upload)     mapic_api_upload "$@";;
         ps)         mapic_ps;;
         dns)        mapic_dns "$@";;
         ssl)        mapic_ssl "$@";;
@@ -227,6 +228,8 @@ initialize () {
     # source env file
     set -o allexport
     source $MAPIC_ENV_FILE
+    source $MAPIC_AWS_ENV_FILE
+    source $MAPIC_API_ENV_FILE
     source $MAPIC_COLOR_FILE
 
     # mark [debug mode]
@@ -610,22 +613,7 @@ mapic_config_refresh_usage () {
 mapic_config_refresh () {
     _refresh_config
 }
-mapic_api_configure () {
-    # todo: remove/merge
-    m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with (eg. maps.mapic.io)"
-    m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
-    m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
 
-    mapic_api_display_config
-}
-mapic_api_display_config () {
-    # todo: remove/merge
-    echo ""
-    echo "Mapic API config:"
-    echo "  Domain:   $MAPIC_API_DOMAIN"
-    echo "  Username: $MAPIC_API_USERNAME"
-    echo "  Auth:     $MAPIC_API_AUTH"
-}
 mapic_env () {
     echo "Deprecated! Todo: change to `mapic config ... `"
     mapic_config "$@"
@@ -1193,6 +1181,7 @@ mapic_api_usage () {
     echo "Usage: mapic [API COMMAND]"
     echo ""
     echo "API commands:"
+    echo "  login       Login to a Mapic API"
     echo "  user        Show and edit users"
     echo "  upload      Upload data"
     echo ""
@@ -1201,13 +1190,36 @@ mapic_api_usage () {
 mapic_api () {
     test -z "$2" && mapic_api_usage
     case "$2" in
-        configure)  mapic_api_configure "$@";;
+        login)      mapic_api_login "$@";;
         user)       mapic_api_user "$@";;
         upload)     mapic_api_upload "$@";;
         *)          mapic_api_usage;
     esac 
 }
+mapic_api_login () {
+    # todo: remove/merge
+    m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with (eg. maps.mapic.io)"
+    m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
+    m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
 
+    # todo: 
+    _test_api_login
+
+    # show
+    mapic_api_display_config
+}
+mapic_api_display_config () {
+    # todo: remove/merge
+    echo ""
+    echo "Mapic API config:"
+    echo "  Domain:   $MAPIC_API_DOMAIN"
+    echo "  Username: $MAPIC_API_USERNAME"
+    echo "  Auth:     $MAPIC_API_AUTH"
+}
+_test_api_login () {
+    echo "Logging in to Mapic API @ dev.mapic.io"
+    echo "TODO!"
+}
 #   ____ _____  (_)  __  ______  / /___  ____ _____/ /
 #  / __ `/ __ \/ /  / / / / __ \/ / __ \/ __ `/ __  / 
 # / /_/ / /_/ / /  / /_/ / /_/ / / /_/ / /_/ / /_/ /  
@@ -1215,7 +1227,7 @@ mapic_api () {
 #     /_/              /_/                            
 mapic_api_upload_usage () {
     echo ""
-    echo "Usage: mapic upload DATASET [OPTIONS]"
+    echo "Usage: mapic api upload DATASET [OPTIONS]"
     echo ""
     echo "Dataset:"
     echo "  Absolute path of dataset to upload"
@@ -1242,7 +1254,7 @@ mapic_api_upload () {
 #     /_/                                     
 mapic_api_user_usage () {
     echo ""
-    echo "Usage: mapic user [OPTIONS]"
+    echo "Usage: mapic api user [OPTIONS]"
     echo ""
     echo "Options:"
     echo "  list        List registered users"
@@ -1252,8 +1264,8 @@ mapic_api_user_usage () {
     exit 1
 }
 mapic_api_user () {
-    [ -z "$2" ] && mapic_api_user_usage
-    case "$2" in
+    [ -z "$3" ] && mapic_api_user_usage
+    case "$3" in
         list)       mapic_api_user_list "$@";;
         create)     mapic_api_user_create "$@";;
         super)      mapic_api_user_super "$@";;
@@ -1266,7 +1278,7 @@ mapic_api_user_list () {
 }
 mapic_api_user_create_usage () {
     echo ""
-    echo "Usage: mapic user create [EMAIL] [USERNAME] [FIRSTNAME] [LASTNAME]"
+    echo "Usage: mapic api user create [EMAIL] [USERNAME] [FIRSTNAME] [LASTNAME]"
     echo ""
     exit 1
 }
@@ -1280,7 +1292,7 @@ mapic_api_user_create () {
 }
 mapic_api_user_super_usage () {
     echo ""
-    echo "Usage: mapic user super [EMAIL]"
+    echo "Usage: mapic api user super [EMAIL]"
     echo ""
     echo "(WARNING: This command will promote user to SUPERADMIN,"
     echo "giving access to all projects and data.)"
