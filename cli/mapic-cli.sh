@@ -1190,10 +1190,9 @@ mapic_install_docker_ubuntu () {
 mapic_api_usage () {
     mapic_api_display_config
     echo ""
-    echo "Usage: mapic api [OPTIONS]"
+    echo "Usage: mapic [API COMMAND]"
     echo ""
-    echo "Options:"
-    echo "  configure   Configure API settings"
+    echo "API commands:"
     echo "  user        Show and edit users"
     echo "  upload      Upload data"
     echo ""
@@ -1253,8 +1252,8 @@ mapic_api_user_usage () {
     exit 1
 }
 mapic_api_user () {
-    [ -z "$3" ] && mapic_api_user_usage
-    case "$3" in
+    [ -z "$2" ] && mapic_api_user_usage
+    case "$2" in
         list)       mapic_api_user_list "$@";;
         create)     mapic_api_user_create "$@";;
         super)      mapic_api_user_super "$@";;
