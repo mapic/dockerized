@@ -348,14 +348,16 @@ ecco () {
 mapic_info () {
 
     # docker nodes
-    echo ""
-    ecco 6 "Docker nodes:"
     _print_docker_nodes
     
     # mapic config
     _print_config
 
     # docker info
+    _print_docker_info
+   
+}
+_print_docker_info () {
     ecco 6 "Docker:"
     docker info 2>/dev/null > /tmp/.mapic_info 
     cat /tmp/.mapic_info | grep "Swarm" 
@@ -373,11 +375,12 @@ mapic_info () {
     cat /tmp/.mapic_info | grep "Server version:" 
     cat /tmp/.mapic_info | grep "Username:" 
     rm /tmp/.mapic_info
-   
     echo ""
 }
 _print_docker_nodes () {
-    docker node ls -q | xargs docker inspect --format='
+    dockerecho ""
+    ecco 6 "Docker nodes:"
+    node ls -q | xargs docker inspect --format='
     Node ({{.Spec.Role}})
     ID: {{.ID}}
     Role: {{.Spec.Role}} 
