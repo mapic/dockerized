@@ -387,9 +387,9 @@ _print_docker_info () {
     echo ""
 }
 _print_docker_nodes () {
-    dockerecho ""
+    echo ""
     ecco 6 "Docker nodes:"
-    node ls -q | xargs docker inspect --format='
+    docker node ls -q | xargs docker inspect --format='
     Node ({{.Spec.Role}})
     ID: {{.ID}}
     Role: {{.Spec.Role}} 
