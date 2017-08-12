@@ -185,14 +185,10 @@ initialize () {
         MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
 
         # cp default env file
-        cp $MAPIC_CLI_FOLDER/.mapic.default.env /usr/local/bin/.mapic.env 
+        cp $MAPIC_CLI_FOLDER/.mapic.default.env $MAPIC_ENV_FILE
+        cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env $MAPIC_AWS_ENV_FILE 
+        cp $MAPIC_CLI_FOLDER/.mapic.default.api.env $MAPIC_API_ENV_FILE
         
-        # cp default aws env file
-        cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env /usr/local/bin/.mapic.aws.env 
-
-        # cp default api env file
-        cp $MAPIC_CLI_FOLDER/.mapic.default.api.env /usr/local/bin/.mapic.api.env 
-
         # create symlink for global mapic
         _create_mapic_symlink
 
@@ -217,6 +213,8 @@ initialize () {
         _write_env MAPIC_CLI_FOLDER $MAPIC_CLI_FOLDER
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         _write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
+        _write_env MAPIC_AWS_ENV_FILE $MAPIC_AWS_ENV_FILE
+        _write_env MAPIC_API_ENV_FILE $MAPIC_API_ENV_FILE
         _write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
         _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
         _write_env MAPIC_IP $MAPIC_IP
