@@ -259,6 +259,11 @@ _install_linux_tools () {
         apt-get update -y
         apt-get install -y pwgen
     fi
+    REALPATH=$(which realpath)
+    if [ -z $REALPATH ]; then
+        apt-get update -y
+        apt-get install -y realpath
+    fi
 }
 _install_osx_tools () {
     
@@ -267,6 +272,8 @@ _install_osx_tools () {
     JQ=$(which jq)
     GREP=$(which grep)
     PWGEN=$(which pwgen)
+    REALPATH=$(which realpath)
+   
 
     if [[ "$MAPIC_DEBUG" == true ]]; then
         echo "Installing OSX Tools"
@@ -301,7 +308,8 @@ _install_osx_tools () {
     # grep
     if [ -z $GREP ]; then
         if [ -z $BREW ]; then
-            echo "Brew required for OSX. Please install 'grep' manually."
+            echo "Brew required for OSX. Please install 'grep' manually:"
+            echo "brew install grep --with-default-names"
         else
             echo "Installing grep..."
             brew update
@@ -320,6 +328,22 @@ _install_osx_tools () {
         ./configure
         make && make install
     fi
+
+    # grep
+    if [ -z $REALPATH ]; then
+        if [ -z $BREW ]; then
+            echo "Brew required for OSX. Please install 'realpath' manually:"
+            echo "brew install realpath"
+        else
+            echo "Installing realpath..."
+            # realpath
+            brew update
+            brew install realpath --with-default-names
+            REALPATHV=$(realpath --version | grep realpath)
+            echo "$REALPATHV installed"
+        fi
+    fi
+    
 
     # jq
 }
@@ -1336,12 +1360,11 @@ mapic_api_upload_usage () {
     echo "Dataset:"
     echo "  Absolute path of dataset to upload"
     echo ""
-    # echo "Options:"
-    # echo "  (Not yet implemented:)"
-    # echo "  --project-id        Project id"
-    # echo "  --dataset-name      Name of dataset'"
-    # echo "  --project-name      Name of new project if created"
-    # echo ""
+    echo "Options:"
+    echo "  --project-id        Project id"
+    echo "  --dataset-name      Name of dataset'"
+    echo "  --project-name      Name of new project if created"
+    echo ""
     exit 1 
 }
 mapic_api_upload () {
