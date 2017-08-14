@@ -1251,7 +1251,7 @@ _test_api_login () {
     if [ "$1" = "quiet" ]; then
         QUIET=true
     fi
-    docker run -it --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node test-login.js
+    docker run -it --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node test-login.js >/dev/null 2>&1
     EXITCODE=$?
     if [ $EXITCODE = 1 ]; then
         echo ""
@@ -1362,15 +1362,42 @@ mapic_api_upload_usage () {
     echo ""
     echo "Options:"
     echo "  --project-id        Project id"
-    echo "  --dataset-name      Name of dataset'"
-    echo "  --project-name      Name of new project if created"
     echo ""
     exit 1 
 }
 mapic_api_upload () {
     test -z "$3" && mapic_api_upload_usage
-    cd $MAPIC_CLI_FOLDER/api
-    bash upload-data.sh "$@"
+
+    MAPIC_API_UPLOAD_DATASET=$(realpath "$3")
+    MAPIC_API_UPLOAD_PROJECT=$MAPIC_PROJECT_CREATE_ID
+    API_DIR=$MAPIC_CLI_FOLDER/api
+
+    while [ ! $# -eq 0 ]
+    do
+        case "$1" in
+            --project)
+                MAPIC_API_UPLOAD_PROJECT=$2
+                ;;
+            --dataset)
+                MAPIC_API_UPLOAD_DATASET=$(realpath "$2")
+                ;;
+        esac
+        shift
+    done
+
+    # remember 
+    _write_env MAPIC_API_UPLOAD_DATASET $MAPIC_API_UPLOAD_DATASET
+    _write_env MAPIC_API_UPLOAD_PROJECT $MAPIC_API_UPLOAD_PROJECT
+
+    # test login
+    _test_api_login
+
+    # install npm packages
+    docker run -it --volume $API_DIR:/tmp --workdir /tmp node:slim npm install --silent >/dev/null 2>&1
+
+    # upload data
+    docker run -it --volume $API_DIR:/tmp --volume $MAPIC_API_UPLOAD_DATASET:/mapic_upload$MAPIC_API_UPLOAD_DATASET --workdir /tmp --env-file $MAPIC_ENV_FILE node:slim node upload-data.js
+
 }
 
 #   ____ _____  (_)  __  __________  _____
