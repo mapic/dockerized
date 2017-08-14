@@ -32,7 +32,7 @@
 #   2. Make Windows compatible
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
-MAPIC_CLI_VERSION=17.7
+MAPIC_CLI_VERSION=17.8.14
 
 
 
@@ -229,11 +229,11 @@ initialize () {
     set -o allexport
     source $MAPIC_ENV_FILE
     source $MAPIC_AWS_ENV_FILE
-    source $MAPIC_API_ENV_FILE
+    # source $MAPIC_API_ENV_FILE
     source $MAPIC_COLOR_FILE
 
     # mark [debug mode]
-    test "$MAPIC_DEBUG" == "true" && ecco 82 "debug mode"
+    # test "$MAPIC_DEBUG" == "true" && ecco 82 "debug mode"
 
     # mark that we're in a cli
     MAPIC_CLI=true
@@ -656,7 +656,7 @@ mapic_config_get_usage () {
     echo ""
     echo "Usage: mapic config get [KEY]"
     echo ""
-    echo "Example: `mapic config get MAPIC_DOMAIN`"
+    echo "Example: mapic config get MAPIC_DOMAIN"
     echo ""
     exit 1
 }
@@ -697,16 +697,16 @@ mapic_config_prompt () {
     echo ""
     if [ $MAPIC_HOST_OS == "osx" ]; then
         # hack: (-i) not valid on osx
-        read -e -p "$ENV_KEY $MSG: " ENV_VALUE 
+        read -e -p "$MSG: " ENV_VALUE 
     else
-        read -e -p "$ENV_KEY $MSG: " -i "$DEFAULT_VALUE" ENV_VALUE 
+        read -e -p "$MSG: " -i "$DEFAULT_VALUE" ENV_VALUE 
     fi
 
     # set env
     _write_env "$ENV_KEY" "$ENV_VALUE" 
 
     # return value
-    echo $ENV_VALUE
+    echo "Value saved: $ENV_KEY=$ENV_VALUE"
 }
 # fn used internally to write to env file
 _write_env () {
@@ -1184,6 +1184,7 @@ mapic_api_usage () {
     echo "  login       Login to a Mapic API"
     echo "  user        Show and edit users"
     echo "  upload      Upload data"
+    echo "  project     Handle projects"
     echo ""
     exit 1 
 }
@@ -1193,38 +1194,69 @@ mapic_api () {
         login)      mapic_api_login "$@";;
         user)       mapic_api_user "$@";;
         upload)     mapic_api_upload "$@";;
+        project)    mapic_api_project "$@";;
         *)          mapic_api_usage;
     esac 
 }
 mapic_api_login () {
     # todo: remove/merge
-    m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with (eg. maps.mapic.io)"
-    m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
-    m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
+    test -z $MAPIC_API_DOMAIN && m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with" $MAPIC_DOMAIN
+    test -z $MAPIC_API_USERNAME && m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
+    test -z $MAPIC_API_AUTH && m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
 
     # todo: 
     _test_api_login
 
     # show
-    mapic_api_display_config
+    # mapic_api_display_config
 }
 mapic_api_display_config () {
     # todo: remove/merge
     echo ""
-    echo "Mapic API config:"
+    echo "Mapic API credentials:"
     echo "  Domain:   $MAPIC_API_DOMAIN"
     echo "  Username: $MAPIC_API_USERNAME"
-    echo "  Auth:     $MAPIC_API_AUTH"
+    echo "  Password: $MAPIC_API_AUTH"
+    echo ""
 }
 _test_api_login () {
-    echo "Logging in to Mapic API @ dev.mapic.io"
-    echo "TODO!"
+    cd $MAPIC_CLI_FOLDER/api
+    WDR=/usr/src/app
+    docker run -it --env-file $MAPIC_ENV_FILE --volume $PWD:$WDR -w $WDR node:6 node test-login.js
+    EXITCODE=$?
+    if [ $EXITCODE = 1 ]; then
+        echo ""
+        ecco 2 "Failed to login to Mapic with the following config:"
+        mapic_api_display_config
+    elif [ $EXITCODE = 0 ]; then
+        echo "Successfully logged in to https://$MAPIC_DOMAIN/ as $MAPIC_API_USERNAME"
+    fi
 }
-#   ____ _____  (_)  __  ______  / /___  ____ _____/ /
-#  / __ `/ __ \/ /  / / / / __ \/ / __ \/ __ `/ __  / 
-# / /_/ / /_/ / /  / /_/ / /_/ / / /_/ / /_/ / /_/ /  
-# \__,_/ .___/_/   \__,_/ .___/_/\____/\__,_/\__,_/   
-#     /_/              /_/                            
+mapic_api_project_usage () {
+     echo ""
+    echo "Usage: mapic api project COMMAND"
+    echo ""
+    echo "Command:"
+    echo "  create      Create new project"
+    echo "  delete      Delete existing project"
+    echo "  inspect     Inspect existing project"
+    echo ""
+    exit 1
+}
+mapic_api_project () {
+    test -z "$3" && mapic_api_project_usage
+    case "$3" in
+        create)     mapic_api_project_create "$@";;
+        delete)     mapic_api_project_delete "$@";;
+        inspect)    mapic_api_project_inspect "$@";;
+        *)          mapic_api_project_usage;
+    esac 
+}
+mapic_api_project_create () {
+    echo "project create!"
+}
+
+
 mapic_api_upload_usage () {
     echo ""
     echo "Usage: mapic api upload DATASET [OPTIONS]"
@@ -1244,7 +1276,6 @@ mapic_api_upload () {
     test -z "$3" && mapic_api_upload_usage
     cd $MAPIC_CLI_FOLDER/api
     bash upload-data.sh "$@"
-    exit 0
 }
 
 #   ____ _____  (_)  __  __________  _____
@@ -1399,7 +1430,6 @@ mapic_dns () {
 }
 _set_dns () {
     cd $MAPIC_CLI_FOLDER/dns
-    # bash create-dns-entries-route-53.sh
     WDR=/usr/src/app
     docker run -it -p 80:80 -p 443:443 --env-file $MAPIC_ENV_FILE --volume $PWD:$WDR -w $WDR node:6 sh entrypoint.sh
 }
@@ -1415,12 +1445,6 @@ mapic_status () {
 
     # show config
     _print_config
-}
-mapic_status_visualize () {
-    echo "todo"
-    # docker run -it -d -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock dockersamples/visualizer
-    # note: don't run this in production, as it exposes docker remote api
-    # see: https://github.com/dockersamples/docker-swarm-visualizer/issues/66
 }
 _print_stack () {
     echo ""
@@ -1552,7 +1576,8 @@ mapic_viz_start () {
      mapic/swarm-visualizer
 }
 mapic_viz_stop () {
-    echo ""
+    echo "Stopping Swarm Visualizer..."
+    docker service rm swarm-visualizer
 }
 mapic_tor () {
     test -z "$2" && mapic_tor_usage

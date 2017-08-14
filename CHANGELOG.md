@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### `mapic/mile` 
 - Cleaned up stale ENV and naming
+- Removed Kue and clustering. Scaling will be handled through Docker Swarm instead.
+- Removed `redistemp` (only needed for Kue)
 
 
 ## [17.7](https://github.com/mapic/mapic/releases/tag/v17.7)

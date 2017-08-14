@@ -25,7 +25,10 @@ On OSX or Ubuntu:
 # install mapic cli
 curl -sSL https://get.mapic.io  | sh
 
-# run mapic cli
+# enter folder
+cd mapic
+
+# run global mapic cli command
 mapic
 
 ```
@@ -43,7 +46,7 @@ mapic install stable
 mapic configure
 
 # start mapic
-mapic up
+mapic start
 
 ```
 
@@ -54,7 +57,7 @@ Commands for managing the Mapic server. See `mapic help` for all options.
 
 ```bash
 # start server
-mapic up
+mapic start
 
 # open web
 open https://localhost
@@ -66,26 +69,27 @@ mapic logs
 mapic logs postgis
 
 # stop mapic server
-mapic down
+mapic stop
 
 # restart mapic server
-mapic reup
+mapic restart
+
 ```
 
 ### Interact with the Mapic API
 Commands for interacting with any running Mapic server's API. 
 ```bash
 # create user
-mapic user create
+mapic api user create
 
 # promote to superuser
-mapic user super 
+mapic api user super 
 
 # upload data
-mapic upload
+mapic api upload
 
 # see help for more commands and options
-mapic help
+mapic api help
 ```
 
 ## Depends
@@ -95,7 +99,7 @@ mapic help
 
 The Mapic CLI will attempt to install these automatically on Ubuntu and OSX.
 
-Mapic is built on Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
+Mapic is built with Docker. Docker images for Mapic are available on the [Docker Hub](https://hub.docker.com/u/mapic/).
 
 
 ## Licence 
