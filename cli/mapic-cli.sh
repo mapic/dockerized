@@ -52,6 +52,7 @@ mapic_cli_usage () {
     echo "  restart             Stop, flush and start Mapic stack"
     echo "  status              Display status on running Mapic stack"
     echo "  logs [container]    Show logs of running Mapic server"
+    echo "  scale               Scale containers across nodes"
     echo "  test                Run Mapic tests"
     echo ""
     echo "Commands:"
@@ -138,6 +139,7 @@ m () {
         info)       mapic_info "$@";;
         tor)        mapic_tor "$@";;
         viz)        mapic_viz "$@";;
+        scale)      mapic_scale "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
         -h)         mapic_cli_usage;;
@@ -556,6 +558,15 @@ mapic_volume_rm () {
     fi
 }
 
+mapic_scale () {
+    echo ""
+    echo "Scaling Mapic"
+    echo ""
+    echo "Please use manual commands. Example:"
+    echo ""
+    echo "  docker service scale mapic_mile=3"
+    echo ""
+}
 #   _________  ____  / __(_)___ _
 #  / ___/ __ \/ __ \/ /_/ / __ `/
 # / /__/ /_/ / / / / __/ / /_/ / 
