@@ -5,22 +5,32 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+##### [17.8](https://github.com/mapic/mapic/releases/tag/v17.8)
 ### `mapic/mapic`
-- Additions to Mapic CLI: `mapic info`, `mapic tor`, `mapic viz`, `mapic api login`
-- Implemented Tor Project relay on all nodes
+- Swarm mode: Mapic is now running on n nodes
+- Replicating `mile` tileserver on n nodes
+- Additions and improvements to Mapic CLI
+    - `mapic info`
+    - `mapic tor`
+    - `mapic viz` 
+    - `mapic api login` 
+    - `mapic api project create`
+    - `mapic api upload`
+    - `mapic bench` 
+    - `mapic scale`
+- Implemented Tor Project relay on all nodes: `mapic tor start` 
+- Added visualizer for Docker nodes: `mapic viz start`
+    - Port 8080 is closed in AWS, so only ssh tunnel can access visualizer
+    - NB! Ensure port 8080 is closed to public in your setup!
+    - You need to add `LocalForward 8080 localhost:8080` to /.ssh/config on your localhost
+    - Only accessible in the browser @ localhost:8080
 - Moved most configuration to ENV, removed all dependency on config files
-- Added visualizer for Docker nodes @ localhost:8080
-    - `mapic viz start`
-    - Port 8080 is blocked in AWS, so only ssh tunnel can access visualizer
-    - Need to add `LocalForward 8080 localhost:8080` to /.ssh/config on your localhost
-- Replicating `mile` tileserver on 3 nodes
 - Bugfixes
 
 ### `mapic/mile` 
 - Cleaned up stale ENV and naming
-- Removed Kue and clustering. Scaling will be handled through Docker Swarm instead.
-- Removed `redistemp` (only needed for Kue)
-
+- Removed Kue and clustering. Scaling will be handled through Docker Swarm
+- Removed `redistemp` (was only needed for Kue)
 
 ## [17.7](https://github.com/mapic/mapic/releases/tag/v17.7)
 Released: 2017-07-03
