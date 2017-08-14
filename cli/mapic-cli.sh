@@ -53,7 +53,6 @@ mapic_cli_usage () {
     echo "  status              Display status on running Mapic stack"
     echo "  logs [container]    Show logs of running Mapic server"
     echo "  scale               Scale containers across nodes"
-    echo "  test                Run Mapic tests"
     echo ""
     echo "Commands:"
     echo "  configure           Automatically configure Mapic"
@@ -70,6 +69,8 @@ mapic_cli_usage () {
     echo "  debug               Toggle debug mode"
     echo "  version             Display Mapic version"
     echo "  info                Display Mapic info"
+    echo "  test                Run Mapic tests"
+    echo "  bench               Run Mapic benchmark tests"
     echo ""
     echo "API commands:"
     echo "  api login           Authenticate with (any) Mapic API"
@@ -140,6 +141,7 @@ m () {
         tor)        mapic_tor "$@";;
         viz)        mapic_viz "$@";;
         scale)      mapic_scale "$@";;
+        bench)      mapic_bench "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
         -h)         mapic_cli_usage;;
@@ -151,7 +153,6 @@ m () {
 #   / / __ \/ / __/ / __  / / /_  / / _ \
 #  / / / / / / /_/ / /_/ / / / / /_/  __/
 # /_/_/ /_/_/\__/_/\__,_/_/_/ /___/\___/ 
-
 initialize () {
 
     # get osx/linux
@@ -1664,6 +1665,10 @@ mapic_test_download_data () {
         echo "Downloading test data..."
         git clone https://github.com/mapic/open-data.git
     fi
+}
+
+mapic_bench () {
+    echo "todo"
 }
 
                  
