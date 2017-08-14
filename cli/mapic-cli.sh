@@ -71,16 +71,17 @@ mapic_cli_usage () {
     echo "  info                Display Mapic info"
     echo ""
     echo "API commands:"
-    echo "  api login           Authenticate with a Mapic API"
+    echo "  api login           Authenticate with (any) Mapic API"
     echo "  api user            Handle Mapic users"
     echo "  api upload          Upload data"  
+    echo "  api project         Handle projects"
     echo ""
     
     # undocumented api
     if [[ "$MAPIC_DEBUG" == "true" ]]; then
     echo "Undocumented:"
     echo "  edit                Edit mapic-cli.sh source file"
-    echo "  tor                 Tor Project relay settings"
+    echo "  tor                 Run Tor Project non-exit relays"
     echo "  viz                 Visualize Docker nodes graphically"
     echo ""
     fi
@@ -119,8 +120,6 @@ m () {
         enter)      mapic_enter "$@";;
         run)        mapic_run "$@";;
         api)        mapic_api "$@";;
-        # user)       mapic_api_user "$@";;
-        # upload)     mapic_api_upload "$@";;
         ps)         mapic_ps;;
         dns)        mapic_dns "$@";;
         ssl)        mapic_ssl "$@";;
@@ -133,16 +132,15 @@ m () {
         debug)      mapic_debug "$@";;
         domain)     mapic_domain "$@";;
         travis)     mapic_travis "$@";;
-        help)       mapic_cli_usage;;
-        --help)     mapic_cli_usage;;
-        -h)         mapic_cli_usage;;
-        env)        mapic_env "$@";;
+        env)        mapic_config "$@";; # deprecated
         edit)       mapic_edit "$@";;
         version)    mapic_version "$@";;
         info)       mapic_info "$@";;
         tor)        mapic_tor "$@";;
         viz)        mapic_viz "$@";;
-    
+        help)       mapic_cli_usage;;
+        --help)     mapic_cli_usage;;
+        -h)         mapic_cli_usage;;
         *)          mapic_wild "$@";;
     esac
 }
@@ -160,7 +158,7 @@ initialize () {
     # hardcoded env files
     MAPIC_ENV_FILE=/usr/local/bin/.mapic.env
     MAPIC_AWS_ENV_FILE=/usr/local/bin/.mapic.aws.env
-    MAPIC_API_ENV_FILE=/usr/local/bin/.mapic.api.env
+    # MAPIC_API_ENV_FILE=/usr/local/bin/.mapic.api.env
 
     # check if we're properly installed
     if [ ! -f $MAPIC_ENV_FILE ]; then
@@ -188,7 +186,7 @@ initialize () {
         # cp default env file
         cp $MAPIC_CLI_FOLDER/.mapic.default.env $MAPIC_ENV_FILE
         cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env $MAPIC_AWS_ENV_FILE 
-        cp $MAPIC_CLI_FOLDER/.mapic.default.api.env $MAPIC_API_ENV_FILE
+        # cp $MAPIC_CLI_FOLDER/.mapic.default.api.env $MAPIC_API_ENV_FILE
         
         # create symlink for global mapic
         _create_mapic_symlink
@@ -215,7 +213,7 @@ initialize () {
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         _write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
         _write_env MAPIC_AWS_ENV_FILE $MAPIC_AWS_ENV_FILE
-        _write_env MAPIC_API_ENV_FILE $MAPIC_API_ENV_FILE
+        # _write_env MAPIC_API_ENV_FILE $MAPIC_API_ENV_FILE
         _write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
         _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
         _write_env MAPIC_IP $MAPIC_IP
