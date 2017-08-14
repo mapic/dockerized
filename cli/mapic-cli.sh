@@ -1251,7 +1251,7 @@ _test_api_login () {
     if [ "$1" = "quiet" ]; then
         QUIET=true
     fi
-    docker run -it --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node test-login.js >/dev/null 2>&1
+    docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node test-login.js >/dev/null 2>&1
     EXITCODE=$?
     if [ $EXITCODE = 1 ]; then
         echo ""
@@ -1393,10 +1393,10 @@ mapic_api_upload () {
     _test_api_login
 
     # install npm packages
-    docker run -it --volume $API_DIR:/tmp --workdir /tmp node:slim npm install --silent >/dev/null 2>&1
+    docker run -it --rm --volume $API_DIR:/tmp --workdir /tmp node:slim npm install --silent >/dev/null 2>&1
 
     # upload data
-    docker run -it --volume $API_DIR:/tmp --volume $MAPIC_API_UPLOAD_DATASET:/mapic_upload$MAPIC_API_UPLOAD_DATASET --workdir /tmp --env-file $MAPIC_ENV_FILE node:slim node upload-data.js
+    docker run -it --rm --name mapic_uploader --volume $API_DIR:/tmp --volume $MAPIC_API_UPLOAD_DATASET:/mapic_upload$MAPIC_API_UPLOAD_DATASET --workdir /tmp --env-file $MAPIC_ENV_FILE node:slim node upload-data.js
 
 }
 
