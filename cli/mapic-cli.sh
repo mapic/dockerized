@@ -18,8 +18,8 @@
 #       5. put script-file.sh in /cli/ or relevant subfolder (install, config, etc)
 #       6. create PR @ https://github.com/mapic/mapic-cli
 #       
-#       (For "cool" ascii art text, see: http://patorjk.com/software/taag/#p=display&f=Slant&t=mapic)
-#       (Tracking issue: https://github.com/mapic/mapic/issues/27)
+#       For "cool" ascii art text, see: http://patorjk.com/software/taag/#p=display&f=Slant&t=mapic
+#       Tracking issue: https://github.com/mapic/mapic/issues/27
 #
 #       For printing colors, see the ecco() function (eg. ecco 12 "this is color 12"), and the .mapic.colors env file.
 #
@@ -32,10 +32,12 @@
 #   2. Make Windows compatible
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
+
 MAPIC_CLI_VERSION=17.8.14
 
-
-
+# # # # # # # # # # # # # 
+#
+#
 #   _____/ (_)
 #  / ___/ / / 
 # / /__/ / /  
@@ -379,6 +381,11 @@ ecco () {
     TEXT=${@:2}
     printf "${!COLOR}${TEXT}${c_reset}\n" 
 }
+ecco_sameline () {
+    COLOR="c_"$1
+    TEXT=${@:2}
+    printf "${!COLOR}${TEXT}${c_reset}" 
+}
 mapic_info () {
 
     # docker nodes
@@ -568,6 +575,7 @@ mapic_scale () {
     echo "  docker service scale mapic_mile=3"
     echo ""
 }
+
 #   _________  ____  / __(_)___ _
 #  / ___/ __ \/ __ \/ /_/ / __ `/
 # / /__/ /_/ / / / / __/ / /_/ / 
@@ -648,8 +656,8 @@ mapic_config_refresh () {
     _refresh_config
 }
 
+# deprecated, todo: remove
 mapic_env () {
-    echo "Deprecated! Todo: change to `mapic config ... `"
     mapic_config "$@"
 }
 mapic_config_set_help () {
@@ -816,7 +824,6 @@ mapic_ps () {
 # /____/\__/\__,_/_/   \__/  
 mapic_up () {
     COMPOSEFILE=$MAPIC_CONFIG_FOLDER/stack.yml
-    # docker stack rm mapic
     docker stack deploy --compose-file=$COMPOSEFILE mapic 
     echo "Mapic is up."
     docker service ls
@@ -854,7 +861,6 @@ mapic_logs_container_usage () {
 }   
 mapic_logs () {
     if [[ -n "$2" ]]; then
-        echo "2: $2"    
         case "$2" in
             mongo)          docker service logs -f mapic_mongo;;
             mile)           docker service logs -f mapic_mile;;
@@ -892,7 +898,6 @@ mapic_logs () {
         docker service logs mapic_postgis    
         docker service logs mapic_mile       
         docker service logs mapic_engine     
-        docker service logs mapic_visualizer     
     fi
 }
                      
@@ -1052,7 +1057,7 @@ _install_mapic () {
 _ensure_mapic_domain () {
     # ensure MAPIC_DOMAIN
     if [ -z "$MAPIC_DOMAIN" ]; then
-        MAPIC_DOMAIN=$(mapic env prompt MAPIC_DOMAIN "Please provide a valid domain for the Mapic install")
+        MAPIC_DOMAIN=$(m config prompt MAPIC_DOMAIN "Please provide a valid domain for the Mapic install")
     fi
 }
 _print_branches () {
@@ -1459,8 +1464,8 @@ mapic_api_user_super_usage () {
     echo ""
     echo "Usage: mapic api user super [EMAIL]"
     echo ""
-    echo "(WARNING: This command will promote user to SUPERADMIN,"
-    echo "giving access to all projects and data.)"
+    echo "This command will promote user to SUPERADMIN,"
+    echo "giving access to all projects and data."
     echo ""
     exit 1
 }
@@ -1565,7 +1570,7 @@ mapic_dns () {
 _set_dns () {
     cd $MAPIC_CLI_FOLDER/dns
     WDR=/usr/src/app
-    docker run -it -p 80:80 -p 443:443 --env-file $MAPIC_ENV_FILE --volume $PWD:$WDR -w $WDR node:6 sh entrypoint.sh
+    docker run -it --rm -p 80:80 -p 443:443 --env-file $MAPIC_ENV_FILE --volume $PWD:$WDR -w $WDR node:6 sh entrypoint.sh
 }
 
 #    _____/ /_____ _/ /___  _______
@@ -1705,13 +1710,13 @@ mapic_viz_usage () {
     exit 1
 }
 mapic_viz_start () {
-   docker service create \
-     --name=swarm-visualizer \
-     --publish=8080:8080/tcp \
-     -- detach \
-     --constraint=node.labels.domain_node==true \
-     --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
-     mapic/swarm-visualizer
+    docker service create \
+        --name=swarm-visualizer \
+        --publish=8080:8080/tcp \
+        --detach \
+        --constraint=node.labels.domain_node==true \
+        --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+        mapic/swarm-visualizer
 }
 mapic_viz_stop () {
     echo "Stopping Swarm Visualizer..."
@@ -1735,6 +1740,7 @@ mapic_tor_status () {
 }
 mapic_tor_start () {
     echo "Starting Tor relays..."
+    docker pull mapic/tor-relay:latest >/dev/null 2>&1
     docker service create --mode global --detach -p 9001:9001 --name tor-relay mapic/tor-relay:latest
 }
 mapic_tor_stop () {
