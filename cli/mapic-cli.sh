@@ -723,6 +723,8 @@ _write_env () {
         # add to bottom
         echo "$1"="$2" >> $MAPIC_ENV_FILE
     fi
+
+    export $1=$2
 }
 _replace_line () {
     test -z $1 && failed "Missing argum"
@@ -1176,16 +1178,16 @@ mapic_install_docker_ubuntu () {
 # \__,_/ .___/_/   
 #     /_/          
 mapic_api_usage () {
-    mapic_api_display_config
     echo ""
     echo "Usage: mapic [API COMMAND]"
     echo ""
     echo "API commands:"
-    echo "  login       Login to a Mapic API"
-    echo "  user        Show and edit users"
-    echo "  upload      Upload data"
-    echo "  project     Handle projects"
+    echo "  login [again]   Login to a Mapic API [with fresh credentials]"
+    echo "  user            Show and edit users"
+    echo "  upload          Upload data"
+    echo "  project         Handle projects"
     echo ""
+    mapic_api_display_config
     exit 1 
 }
 mapic_api () {
@@ -1199,6 +1201,12 @@ mapic_api () {
     esac 
 }
 mapic_api_login () {
+    if [ "$3" = "again" ]; then
+        _write_env MAPIC_API_DOMAIN
+        _write_env MAPIC_API_USERNAME
+        _write_env MAPIC_API_AUTH
+    fi
+    
     # todo: remove/merge
     test -z $MAPIC_API_DOMAIN && m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with" $MAPIC_DOMAIN
     test -z $MAPIC_API_USERNAME && m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
@@ -1207,8 +1215,6 @@ mapic_api_login () {
     # todo: 
     _test_api_login
 
-    # show
-    # mapic_api_display_config
 }
 mapic_api_display_config () {
     # todo: remove/merge
@@ -1220,20 +1226,22 @@ mapic_api_display_config () {
     echo ""
 }
 _test_api_login () {
-    cd $MAPIC_CLI_FOLDER/api
-    WDR=/usr/src/app
-    docker run -it --env-file $MAPIC_ENV_FILE --volume $PWD:$WDR -w $WDR node:6 node test-login.js
+    if [ "$1" = "quiet" ]; then
+        QUIET=true
+    fi
+    docker run -it --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node test-login.js
     EXITCODE=$?
     if [ $EXITCODE = 1 ]; then
         echo ""
         ecco 2 "Failed to login to Mapic with the following config:"
         mapic_api_display_config
+        exit 1
     elif [ $EXITCODE = 0 ]; then
-        echo "Successfully logged in to https://$MAPIC_DOMAIN/ as $MAPIC_API_USERNAME"
+        test -z $QUIET && ecco 4 "Successfully logged in!"
     fi
 }
 mapic_api_project_usage () {
-     echo ""
+    echo ""
     echo "Usage: mapic api project COMMAND"
     echo ""
     echo "Command:"
@@ -1252,8 +1260,74 @@ mapic_api_project () {
         *)          mapic_api_project_usage;
     esac 
 }
+mapic_api_project_create_usage () {
+    echo ""
+    echo "Usage: mapic api project create [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  --name NAME    Name of project"
+    echo "  --public       Make project public"
+    echo "  --private      Make project private"
+    echo "  --help         This help screen"
+    echo ""
+    exit 0
+}
 mapic_api_project_create () {
-    echo "project create!"
+
+    ARGS=$@
+    PUBLIC=false
+    while [ ! $# -eq 0 ]
+    do
+        case "$1" in
+            --name)
+                NAME=$2
+                ;;
+            --public)
+                PUBLIC=true
+                ;;
+            --private)
+                PUBLIC=false
+                ;;
+            --help)
+                mapic_api_project_create_usage
+                exit 0
+                ;;
+        esac
+        shift
+    done
+
+    # test login
+    _test_api_login quiet
+
+    # set env
+    MAPIC_API_CREATE_PROJECT_NAME=$NAME
+    MAPIC_API_CREATE_PROJECT_PUBLIC=$PUBLIC
+
+    # ensure name
+    test -z $MAPIC_API_CREATE_PROJECT_NAME && m config prompt MAPIC_API_CREATE_PROJECT_NAME "Please enter a project name"
+
+    # create project
+    _api_create_project
+
+}
+
+_api_create_project () {
+
+    # create project
+    RESULT=$(docker run -it --env-file $MAPIC_ENV_FILE -e "MAPIC_API_CREATE_PROJECT_NAME=$MAPIC_API_CREATE_PROJECT_NAME" -e "MAPIC_API_CREATE_PROJECT_PUBLIC=$MAPIC_API_CREATE_PROJECT_PUBLIC" --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node create-project.js)
+   
+    # get exit code
+    EXITCODE=$?
+
+    if [ $EXITCODE = 1 ]; then
+        echo "Something went wrong: $RESULT"
+        exit 1
+    fi
+
+    if [ $EXITCODE = 0 ]; then
+        echo "Created project!"
+        _write_env MAPIC_PROJECT_CREATE_ID $RESULT
+    fi
 }
 
 
