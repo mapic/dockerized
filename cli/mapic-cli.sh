@@ -343,7 +343,7 @@ _install_osx_tools () {
             echo "Installing realpath..."
             # realpath
             brew update
-            brew install realpath --with-default-names
+            brew install coreutils
             REALPATHV=$(realpath --version | grep realpath)
             echo "$REALPATHV installed"
         fi
