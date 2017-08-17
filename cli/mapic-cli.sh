@@ -33,7 +33,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
-MAPIC_CLI_VERSION=17.8.14
+MAPIC_CLI_VERSION=17.8.18
 
 # # # # # # # # # # # # # 
 #
@@ -973,6 +973,7 @@ mapic_install_usage () {
     echo "  docker              Install Docker"
     echo "  jq                  Install JQ (dependency)"
     echo "  node                Install NodeJS (not a dependency)"
+    echo "  prime               Prime new server"
     echo ""
     exit 1
 }
@@ -986,6 +987,7 @@ mapic_install () {
         docker)     mapic_install_docker "$@";;
         jq)         mapic_install_jq "$@";;
         node)       mapic_install_node "$@";;
+        prime)      mapic_install_prime "$@";;
         *)          mapic_install_usage;
     esac 
 }
@@ -1029,6 +1031,20 @@ mapic_install_branch () {
 
     # install mapic on current branch
     _install_mapic
+}
+mapic_install_prime () {
+
+    if [[ "$MAPIC_HOST_OS" == "linux" ]]; then
+
+        # install tools
+        apt-get update -y
+        apt-get install -y fish htop build-essential iotop curl wget nano 
+
+        # todo: rsub
+        
+    else
+        echo "I can only prime Linux"
+    fi
 }
 _install_mapic () {
 
