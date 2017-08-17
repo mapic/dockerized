@@ -21,14 +21,12 @@ services:
     env_file:
       - $MAPIC_ENV_FILE
     volumes:
-      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      # - ${MAPIC_CONFIG_FOLDER}/privkey.pem:/mapic/config/privkey.pem
-      # - ${MAPIC_CONFIG_FOLDER}/fullchain.pem:/mapic/config/fullchain.pem
-      # - ${MAPIC_CONFIG_FOLDER}/nginx.conf:/mapic/config/nginx.conf
+      - ${MAPIC_CONFIG_FOLDER}/privkey.key:/mapic/privkey.key
+      - ${MAPIC_CONFIG_FOLDER}/fullchain.pem:/mapic/fullchain.pem
+      - ${MAPIC_CONFIG_FOLDER}/dhparams.pem:/mapic/dhparams.pem
     deploy:
       placement:
         constraints: [node.ip == 35.159.1.170]
-    command: "nginx -c /mapic/config/nginx.conf"
     depends_on:
       - mile
       - engine
@@ -150,7 +148,6 @@ services:
     env_file:
       - $MAPIC_ENV_FILE
     volumes:
-      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - mongo_store_localhost:/data/db
     deploy:
       placement:
