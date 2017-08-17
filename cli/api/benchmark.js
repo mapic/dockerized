@@ -4,16 +4,54 @@ var _ = require('lodash');
 var async = require('async');
 var request = require('request');
 
-console.time('  Benchmark')
-async.map(tiles, function(url, callback) {
-  request(url, function(error, response, html) {
-    if (error) console.log('err', error);
+// create tile requests
+var MAPIC_BENCHMARK_TILES = process.env.MAPIC_BENCHMARK_TILES || 200;
+var benchmark_tiles = [];
+while (benchmark_tiles.length < MAPIC_BENCHMARK_TILES) {
+    benchmark_tiles = benchmark_tiles.concat(tiles);
+}
 
-    // Some processing is happening here before the callback is invoked
-    callback(error, html);
-  });
-}, function(err, results) {
-    if (err) console.log('err', err);
-    console.timeEnd('  Benchmark')
+console.log('while done, ', benchmark_tiles.length);
+
+// process.exit(0);
+
+// get access token
+utils.token(function (err, access_token) {
+
+    if (err || !access_token) {
+        console.log('Not able to log in with credentials:')
+        console.log('MAPIC_API_USERNAME:', process.env.MAPIC_API_USERNAME);
+        console.log('MAPIC_API_AUTH', process.env.MAPIC_API_AUTH);
+        process.exit(1);
+    }
+
+    // mark start of bench
+    var timeStart = Date.now();
+
+    // request all tiles
+    async.map(benchmark_tiles, function(url, callback) {
+
+        // add access token
+        var tile = url + '?access_token=' + access_token;
+
+        // request tile
+        request(tile, callback);
+
+    }, function(err, results) {
+        if (err) {
+            console.log('err', err);
+            process.exit(1);    
+        }
+
+        // calc benchmark
+        var timeEnd = Date.now();
+        var benched = timeEnd - timeStart;
+
+        // print benchmark as ms only
+        console.log(benched);
+
+        // clean exit
+        process.exit(0);
+    });
 
 });

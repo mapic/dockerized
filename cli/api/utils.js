@@ -42,6 +42,7 @@ module.exports = utils = {
         .send()
         .end(function (err, res) {
             debug && console.log('get_access_token', err, res.text);
+            if (!res || !res.text) return done('Failed to connect to Mapic API.');
             var tokens = utils.parse(res.text);
             done(err, tokens);
         });

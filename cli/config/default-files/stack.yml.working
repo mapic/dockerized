@@ -1,0 +1,182 @@
+version: '3'
+volumes: 
+  mapic_data_store_localhost:
+  mongo_store_localhost:
+  postgis_store_localhost:
+  redis_layers_store_localhost:
+  redis_stats_store_localhost:
+  redis_tokens_store_localhost:
+
+networks:
+  mapic:
+
+services:
+
+  # nginx
+  # -----
+  # - always on public IP node
+  # - 
+  nginx:
+    image: mapic/nginx:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+      # - ${MAPIC_CONFIG_FOLDER}/privkey.pem:/mapic/config/privkey.pem
+      # - ${MAPIC_CONFIG_FOLDER}/fullchain.pem:/mapic/config/fullchain.pem
+      # - ${MAPIC_CONFIG_FOLDER}/nginx.conf:/mapic/config/nginx.conf
+    deploy:
+      placement:
+        constraints: [node.ip == 35.159.1.170]
+    command: "nginx -c /mapic/config/nginx.conf"
+    depends_on:
+      - mile
+      - engine
+    ports:
+      - 443:443
+      - 80:80
+    networks:
+      mapic:
+        aliases:
+          - nginx.docker
+
+  engine:
+    image: mapic/geo:latest 
+    env_file:
+      - $MAPIC_ENV_FILE
+    deploy:
+      placement:
+        constraints: [node.ip == 35.159.1.170]
+    working_dir: /mapic/engine 
+    command: ./start-server.sh
+    volumes:
+      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+      - ${MAPIC_ROOT_FOLDER}/engine:/mapic/engine
+      - ${MAPIC_ROOT_FOLDER}/mapic.js:/mapic/mapic.js
+      - mapic_data_store_localhost:/data
+    networks:
+      mapic:
+        aliases:
+          - engine.docker
+
+  mile: 
+    image: mapic/geo:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    labels:
+      io.mapic.description: "Mile tileserver"
+    deploy:
+      replicas: 4
+      placement:
+        constraints: [node.labels.mile == true]
+        # constraints: [node.ip == 35.159.1.170]
+      # resources:
+        # limits:
+          # cpus: '1'
+    working_dir: /mapic/mile 
+    command: ./start-server.sh
+    volumes:
+      - ${MAPIC_ROOT_FOLDER}/mile:/mapic/mile
+      - mapic_data_store_localhost:/data
+    networks:
+      mapic:
+        aliases:
+          - mile.docker
+ 
+  redislayers:
+    image: mapic/redis:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - redis_layers_store_localhost:/data
+    deploy:
+      # replicas: 3
+      placement:
+        # constraints: [node.role == manager]
+        constraints: [node.ip == 35.159.1.170]
+    networks:
+      mapic:
+        aliases:
+          - redislayers.docker
+
+  redisstats:
+    image: mapic/redis:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - redis_stats_store_localhost:/data
+    deploy:
+      # replicas: 3
+      placement:
+        constraints: [node.ip == 35.159.1.170]
+        # constraints: [node.role == manager]
+    networks:
+      mapic:
+        aliases:
+          - redisstats.docker
+
+  redistokens:
+    image: mapic/redis:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - redis_tokens_store_localhost:/data
+    deploy:
+      # replicas: 3
+      placement:
+        constraints: [node.ip == 35.159.1.170]
+        # constraints: [node.role == manager]
+    networks:
+      mapic:
+        aliases:
+          - redistokens.docker
+
+  redistemp:
+    image: mapic/redis:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    deploy:
+      # replicas: 3
+      placement:
+        constraints: [node.ip == 35.159.1.170]
+        # constraints: [node.role == manager]
+    networks:
+      mapic:
+        aliases:
+          - redistemp.docker
+
+  mongo: 
+    image: mapic/mongo:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+      - mongo_store_localhost:/data/db
+    deploy:
+      placement:
+        constraints: [node.ip == 35.159.1.170]
+        # constraints: [node.role == manager]
+    networks:
+      mapic:
+        aliases:
+          - mongo.docker
+
+  postgis:
+    image: mapic/postgis:latest
+    env_file:
+      # todo: this ENV file is probably local, so must be kept updated automatically on nodes
+      - $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+      - postgis_store_localhost:/var/lib/postgresql
+    deploy:
+      # replicas: 2
+      placement:
+        constraints: [node.ip == 35.159.1.170]
+        # constraints: [node.role == manager]
+        # constraints: [node.labels.postgis == true]
+    networks:
+      mapic:
+        aliases:
+          - postgis.docker
+  

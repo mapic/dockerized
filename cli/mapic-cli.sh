@@ -1622,7 +1622,7 @@ mapic_test () {
         engine)     mapic_test_engine;;
         mile)       mapic_test_mile;;
         js)         mapic_test_js;;
-        *)          mapic_test_usage;
+        *)          mapic_test_usage;;
     esac 
 }
 mapic_test_all () {
@@ -1673,86 +1673,43 @@ mapic_test_download_data () {
 }
 
 mapic_bench () {
-    cd $MAPIC_CLI_FOLDER/api
-  
     echo ""
     ecco 5 "Mapic Benchmark Tests"
     echo ""
     echo "Benchmarking Mile tileserver replication..."
     echo ""
 
-
-    ecco 5 "Current replicas:"
-    MILE_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n')
-    echo "$MILE_INFO"
-    
-    echo ""
-    echo "Scaling to 1"
-    docker service scale mapic_mile=1
-    echo "Sleeping 10s"
-    sleep 10s
-    MILE_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n')
-    echo "$MILE_INFO"
-    echo "Starting benchmark"
-    MILE_ONE=$(docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node benchmark.js)
-    echo "Benchmark 1: $MILE_ONE"
-    echo ""
-
-    echo ""
-    echo "Scaling to 3"
-    docker service scale mapic_mile=3
-    echo "Sleeping 10s"
-    sleep 10s
-    MILE_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n')
-    echo "$MILE_INFO"
-    echo "Starting benchmark"
-    MILE_THREE=$(docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node benchmark.js)
-    echo "Benchmark 3: $MILE_THREE"
-    echo ""
-
-    echo ""
-    echo "Scaling to 6"
-    docker service scale mapic_mile=6
-    echo "Sleeping 10s"
-    sleep 10s
-    MILE_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n')
-    echo "$MILE_INFO"
-    echo "Starting benchmark"
-    MILE_SIX=$(docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node benchmark.js)
-    echo "Benchmark 3: $MILE_SIX"
-    echo ""
-
-    echo ""
-    echo "Scaling to 9"
-    docker service scale mapic_mile=9
-    echo "Sleeping 10s"
-    sleep 10s
-    MILE_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n')
-    echo "$MILE_INFO"
-    echo "Starting benchmark"
-    MILE_NINE=$(docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node benchmark.js)
-    echo "Benchmark 3: $MILE_NINE"
-    echo ""
-
-    echo ""
-    echo "Scaling to 12"
-    docker service scale mapic_mile=12
-    echo "Sleeping 10s"
-    sleep 10s
-    MILE_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n')
-    echo "$MILE_INFO"
-    echo "Starting benchmark"
-    MILE_TWELVE=$(docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node benchmark.js)
-    echo "Benchmark 3: $MILE_TWELVE"
-    echo ""
-
-    echo ""
-    echo "Benchmark done"
-
-    exit 0
-
+    # run benchmark
+    mapic_bench_run
 }
 
+
+mapic_bench_run () {
+
+    # get info on replicas
+    DOCKER_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n')
+    
+    echo "$get"
+    echo "Starting benchmark"
+    echo "$DOCKER_INFO"
+
+    _write_env MAPIC_BENCHMARK_TILES 300
+
+    BENCHMARK=$(docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node benchmark.js)
+    
+    echo ""
+    echo "Benchmark (ms): $BENCHMARK"
+    echo ""
+}
+mapic_scale_mile () {
+    
+    echo "Scaling to $1 replicas of mapic/mile"
+
+    # scale services
+    docker service scale mapic_mile=$1
+
+    echo "Please allow a few minutes for correct number of replicas to become active (especially when scaling down)."
+}
                  
 #   / __ `/ ___/ _ \/ __ \
 #  / /_/ / /  /  __/ /_/ /
