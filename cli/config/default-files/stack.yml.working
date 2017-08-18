@@ -48,7 +48,7 @@ services:
     working_dir: /mapic/engine 
     command: ./start-server.sh
     volumes:
-      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+      # - ${MAPIC_CONFIG_FOLDER}:/mapic/config
       - ${MAPIC_ROOT_FOLDER}/engine:/mapic/engine
       - ${MAPIC_ROOT_FOLDER}/mapic.js:/mapic/mapic.js
       - mapic_data_store_localhost:/data
