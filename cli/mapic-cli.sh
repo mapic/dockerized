@@ -1041,6 +1041,9 @@ mapic_install_prime () {
         apt-get install -y fish htop build-essential iotop curl wget nano 
 
         # todo: rsub
+
+        # install docker
+        m install docker
         
     else
         echo "I can only prime Linux"
