@@ -3,11 +3,7 @@ var crypto = require("crypto");
 
 // set config folder
 var CONFIG_FOLDER       = '/config/';
-var MONGO_JSON_PATH     = CONFIG_FOLDER + "mongo.json";
-var MILE_CONFIG_PATH    = CONFIG_FOLDER + "mile.config.js";
 var ENGINE_CONFIG_PATH  = CONFIG_FOLDER + "engine.config.js";
-var REDIS_CONFIG_PATH   = CONFIG_FOLDER + "redis.conf";
-var NGINX_CONFIG_PATH   = CONFIG_FOLDER + "nginx.conf";
 
 // check if folder exists
 if (!fs.existsSync(CONFIG_FOLDER)) {
@@ -16,25 +12,25 @@ if (!fs.existsSync(CONFIG_FOLDER)) {
 }
 
 // helper fn
-var updateRedisConfig = function (config) {
-    var lines = fs.readFileSync(config).toString().split("\n");
-    for(var i in lines) {
-        var lineText = lines[i];
-        if (lineText.indexOf('requirepass') > -1){
-            lines[i] = "requirepass " + redisPassString;
-            break;
-        }
-    }
-    lines = lines.join('\n');
-    fs.writeFileSync(config, lines, 'utf-8');  
-};
-var addLineToRedisConfig = function (config, line) {
-    var lines = fs.readFileSync(config).toString('utf-8').split("\n");
-    var l = lines.length;
-    lines[l] = line
-    lines = lines.join('\n');
-    fs.writeFileSync(config, lines, 'utf-8');
-};
+// var updateRedisConfig = function (config) {
+//     var lines = fs.readFileSync(config).toString().split("\n");
+//     for(var i in lines) {
+//         var lineText = lines[i];
+//         if (lineText.indexOf('requirepass') > -1){
+//             lines[i] = "requirepass " + redisPassString;
+//             break;
+//         }
+//     }
+//     lines = lines.join('\n');
+//     fs.writeFileSync(config, lines, 'utf-8');  
+// };
+// var addLineToRedisConfig = function (config, line) {
+//     var lines = fs.readFileSync(config).toString('utf-8').split("\n");
+//     var l = lines.length;
+//     lines[l] = line
+//     lines = lines.join('\n');
+//     fs.writeFileSync(config, lines, 'utf-8');
+// };
 
 // var mongoPassString = crypto.randomBytes(64).toString('hex');
 // var redisPassString = crypto.randomBytes(64).toString('hex');
@@ -47,13 +43,13 @@ console.log('process.env.MAPIC_MONGO_AUTH_ALREADY_SET', process.env.MAPIC_MONGO_
 console.log('redisPassString', redisPassString);
 console.log('mongoPassString', mongoPassString);
 
-// mongo
-if (!mongoAlreadySet) {
-    var mongo_json = fs.readFileSync(MONGO_JSON_PATH);
-    var mongo_config = JSON.parse(mongo_json);
-    mongo_config.password = mongoPassString;
-    fs.writeFileSync(MONGO_JSON_PATH, JSON.stringify(mongo_config, null, 2) , 'utf-8');
-}
+// // mongo
+// if (!mongoAlreadySet) {
+//     var mongo_json = fs.readFileSync(MONGO_JSON_PATH);
+//     var mongo_config = JSON.parse(mongo_json);
+//     mongo_config.password = mongoPassString;
+//     fs.writeFileSync(MONGO_JSON_PATH, JSON.stringify(mongo_config, null, 2) , 'utf-8');
+// }
 
 // mile
 // var mileConfig = require(MILE_CONFIG_PATH);
@@ -110,35 +106,35 @@ var engineJsonStr = 'module.exports = ' + JSON.stringify(engineConfig, null, 2);
 fs.writeFileSync(ENGINE_CONFIG_PATH , engineJsonStr, 'utf-8');
 
 
-// nginx
-var nginxConfig = fs.readFileSync(NGINX_CONFIG_PATH);
-nginxConfig = nginxConfig.toString('utf8');
-var replace_text = 'server_name                 ' + MAPIC_DOMAIN + ';'
-var result = nginxConfig.replace(/server_name                 localhost;/g, replace_text);
-var result2 = result.replace(/server_name localhost;/g, replace_text);
-fs.writeFileSync(NGINX_CONFIG_PATH, result2, 'utf8')
+// // nginx
+// var nginxConfig = fs.readFileSync(NGINX_CONFIG_PATH);
+// nginxConfig = nginxConfig.toString('utf8');
+// var replace_text = 'server_name                 ' + MAPIC_DOMAIN + ';'
+// var result = nginxConfig.replace(/server_name                 localhost;/g, replace_text);
+// var result2 = result.replace(/server_name localhost;/g, replace_text);
+// fs.writeFileSync(NGINX_CONFIG_PATH, result2, 'utf8')
 
-// redis
-updateRedisConfig(REDIS_CONFIG_PATH);
+// // redis
+// updateRedisConfig(REDIS_CONFIG_PATH);
 
-var redis_layers_config_path = CONFIG_FOLDER + "redis.layers.conf";
-var redis_tokens_config_path = CONFIG_FOLDER + "redis.tokens.conf";
-var redis_stats_config_path = CONFIG_FOLDER + "redis.stats.conf";
-var redis_temp_config_path = CONFIG_FOLDER + "redis.temp.conf";
+// var redis_layers_config_path = CONFIG_FOLDER + "redis.layers.conf";
+// var redis_tokens_config_path = CONFIG_FOLDER + "redis.tokens.conf";
+// var redis_stats_config_path = CONFIG_FOLDER + "redis.stats.conf";
+// var redis_temp_config_path = CONFIG_FOLDER + "redis.temp.conf";
 
-fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_layers_config_path));
-fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_tokens_config_path));
-fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_stats_config_path));
-fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_temp_config_path));
+// fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_layers_config_path));
+// fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_tokens_config_path));
+// fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_stats_config_path));
+// fs.createReadStream(REDIS_CONFIG_PATH).pipe(fs.createWriteStream(redis_temp_config_path));
 
-setTimeout(function () {
+// setTimeout(function () {
 
-    // add saving to some redis dbs
-    addLineToRedisConfig(redis_layers_config_path, 'appendonly yes')
-    addLineToRedisConfig(redis_layers_config_path, 'appendfsync everysec')
-    addLineToRedisConfig(redis_tokens_config_path, 'appendonly yes')
-    addLineToRedisConfig(redis_tokens_config_path, 'appendfsync everysec')
-    addLineToRedisConfig(redis_stats_config_path, 'appendonly yes')
-    addLineToRedisConfig(redis_stats_config_path, 'appendfsync everysec')
+//     // add saving to some redis dbs
+//     addLineToRedisConfig(redis_layers_config_path, 'appendonly yes')
+//     addLineToRedisConfig(redis_layers_config_path, 'appendfsync everysec')
+//     addLineToRedisConfig(redis_tokens_config_path, 'appendonly yes')
+//     addLineToRedisConfig(redis_tokens_config_path, 'appendfsync everysec')
+//     addLineToRedisConfig(redis_stats_config_path, 'appendonly yes')
+//     addLineToRedisConfig(redis_stats_config_path, 'appendfsync everysec')
 
-}, 500) // need to wait for file system 
+// }, 500) // need to wait for file system 
