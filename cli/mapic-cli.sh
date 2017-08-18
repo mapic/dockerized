@@ -275,6 +275,13 @@ _install_linux_tools () {
         apt-get update -y
         apt-get install -y git
     fi
+
+    # certbot
+    sudo apt-get update -y
+    sudo apt-get install -7 software-properties-common
+    sudo add-apt-repository ppa:certbot/certbot
+    sudo apt-get update -y
+    sudo apt-get install -y python-certbot-nginx 
 }
 _install_osx_tools () {
     
