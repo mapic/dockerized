@@ -26,7 +26,7 @@ services:
       - ${MAPIC_CONFIG_FOLDER}/dhparams.pem:/mapic/dhparams.pem
     deploy:
       placement:
-        constraints: [node.ip == 35.159.1.170]
+        constraints: [node.ip == MAPIC_IP]
     depends_on:
       - mile
       - engine
@@ -44,7 +44,7 @@ services:
       - $MAPIC_ENV_FILE
     deploy:
       placement:
-        constraints: [node.ip == 35.159.1.170]
+        constraints: [node.ip == MAPIC_IP]
     working_dir: /mapic/engine 
     command: ./start-server.sh
     volumes:
@@ -66,7 +66,7 @@ services:
       replicas: 4
       placement:
         constraints: [node.labels.mile == true]
-        # constraints: [node.ip == 35.159.1.170]
+        # constraints: [node.ip == MAPIC_IP]
       # resources:
         # limits:
           # cpus: '1'
@@ -90,7 +90,7 @@ services:
       # replicas: 3
       placement:
         # constraints: [node.role == manager]
-        constraints: [node.ip == 35.159.1.170]
+        constraints: [node.ip == MAPIC_IP]
     networks:
       mapic:
         aliases:
@@ -105,7 +105,7 @@ services:
     deploy:
       # replicas: 3
       placement:
-        constraints: [node.ip == 35.159.1.170]
+        constraints: [node.ip == MAPIC_IP]
         # constraints: [node.role == manager]
     networks:
       mapic:
@@ -121,7 +121,7 @@ services:
     deploy:
       # replicas: 3
       placement:
-        constraints: [node.ip == 35.159.1.170]
+        constraints: [node.ip == MAPIC_IP]
         # constraints: [node.role == manager]
     networks:
       mapic:
@@ -135,7 +135,7 @@ services:
     deploy:
       # replicas: 3
       placement:
-        constraints: [node.ip == 35.159.1.170]
+        constraints: [node.ip == MAPIC_IP]
         # constraints: [node.role == manager]
     networks:
       mapic:
@@ -150,7 +150,7 @@ services:
       - mongo_store_localhost:/data/db
     deploy:
       placement:
-        constraints: [node.ip == 35.159.1.170]
+        constraints: [node.ip == MAPIC_IP]
         # constraints: [node.role == manager]
     networks:
       mapic:
@@ -168,7 +168,7 @@ services:
     deploy:
       # replicas: 2
       placement:
-        constraints: [node.ip == 35.159.1.170]
+        constraints: [node.ip == MAPIC_IP]
         # constraints: [node.role == manager]
         # constraints: [node.labels.postgis == true]
     networks:
