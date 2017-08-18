@@ -163,7 +163,6 @@ initialize () {
     # hardcoded env files
     MAPIC_ENV_FILE=/usr/local/bin/.mapic.env
     MAPIC_AWS_ENV_FILE=/usr/local/bin/.mapic.aws.env
-    # MAPIC_API_ENV_FILE=/usr/local/bin/.mapic.api.env
 
     # check if we're properly installed
     if [ ! -f $MAPIC_ENV_FILE ]; then
@@ -186,12 +185,11 @@ initialize () {
         MAPIC_COLOR_FILE=$MAPIC_CLI_FOLDER/.mapic.colors
 
         # set config folder
-        MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
+        # MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
 
         # cp default env file
         cp $MAPIC_CLI_FOLDER/.mapic.default.env $MAPIC_ENV_FILE
         cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env $MAPIC_AWS_ENV_FILE 
-        # cp $MAPIC_CLI_FOLDER/.mapic.default.api.env $MAPIC_API_ENV_FILE
         
         # create symlink for global mapic
         _create_mapic_symlink
@@ -223,9 +221,7 @@ initialize () {
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         _write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
         _write_env MAPIC_AWS_ENV_FILE $MAPIC_AWS_ENV_FILE
-        # _write_env MAPIC_API_ENV_FILE $MAPIC_API_ENV_FILE
         _write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
-        _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
         _write_env MAPIC_IP $MAPIC_IP
 
     fi
@@ -237,7 +233,6 @@ initialize () {
     set -o allexport
     source $MAPIC_ENV_FILE
     source $MAPIC_AWS_ENV_FILE
-    # source $MAPIC_API_ENV_FILE
     source $MAPIC_COLOR_FILE
 
     # mark [debug mode]
@@ -604,14 +599,14 @@ _mapic_configure () {
     exit 0
 }
 mapic_configure_stack () {
-    cp $MAPIC_CLI_FOLDER/config/default-files/stack.yml $MAPIC_CONFIG_FOLDER/stack.yml
+    # cp $MAPIC_CLI_FOLDER/config/default-files/stack.yml $MAPIC_CONFIG_FOLDER/stack.yml
     SEARCH="constraints: [node.ip = MAPIC_IP]"
     REPLAC="constraints: [node.ip = $MAPIC_IP]"
     echo "SEARCH $SEARCH"
     echo "REP $REPLAC"
     echo "$MAPIC_CONFIG_FOLDER"
     # sed -i "/$1=/c\\$1=$2" $MAPIC_CONFIG_FOLDER/stack.yml
-    sed -i "/$SEARCH/c\\$REPLAC" $MAPIC_CONFIG_FOLDER/stack.yml
+    # sed -i "/$SEARCH/c\\$REPLAC" $MAPIC_CONFIG_FOLDER/stack.yml
     # cat $MAPIC_CONFIG_FOLDER/stack.yml
     # _replace_line "node.ip = MAPIC_IP" "constraints: [node.ip = $MAPIC_IP]" $MAPIC_CONFIG_FOLDER/stack.yml
     echo "Default stack copied!"
@@ -834,8 +829,9 @@ mapic_ps () {
 #  (__  ) /_/ /_/ / /  / /_  
 # /____/\__/\__,_/_/   \__/  
 mapic_up () {
-    COMPOSEFILE=$MAPIC_CONFIG_FOLDER/stack.yml
-    docker stack deploy --compose-file=$COMPOSEFILE mapic 
+    # COMPOSEFILE=$MAPIC_CONFIG_FOLDER/stack.yml
+    STACK=$MAPIC_ROOT_FOLDER/cli/stack.yml
+    docker stack deploy --compose-file=$STACK mapic 
     echo "Mapic is up."
     docker service ls
 }
