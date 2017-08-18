@@ -33,7 +33,7 @@ test -z "$MAPIC_DOMAIN" && usage "MAPIC_DOMAIN" # check MAPIC_ROOT_FOLDER is set
     
 # certbot-auto
 cd $MAPIC_CLI_FOLDER/ssl
-./certbot certonly \
+certbot certonly \
     --standalone \
     --agree-tos \
     --email "$MAPIC_USER_EMAIL" \
