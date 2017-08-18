@@ -1137,22 +1137,7 @@ _refresh_config () {
     rm -rf files
     yes | cp -rf default-files files
     chmod +w files
-    
-    echo "  Copied config files..."
-
-    # update config files
-    docker run \
-    -it \
-    --rm \
-    --env-file $MAPIC_ENV_FILE \
-    -v $MAPIC_ROOT_FOLDER/cli/config:/tmp \
-    -v $MAPIC_ROOT_FOLDER/cli/config/files:/config \
-    -w /tmp \
-    node:6 \
-    node refresh-config.js
-
-    echo "  Updated config files..."
-
+   
     # print config
     _print_config
   
