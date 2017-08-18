@@ -206,6 +206,11 @@ initialize () {
             _install_linux_tools
         fi
 
+        # update submodules
+        cd $MAPIC_ROOT_FOLDER
+        git submodule init
+        git submodule update --remote
+
         # ensure editor
         _ensure_editor
 
@@ -268,6 +273,12 @@ _install_linux_tools () {
     if [ -z $REALPATH ]; then
         apt-get update -y
         apt-get install -y realpath
+    fi
+
+    GITPATH=$(which git)
+    if [ -z $GITPATH ]; then
+        apt-get update -y
+        apt-get install -y git
     fi
 }
 _install_osx_tools () {
@@ -1038,7 +1049,7 @@ mapic_install_prime () {
 
         # install tools
         apt-get update -y
-        apt-get install -y fish htop build-essential iotop curl wget nano 
+        apt-get install -y fish htop build-essential iotop curl wget nano git
 
         # todo: rsub
 
