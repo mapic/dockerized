@@ -77,7 +77,7 @@ services:
         aliases:
           - mile.docker
  
-  redislayers:
+  redis:
     image: mapic/redis:latest
     env_file:
       - $MAPIC_ENV_FILE
@@ -91,53 +91,7 @@ services:
     networks:
       mapic:
         aliases:
-          - redislayers.docker
-
-  redisstats:
-    image: mapic/redis:latest
-    env_file:
-      - $MAPIC_ENV_FILE
-    volumes:
-      - redis_stats_store_localhost:/data
-    deploy:
-      # replicas: 3
-      placement:
-        constraints: [node.ip == 35.159.1.170]
-        # constraints: [node.role == manager]
-    networks:
-      mapic:
-        aliases:
-          - redisstats.docker
-
-  redistokens:
-    image: mapic/redis:latest
-    env_file:
-      - $MAPIC_ENV_FILE
-    volumes:
-      - redis_tokens_store_localhost:/data
-    deploy:
-      # replicas: 3
-      placement:
-        constraints: [node.ip == 35.159.1.170]
-        # constraints: [node.role == manager]
-    networks:
-      mapic:
-        aliases:
-          - redistokens.docker
-
-  redistemp:
-    image: mapic/redis:latest
-    env_file:
-      - $MAPIC_ENV_FILE
-    deploy:
-      # replicas: 3
-      placement:
-        constraints: [node.ip == 35.159.1.170]
-        # constraints: [node.role == manager]
-    networks:
-      mapic:
-        aliases:
-          - redistemp.docker
+          - redis.docker
 
   mongo: 
     image: mapic/mongo:latest
