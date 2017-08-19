@@ -33,7 +33,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
-MAPIC_CLI_VERSION=17.8.18
+MAPIC_CLI_VERSION=17.8.19
 
 # # # # # # # # # # # # # 
 #
@@ -73,6 +73,7 @@ mapic_cli_usage () {
     echo "  info                Display Mapic info"
     echo "  test                Run Mapic tests"
     echo "  bench               Run Mapic benchmark tests"
+    echo "  update              Update Mapic repositories"
     echo ""
     echo "API commands:"
     echo "  api login           Authenticate with (any) Mapic API"
@@ -144,6 +145,7 @@ m () {
         viz)        mapic_viz "$@";;
         scale)      mapic_scale "$@";;
         bench)      mapic_bench "$@";;
+        update)     mapic_update "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
         -h)         mapic_cli_usage;;
@@ -257,6 +259,21 @@ abort () {
 _corrupted_install () {
     echo "Install is corrupted. Try downloading fresh with `curl -sSL https://get.mapic.io | sh`"
     exit 1 
+}
+mapic_update () {
+    cd $MAPIC_ROOT_FOLDER
+    echo "Updating local repositories..."
+    ecco 4 "mapic/mapic"
+    git pull --rebase
+    cd mile
+    ecco 4 "mapic/mile"
+    git pull --rebase
+    cd ../engine
+    ecco 4 "mapic/engine"
+    git pull --rebase
+    cd ../mapic.js
+    ecco 4 "mapic/mapic.js"
+    git pull --rebase
 }
 _install_linux_tools () {
     PWGEN=$(which pwgen)
@@ -445,9 +462,8 @@ _print_docker_nodes () {
 }
 mapic_version () {
     echo ""
-    ecco 58 "Version"
-    echo "  Mapic:        $MAPIC_VERSION"
-    echo "  Mapic CLI:    $MAPIC_CLI_VERSION"
+    ecco 5 "Mapic Version:"
+    echo "  Mapic: $MAPIC_CLI_VERSION"
     echo "  Mapic Engine: $MAPIC_ENGINE_VERSION"
     echo "  Mapic Mile:   $MAPIC_MILE_VERSION"
 
@@ -495,7 +511,6 @@ mapic_travis_install () {
 }
 _init_docker_swarm () {
     docker swarm init --advertise-addr $MAPIC_IP
-     # || abort "Docker Swarm is currently only available in experimental mode. Please put Docker in experimental mode and try again."
 }
 mapic_travis_start () {
     mapic_up
@@ -782,9 +797,9 @@ _write_env () {
     export $1=$2
 }
 _replace_line () {
-    test -z $1 && failed "Missing argum"
-    test -z $2 && failed "Missing argum"
-    test -z $3 && failed "Missing argum"
+    test -z $1 && failed "Missing argument"
+    test -z $2 && failed "Missing argument"
+    test -z $3 && failed "Missing argument"
 
     REPLACE_FILE=$3
 
@@ -1095,34 +1110,26 @@ _ensure_mapic_domain () {
 }
 _print_branches () {
     echo ""
-    ecco 41 "Git branches:"
+    ecco 5 "Git branches:"
     cd $MAPIC_ROOT_FOLDER
     GIT=$(git log --pretty=format:"%h (%ar)" -1)
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mapic"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
+    echo "  mapic/mapic:    $BRANCH $GIT"
 
     cd $MAPIC_ROOT_FOLDER/mile
     GIT=$(git log --pretty=format:"%h (%ar)" -1)
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mile"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
+    echo "  mapic/mile:     $BRANCH $GIT"
    
     cd $MAPIC_ROOT_FOLDER/engine
     GIT=$(git log --pretty=format:"%h (%ar)" -1)
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/engine"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
+    echo "  mapic/engine:   $BRANCH $GIT"
 
     cd $MAPIC_ROOT_FOLDER/mapic.js
     GIT=$(git log --pretty=format:"%h (%ar)" -1)
     BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-    ecco 4 "mapic/mapic.js"
-    ecco 0 "branch: $BRANCH"
-    ecco 0 "commit: $GIT"
+    echo "  mapic/mapic.js: $BRANCH $GIT"
 
     echo ""
 }
