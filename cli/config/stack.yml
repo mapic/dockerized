@@ -12,10 +12,6 @@ networks:
 
 services:
 
-  # nginx
-  # -----
-  # - always on public IP node
-  # - 
   nginx:
     image: mapic/nginx:latest
     env_file:
@@ -26,6 +22,7 @@ services:
       - ${MAPIC_CONFIG_FOLDER}/dhparams.pem:/mapic/dhparams.pem
     deploy:
       placement:
+        # always on public IP node
         constraints: [node.ip == 35.159.1.170]
     depends_on:
       - mile
@@ -63,7 +60,7 @@ services:
     labels:
       io.mapic.description: "Mile tileserver"
     deploy:
-      replicas: 4
+      replicas: 1
       placement:
         constraints: [node.labels.mile == true]
         # constraints: [node.ip == 35.159.1.170]

@@ -264,16 +264,16 @@ mapic_update () {
     cd $MAPIC_ROOT_FOLDER
     echo "Updating local repositories..."
     ecco 4 "mapic/mapic"
-    git pull --rebase
+    git pull origin master --rebase
     cd mile
     ecco 4 "mapic/mile"
-    git pull --rebase
+    git pull origin master --rebase
     cd ../engine
     ecco 4 "mapic/engine"
-    git pull --rebase
+    git pull origin master --rebase
     cd ../mapic.js
     ecco 4 "mapic/mapic.js"
-    git pull --rebase
+    git pull origin master --rebase
 }
 _install_linux_tools () {
     PWGEN=$(which pwgen)
