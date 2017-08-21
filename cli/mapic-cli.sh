@@ -1522,7 +1522,7 @@ mapic_run () {
     test -z "$3" && mapic_run_usage
     C=$(docker ps -q --filter name=$2)
     test -z "$C" && mapic_enter_usage_missing_container "$@"
-    docker exec $C ${@:3}
+    docker exec -e MAPIC_DEBUG=$MAPIC_DEBUG $C  ${@:3}
 }
 
 #    __________/ /
