@@ -1361,11 +1361,11 @@ mapic_api_project_create () {
     _test_api_login quiet
 
     # set env
-    MAPIC_API_CREATE_PROJECT_NAME=$NAME
-    MAPIC_API_CREATE_PROJECT_PUBLIC=$PUBLIC
+    MAPIC_API_PROJECT_CREATE_NAME=$NAME
+    MAPIC_API_PROJECT_CREATE_PUBLIC=$PUBLIC
 
     # ensure name
-    test -z $MAPIC_API_CREATE_PROJECT_NAME && m config prompt MAPIC_API_CREATE_PROJECT_NAME "Please enter a project name"
+    test -z $MAPIC_API_PROJECT_CREATE_NAME && m config prompt MAPIC_API_PROJECT_CREATE_NAME "Please enter a project name"
 
     # create project
     _api_create_project
@@ -1375,7 +1375,7 @@ mapic_api_project_create () {
 _api_create_project () {
 
     # create project
-    RESULT=$(docker run -it --env-file $MAPIC_ENV_FILE -e "MAPIC_API_CREATE_PROJECT_NAME=$MAPIC_API_CREATE_PROJECT_NAME" -e "MAPIC_API_CREATE_PROJECT_PUBLIC=$MAPIC_API_CREATE_PROJECT_PUBLIC" --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node create-project.js)
+    RESULT=$(docker run -it --env-file $MAPIC_ENV_FILE -e "MAPIC_API_PROJECT_CREATE_NAME=$MAPIC_API_PROJECT_CREATE_NAME" -e "MAPIC_API_PROJECT_CREATE_PUBLIC=$MAPIC_API_PROJECT_CREATE_PUBLIC" --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node create-project.js)
    
     # get exit code
     EXITCODE=$?
@@ -1387,7 +1387,8 @@ _api_create_project () {
 
     if [ $EXITCODE = 0 ]; then
         echo "Created project!"
-        _write_env MAPIC_PROJECT_CREATE_ID $RESULT
+        # _write_env MAPIC_PROJECT_CREATE_ID $RESULT
+        _write_env MAPIC_API_PROJECT_CREATE_ID $RESULT
     fi
 }
 
@@ -1408,7 +1409,7 @@ mapic_api_upload () {
     test -z "$3" && mapic_api_upload_usage
 
     MAPIC_API_UPLOAD_DATASET=$(realpath "$3")
-    MAPIC_API_UPLOAD_PROJECT=$MAPIC_PROJECT_CREATE_ID
+    MAPIC_API_UPLOAD_PROJECT=$MAPIC_API_PROJECT_CREATE_ID
     API_DIR=$MAPIC_CLI_FOLDER/api
 
     while [ ! $# -eq 0 ]
