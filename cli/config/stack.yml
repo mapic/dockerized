@@ -58,8 +58,6 @@ services:
     image: mapic/geo:latest
     env_file:
       - $MAPIC_ENV_FILE
-    labels:
-      io.mapic.description: "Mile tileserver"
     deploy:
       replicas: 1
       placement:
