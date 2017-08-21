@@ -896,10 +896,7 @@ mapic_logs () {
             postgis)        docker service logs -f mapic_postgis;;
             nginx)          docker service logs -f mapic_nginx;;
             engine)         docker service logs -f mapic_engine;;
-            redis)          docker service logs -f mapic_redislayers;;
-            redislayers)    docker service logs -f mapic_redislayers;;
-            redisstats)     docker service logs -f mapic_redisstats;;
-            redistokens)    docker service logs -f mapic_redistokens;;
+            redis)          docker service logs -f mapic_redis;;
             redistemp)      docker service logs -f mapic_redistemp;;
             *)              mapic_logs_container_usage;
         esac 
