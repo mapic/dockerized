@@ -6,7 +6,7 @@ var endpoints = require('./endpoints');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" 
 var domain = (process.env.MAPIC_API_DOMAIN == 'localhost') ? 'https://172.17.0.1' : 'https://' + process.env.MAPIC_API_DOMAIN;
 var api = supertest(domain);
-var debug = (process.env.MAPIC_API_DEBUG === true);
+var debug = (process.env.MAPIC_DEBUG);
 
 debug && console.log('process.env: ', process.env);
 
