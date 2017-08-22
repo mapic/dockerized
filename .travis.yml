@@ -13,7 +13,7 @@ install:
   - sudo bash mapic-cli.sh
   - sudo mapic version
   - sudo mapic domain localhost
-  - sudo mapic config set MAPIC_EMAIL travis@mapic.io
+  - sudo mapic config set MAPIC_USER_EMAIL travis@mapic.io
   - sudo mapic ssl create
 
 script:
