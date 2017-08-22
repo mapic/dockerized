@@ -310,8 +310,8 @@ _install_linux_tools () {
         # perhaps put in docker image
         sudo apt-get update -y
         sudo apt-get install -y --force-yes software-properties-common
-        sudo add-apt-repository -y --force-yes ppa:certbot/certbot
-        sudo apt-get update -y --force-yes
+        sudo add-apt-repository -y ppa:certbot/certbot
+        sudo apt-get update -y
         sudo apt-get install -y --force-yes python-certbot-nginx 
     fi
 
@@ -319,6 +319,8 @@ _install_linux_tools () {
     DOCKERPATH=$(which docker)
     if [ -z $DOCKERPATH ]; then
         mapic_install_docker
+    else
+        echo "Docker already installed: $DOCKERPATH"
     fi
 
     # pull mapic images
@@ -1271,22 +1273,39 @@ mapic_install_docker_ubuntu () {
     cd $MAPIC_CLI_FOLDER/install
     bash install-docker-ubuntu.sh
 
+    # use experimental mode
+    _set_experimental_docker
+}
+
+_set_experimental_docker () {
     # put docker in experimental mode for swarm
     # see https://github.com/moby/moby/issues/30585#issuecomment-280822231
     echo '{"experimental":true}' >> /etc/docker/daemon.json
     echo "Restarting Docker in experimental mode."
-    read -p "Restart Docker now?  (y/n)" -n 1 -r
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-        
-        # restart docker
-        sudo systemctl restart docker || service docker restart
 
-         # init swarm
-        docker swarm init --advertise-addr $MAPIC_IP
+    if [[ "$TRAVIS" == "true" ]];then
+        _restart_docker
+        _init_docker_swarm
     else
-        echo "Please restart Docker manually to access experiemental mode needed for Docker Swarm"
+        read -p "Restart Docker now?  (y/n)" -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            
+            # restart docker
+            _restart_docker
+
+             # init swarm
+            _init_docker_swarm    
+
+        else
+            echo "Please restart Docker manually to access experiemental mode needed for Docker Swarm"
+        fi
+
     fi
+    
+}
+_restart_docker () {
+    sudo systemctl restart docker || service docker restart
 }
 
 #   ____ _____  (_)
