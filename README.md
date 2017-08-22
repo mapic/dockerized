@@ -28,20 +28,6 @@ curl -sSL https://get.mapic.io  | sh
 # enter folder
 cd mapic
 
-# run global mapic cli command
-mapic
-
-```
-
-### Install and start on localhost:
-```bash
-
-# configure localhost
-mapic domain localhost
-
-# install latest stable mapic
-mapic install stable
-
 # configure
 mapic configure
 
@@ -52,27 +38,65 @@ mapic start
 
 ## Usage
 
+### Mapic CLI
+```
+Usage: mapic COMMAND
+
+A CLI for Mapic
+
+Management commands:
+  start               Start Mapic stack
+  stop                Stop Mapic stack
+  restart             Stop, flush and start Mapic stack
+  status              Display status on running Mapic stack
+  logs [container]    Show logs of running Mapic server
+  scale               Scale containers across nodes
+
+Commands:
+  configure           Automatically configure Mapic
+  install             Install Mapic
+  config              View and edit Mapic config
+  domain              Set Mapic domain
+  volume              See Mapic volumes
+  dns                 Create or check DNS entries for Mapic
+  ssl                 Create or scan SSL certificates for Mapic
+  enter               Enter running container
+  run                 Run command inside a container
+  grep                Find string in files in subdirectories of current path
+  ps                  Show running containers
+  debug               Toggle debug mode
+  version             Display Mapic version
+  info                Display Mapic info
+  test                Run Mapic tests
+  bench               Run Mapic benchmark tests
+  update              Update Mapic repositories
+
+API commands:
+  api login           Authenticate with (any) Mapic API
+  api user            Handle Mapic users
+  api upload          Upload data
+  api project         Handle projects
+
+```
+
 ### Manage Mapic server
-Commands for managing the Mapic server. See `mapic help` for all options.
+Commands for managing the Mapic server.
 
 ```bash
 # start server
 mapic start
 
-# open web
-open https://localhost
+# see status
+mapic status
 
 # show logs
 mapic logs
 
-# tail logs
+# tail logs of specific container
 mapic logs postgis
 
 # stop mapic server
 mapic stop
-
-# restart mapic server
-mapic restart
 
 ```
 
@@ -95,7 +119,6 @@ mapic api help
 ## Depends
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [Docker](https://docs.docker.com/engine/installation/) 
-- [Docker Machine](https://docs.docker.com/machine/install-machine/)
 
 The Mapic CLI will attempt to install these automatically on Ubuntu and OSX.
 
