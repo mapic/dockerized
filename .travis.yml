@@ -12,9 +12,11 @@ install:
   - cd cli
   - sudo bash mapic-cli.sh
   - mapic version
-  - sudo mapic travis install
+  # - sudo mapic travis install
   - mapic domain localhost
-  - sudo mapic configure
+  # - sudo mapic configure
+  - mapic ssl create
+  - 
 
 script:
   - sudo mapic travis start

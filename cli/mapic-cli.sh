@@ -221,12 +221,12 @@ initialize () {
         _write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
         _write_env MAPIC_CLI_FOLDER $MAPIC_CLI_FOLDER
         _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
-        _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         _write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
         _write_env MAPIC_AWS_ENV_FILE $MAPIC_AWS_ENV_FILE
         _write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
         _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
         _write_env MAPIC_IP $MAPIC_IP
+        _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
 
     fi
 
