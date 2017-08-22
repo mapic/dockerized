@@ -946,7 +946,6 @@ mapic_logs () {
             nginx)          docker service logs -f mapic_nginx;;
             engine)         docker service logs -f mapic_engine;;
             redis)          docker service logs -f mapic_redis;;
-            redistemp)      docker service logs -f mapic_redistemp;;
             *)              mapic_logs_container_usage;
         esac 
         exit
@@ -955,19 +954,13 @@ mapic_logs () {
         # stream logs
         docker service logs -f mapic_mile         &
         docker service logs -f mapic_postgis      &
-        docker service logs -f mapic_redistokens  &
-        docker service logs -f mapic_redislayers  &
         docker service logs -f mapic_mongo        &
-        docker service logs -f mapic_redisstats   &
         docker service logs -f mapic_nginx        &
         docker service logs -f mapic_engine       &
-        docker service logs -f mapic_redistemp    & 
+        docker service logs -f mapic_redis        &
     else
         # print current logs
-        docker service logs mapic_redistokens
-        docker service logs mapic_redislayers
-        docker service logs mapic_redisstats 
-        docker service logs mapic_redistemp  
+        docker service logs mapic_redis
         docker service logs mapic_mongo      
         docker service logs mapic_nginx      
         docker service logs mapic_postgis    
