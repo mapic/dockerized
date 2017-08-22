@@ -12,8 +12,8 @@ install:
   - cd cli
   - sudo bash mapic-cli.sh
   - sudo mapic version
-  - sudo mapic domain localhost
   - sudo mapic config set MAPIC_USER_EMAIL travis@mapic.io
+  - sudo mapic config set MAPIC_DOMAIN localhost
   - sudo mapic ssl create
 
 script:
