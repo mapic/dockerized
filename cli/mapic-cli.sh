@@ -652,6 +652,9 @@ _mapic_configure () {
 
     exit 0
 }
+_mapic_configure_travis () {
+    echo "travis"
+}
 _ensure_mapic_domain () {
     # ensure MAPIC_DOMAIN
     if [ -z "$MAPIC_DOMAIN" ]; then
