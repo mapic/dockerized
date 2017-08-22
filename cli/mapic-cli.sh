@@ -260,6 +260,7 @@ _init_submodules () {
     git remote set-url origin git@github.com:mapic/mapic.git
 }
 _install_dependencies () {
+
     # install dependencies on osx
     if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
         _install_osx_tools
@@ -269,6 +270,7 @@ _install_dependencies () {
     if [[ "$MAPIC_HOST_OS" == "linux" ]]; then
         _install_linux_tools
     fi
+
 }
 mapic_update () {
     cd $MAPIC_ROOT_FOLDER
@@ -305,12 +307,22 @@ _install_linux_tools () {
     CERTBOTPATH=$(which certbot)
     if [ -z $CERTBOTPATH ]; then
         # todo: incorporate with nginx so refresh can be done on running server
+        # perhaps put in docker image
         sudo apt-get update -y
         sudo apt-get install -y --force-yes software-properties-common
         sudo add-apt-repository -y --force-yes ppa:certbot/certbot
         sudo apt-get update -y --force-yes
         sudo apt-get install -y --force-yes python-certbot-nginx 
     fi
+
+    # docker
+    DOCKERPATH=$(which docker)
+    if [ -z $DOCKERPATH ]; then
+        mapic_install_docker
+    fi
+
+    # pull mapic images
+    docker pull mapic/pwgen
 }
 _install_osx_tools () {
     
@@ -319,8 +331,8 @@ _install_osx_tools () {
     JQ=$(which jq)
     GREP=$(which grep)
     REALPATH=$(which realpath)
+    DOCKERPATH=$(which docker)
    
-
     if [[ "$MAPIC_DEBUG" == true ]]; then
         echo "Installing OSX Tools"
         echo "SED: $SED"
@@ -331,6 +343,7 @@ _install_osx_tools () {
         echo "TRAVIS: $TRAVIS"
         echo "CI: $CI"
         echo "MAPIC_TRAVIS: $MAPIC_TRAVIS"
+        echo "DOCKERPATH: $DOCKERPATH"
     fi
 
     SEDV=$(sed --version | grep "sed (GNU sed)")
@@ -380,8 +393,14 @@ _install_osx_tools () {
         fi
     fi
     
-
-    # jq
+    # docker
+    if [ -z $DOCKERPATH ]; then
+        mapic_install_docker
+    fi
+    
+    # pull mapic images
+    docker pull mapic/pwgen
+    
 }
 get_mapic_host_os () {
     case "$OSTYPE" in
