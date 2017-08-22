@@ -220,10 +220,12 @@ initialize () {
         # now everything should work, time to write ENV
         _write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
         _write_env MAPIC_CLI_FOLDER $MAPIC_CLI_FOLDER
+        _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         _write_env MAPIC_ENV_FILE $MAPIC_ENV_FILE
         _write_env MAPIC_AWS_ENV_FILE $MAPIC_AWS_ENV_FILE
         _write_env MAPIC_COLOR_FILE $MAPIC_COLOR_FILE
+        _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
         _write_env MAPIC_IP $MAPIC_IP
 
     fi
@@ -612,27 +614,67 @@ mapic_scale () {
 mapic_configure () {
     test -z "$2" && _mapic_configure
     case "$2" in
-        stack)      mapic_configure_stack "$@";;
+        stack)      _mapic_configure_stack "$@";;
+        aws)        _ensure_aws_creds "$@";;
         *)          _mapic_configure;;
     esac 
 }
 _mapic_configure () {
-    _refresh_config
+    # _refresh_config
+
+    # first install, things that needs configuring:
+
+    # 1. domain + email
+    # 2. aws creds
+    # 3. dns (if not localhost)
+    # 4. ssl 
+    # 5. stack is automaitcally configured with ENV inside stack.yml
+
+
+    # domain
+    _ensure_mapic_domain
+
+    # email
+    _ensure_user_email
+
+    # aws
+    _ensure_aws_creds
+
+    # dns
+    m dns create
+
+    # ssl
+    m ssl create
+
+    # what else?
+
     exit 0
 }
-mapic_configure_stack () {
-    # cp $MAPIC_CLI_FOLDER/config/default-files/stack.yml $MAPIC_CONFIG_FOLDER/stack.yml
-    SEARCH="constraints: [node.ip = MAPIC_IP]"
-    REPLAC="constraints: [node.ip = $MAPIC_IP]"
-    echo "SEARCH $SEARCH"
-    echo "REP $REPLAC"
-    echo "$MAPIC_CONFIG_FOLDER"
-    # sed -i "/$1=/c\\$1=$2" $MAPIC_CONFIG_FOLDER/stack.yml
-    # sed -i "/$SEARCH/c\\$REPLAC" $MAPIC_CONFIG_FOLDER/stack.yml
-    # cat $MAPIC_CONFIG_FOLDER/stack.yml
-    # _replace_line "node.ip = MAPIC_IP" "constraints: [node.ip = $MAPIC_IP]" $MAPIC_CONFIG_FOLDER/stack.yml
-    echo "Default stack copied!"
-    echo "TODO - not working!"
+_ensure_mapic_domain () {
+    # ensure MAPIC_DOMAIN
+    if [ -z "$MAPIC_DOMAIN" ]; then
+        MAPIC_DOMAIN=$(m config prompt MAPIC_DOMAIN "Please provide a valid domain for the Mapic install")
+    fi
+}
+_ensure_user_email () {
+    # ensure MAPIC_USER_EMAIL
+    if [ -z "$MAPIC_USER_EMAIL" ]; then
+        MAPIC_USER_EMAIL=$(m config prompt MAPIC_USER_EMAIL "Please provide an email for use with Mapic")
+    fi
+}
+_ensure_aws_creds () {
+    # ensure MAPIC_AWS_ACCESSKEYID
+    if [ -z "$MAPIC_AWS_ACCESSKEYID" ]; then
+        MAPIC_AWS_ACCESSKEYID=$(m config prompt MAPIC_AWS_ACCESSKEYID "AWS: Please provide an Access Key ID for AWS (used for automatic creation of DNS records)")
+    fi
+    # ensure MAPIC_AWS_SECRETACCESSKEY
+    if [ -z "$MAPIC_AWS_SECRETACCESSKEY" ]; then
+        MAPIC_AWS_SECRETACCESSKEY=$(m config prompt MAPIC_AWS_SECRETACCESSKEY "AWS: Please provide a Secret Access Key for AWS (used for automatic creation of DNS records)")
+    fi
+    # ensure MAPIC_AWS_HOSTED_ZONE_DOMAIN
+    if [ -z "$MAPIC_AWS_HOSTED_ZONE_DOMAIN" ]; then
+        MAPIC_AWS_HOSTED_ZONE_DOMAIN=$(m config prompt MAPIC_AWS_HOSTED_ZONE_DOMAIN "AWS: Please provide an valid Hosted Zone Domain for AWS (eg. 'mapic.io') (used for automatic creation of DNS records)")
+    fi
 }
 mapic_config_usage () {
     echo ""
@@ -797,24 +839,31 @@ _write_env () {
     export $1=$2
 }
 _replace_line () {
-    test -z $1 && failed "Missing argument"
-    test -z $2 && failed "Missing argument"
-    test -z $3 && failed "Missing argument"
+    echo "_replace_line"
+    echo "1: $1"
+    echo "2: $2"
+    echo "3: $3"
+    echo "4: $4"
+
+    test -z "$1" && failed "Missing argument"
+    test -z "$2" && failed "Missing argument"
+    test -z "$3" && failed "Missing argument"
 
     REPLACE_FILE=$3
 
     echo "_replace_line $1 $2"
 
     # add or replace line in .mapic.env
-    if grep -q "$1=" "$REPLACE_FILE"; then
+    if grep -q "$1" "$REPLACE_FILE"; then
         # replace line
         sed -i "/$1=/c\\$1=$2" $REPLACE_FILE
     else
-        # ensure newline
-        sed -i -e '$a\' $REPLACE_FILE 
+        echo "Not found!"
+        # # ensure newline
+        # sed -i -e '$a\' $REPLACE_FILE 
 
-        # add to bottom
-        echo "$1"="$2" >> $REPLACE_FILE
+        # # add to bottom
+        # echo "$1"="$2" >> $REPLACE_FILE
     fi
 }
 _create_mapic_symlink () {
@@ -1099,18 +1148,7 @@ _install_mapic () {
     # init docker swarm
     _init_docker_swarm
 }
-_ensure_mapic_domain () {
-    # ensure MAPIC_DOMAIN
-    if [ -z "$MAPIC_DOMAIN" ]; then
-        MAPIC_DOMAIN=$(m config prompt MAPIC_DOMAIN "Please provide a valid domain for the Mapic install")
-    fi
-}
-_ensure_user_email () {
-    # ensure MAPIC_USER_EMAIL
-    if [ -z "$MAPIC_USER_EMAIL" ]; then
-        MAPIC_USER_EMAIL=$(m config prompt MAPIC_USER_EMAIL "Please provide an email for use with Mapic")
-    fi
-}
+
 _print_branches () {
     echo ""
     ecco 5 "Git branches:"
