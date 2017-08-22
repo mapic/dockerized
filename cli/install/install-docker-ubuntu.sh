@@ -14,40 +14,7 @@ abort () {
 DOCKER_COMPOSE_VERSION=1.13.0
 DOCKER_MACHINE_VERSION=0.10.0
 
-# check for existing version
-# DOCKER_EXISTING=$(docker version)
-# echo "DOCKER_EXISTING: $DOCKER_EXISTING"
-
-# exit 0
-
-
-# # remove old docker versions
-# sudo apt-get -qq remove -y docker docker-engine
-
-# # install deps
-# echo "Installing dependencies"
-# sudo apt-get -qq install -y \
-#     apt-transport-https \
-#     ca-certificates \
-#     curl \
-#     software-properties-common
-
-# # get key
-# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-
-# # add repo
-# sudo add-apt-repository \
-#    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-#    $(lsb_release -cs) \
-#    stable"
-# sudo apt-get -qq update -y
-
-# # install docker-ce
-# echo "Installing Docker"
-# sudo apt-get -qq install -y docker-ce
-
-
-command_exists() {
+command_exists () {
     command -v "$@" > /dev/null 2>&1
 }
 
@@ -57,10 +24,6 @@ if command_exists docker; then
     echo "$DOCKER_VERSION already installed"
 else 
     # install docker
-    # CODENAME=$(lsb_release -cs)
-    # PKG="docker-ce_17.03.0~ce-0~ubuntu-"$CODENAME"_amd64.deb"
-    # curl -L https://download.docker.com/linux/ubuntu/dists/$CODENAME/pool/stable/amd64/$PKG > /tmp/$PKG || abort "Couldn't download $PKG"
-    # sudo dpkg --force-confdef --force-confold -i /tmp/$PKG
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
     sudo apt-get update -y
@@ -97,13 +60,3 @@ else
     DOCKER_VERSION=$(docker-machine -v)
     echo "$DOCKER_VERSION installed"
 fi
-
-# verify version
-# clear
-# echo "Installed Docker Community Edition and Docker Compose:"
-# echo "Docker version:"
-# docker version
-# echo "Docker Compose version:"
-# docker-compose version
-# echo "Docker Machine version:"
-# docker-machine version

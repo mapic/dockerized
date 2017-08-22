@@ -33,7 +33,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
-MAPIC_CLI_VERSION=17.8.19
+MAPIC_CLI_VERSION=17.8.22
 
 # # # # # # # # # # # # # 
 #
@@ -137,7 +137,7 @@ m () {
         debug)      mapic_debug "$@";;
         domain)     mapic_domain "$@";;
         travis)     mapic_travis "$@";;
-        env)        mapic_config "$@";; # deprecated
+        # env)        mapic_config "$@";; # deprecated
         edit)       mapic_edit "$@";;
         version)    mapic_version "$@";;
         info)       mapic_info "$@";;
@@ -267,13 +267,13 @@ mapic_update () {
     echo "Updating local repositories..."
     ecco 4 "mapic/mapic"
     git pull origin master --rebase
-    cd mile
+    cd $MAPIC_ROOT_FOLDER/mile
     ecco 4 "mapic/mile"
     git pull origin master --rebase
-    cd ../engine
+    cd $MAPIC_ROOT_FOLDER/engine
     ecco 4 "mapic/engine"
     git pull origin master --rebase
-    cd ../mapic.js
+    cd $MAPIC_ROOT_FOLDER/mapic.js
     ecco 4 "mapic/mapic.js"
     git pull origin master --rebase
 }
@@ -282,6 +282,7 @@ _install_linux_tools () {
     if [ -z $PWGEN ]; then
         apt-get update -y
         apt-get install -y pwgen
+        # todo: move to docker container
     fi
     REALPATH=$(which realpath)
     if [ -z $REALPATH ]; then
@@ -301,6 +302,7 @@ _install_linux_tools () {
     sudo add-apt-repository ppa:certbot/certbot
     sudo apt-get update -y
     sudo apt-get install -y python-certbot-nginx 
+    # todo: incorporate with nginx so refresh can be done on running server
 }
 _install_osx_tools () {
     
@@ -405,7 +407,6 @@ mapic_debug () {
 }
 mapic_edit () {
     # edit mapic-cli.sh
-    echo "$MAPIC_DEFAULT_EDITOR $MAPIC_CLI_FOLDER/mapic-cli.sh"
     $MAPIC_DEFAULT_EDITOR $MAPIC_CLI_FOLDER/mapic-cli.sh
 }
 ecco () {
@@ -694,7 +695,7 @@ mapic_config_usage () {
 mapic_config () {
     test -z "$2" && mapic_config_usage
     case "$2" in
-        refresh)    mapic_config_refresh "$@";;
+        # refresh)    mapic_config_refresh "$@";;
         set)        mapic_config_set "$@";;
         get)        mapic_config_get "$@";;
         list)       mapic_config_list;;
@@ -704,33 +705,33 @@ mapic_config () {
         *)          mapic_config_usage;;
     esac 
 }
-mapic_config_refresh_usage () {
-    echo ""
-    echo "Usage: mapic config refresh [OPTIONS]"
-    echo ""
-    echo "Attempts to reset configuration to default and working condition."
-    echo ""
-    echo "Options:"
-    echo "  all         Refresh all Mapic configuration files"
-    echo "  engine      Refresh Mapic Engine config"
-    echo "  mile        Refresh Mapic Mile config"
-    echo "  mapicjs     Refresh Mapic.js config"
-    echo "  nginx       Refresh NGINX config"
-    echo "  redis       Refresh Redis config"
-    echo "  mongo       Refresh Mongo config"
-    echo "  postgis     Refresh PostGIS config"
-    echo "  slack       Refresh Slack config"
-    echo ""
-    exit 0
-}
-mapic_config_refresh () {
-    _refresh_config
-}
+# mapic_config_refresh_usage () {
+#     echo ""
+#     echo "Usage: mapic config refresh [OPTIONS]"
+#     echo ""
+#     echo "Attempts to reset configuration to default and working condition."
+#     echo ""
+#     echo "Options:"
+#     echo "  all         Refresh all Mapic configuration files"
+#     echo "  engine      Refresh Mapic Engine config"
+#     echo "  mile        Refresh Mapic Mile config"
+#     echo "  mapicjs     Refresh Mapic.js config"
+#     echo "  nginx       Refresh NGINX config"
+#     echo "  redis       Refresh Redis config"
+#     echo "  mongo       Refresh Mongo config"
+#     echo "  postgis     Refresh PostGIS config"
+#     echo "  slack       Refresh Slack config"
+#     echo ""
+#     exit 0
+# }
+# mapic_config_refresh () {
+#     _refresh_config
+# }
 
 # deprecated, todo: remove
-mapic_env () {
-    mapic_config "$@"
-}
+# mapic_env () {
+#     mapic_config "$@"
+# }
 mapic_config_set_help () {
     echo ""
     echo "Usage: mapic config set KEY VALUE"
@@ -744,10 +745,10 @@ mapic_config_set_help () {
     echo "  MAPIC_AWS_ACCESSKEYID           Amazon AWS credentials: Access Key Id"
     echo "  MAPIC_AWS_SECRETACCESSKEY       Amazon AWS credentials: Secret Access Key"
     echo "  MAPIC_AWS_HOSTED_ZONE_DOMAIN    Amazon Route53 Zone Domain. Used for creating DNS entries with Route53."
-    echo "  MAPIC_DEBUG                     Debug switch, used arbitrarily."
+    echo "  MAPIC_DEBUG                     Debug switch, for printing verbose logs"
     echo "  MAPIC_ROOT_FOLDER               Folder where 'mapic' root lives. Set automatically."
     echo ""
-    echo "  See 'mapic config list' for all variables"
+    echo "  See 'mapic config list' for all available variables"
     echo ""
     exit 0
 }
@@ -762,7 +763,7 @@ mapic_config_set () {
     _write_env $3 $4
  
     # confirm new variable
-    [[ "$FLAG" = "" ]] && mapic env get $3
+    [[ "$FLAG" = "" ]] && m config get $3
     [[ "$FLAG" = "value" ]] && echo $4
 }
 mapic_config_get_usage () {
@@ -839,34 +840,6 @@ _write_env () {
 
     export $1=$2
 }
-_replace_line () {
-    echo "_replace_line"
-    echo "1: $1"
-    echo "2: $2"
-    echo "3: $3"
-    echo "4: $4"
-
-    test -z "$1" && failed "Missing argument"
-    test -z "$2" && failed "Missing argument"
-    test -z "$3" && failed "Missing argument"
-
-    REPLACE_FILE=$3
-
-    echo "_replace_line $1 $2"
-
-    # add or replace line in .mapic.env
-    if grep -q "$1" "$REPLACE_FILE"; then
-        # replace line
-        sed -i "/$1=/c\\$1=$2" $REPLACE_FILE
-    else
-        echo "Not found!"
-        # # ensure newline
-        # sed -i -e '$a\' $REPLACE_FILE 
-
-        # # add to bottom
-        # echo "$1"="$2" >> $REPLACE_FILE
-    fi
-}
 _create_mapic_symlink () {
     unlink /usr/local/bin/mapic >/dev/null 2>&1
     ln -s $MAPIC_CLI_FOLDER/mapic-cli.sh /usr/local/bin/mapic >/dev/null 2>&1
@@ -901,7 +874,6 @@ mapic_ps () {
 #  (__  ) /_/ /_/ / /  / /_  
 # /____/\__/\__,_/_/   \__/  
 mapic_up () {
-    # STACK=$MAPIC_ROOT_FOLDER/cli/config/stack.yml
     STACK=$MAPIC_CONFIG_FOLDER/stack.yml
     docker stack deploy --compose-file=$STACK mapic 
     echo "Mapic is up."
@@ -1115,7 +1087,7 @@ mapic_install_prime () {
         m install docker
         
     else
-        echo "I can only prime Linux"
+        echo "I can only prime Linux. Please install Docker manually."
     fi
 }
 _install_mapic () {
@@ -1173,16 +1145,16 @@ _refresh_config () {
     echo "TODO: remove this!"
     return
 
-    echo ""
-    ecco 8 "Refreshing configuration..."
+    # echo ""
+    # ecco 8 "Refreshing configuration..."
 
-    # create auth for redis/mongo
-    MAPIC_REDIS_AUTH=$(pwgen 40 1)
-    MAPIC_MONGO_AUTH=$(pwgen 40 1)
-    _write_env MAPIC_REDIS_AUTH $MAPIC_REDIS_AUTH
-    _write_env MAPIC_MONGO_AUTH $MAPIC_MONGO_AUTH
+    # # create auth for redis/mongo
+    # MAPIC_REDIS_AUTH=$(pwgen 40 1)
+    # MAPIC_MONGO_AUTH=$(pwgen 40 1)
+    # _write_env MAPIC_REDIS_AUTH $MAPIC_REDIS_AUTH
+    # _write_env MAPIC_MONGO_AUTH $MAPIC_MONGO_AUTH
 
-    echo "  Created secure auths..."
+    # echo "  Created secure auths..."
 
     # replace old config with defaults
     cd $MAPIC_CLI_FOLDER/config
@@ -1195,6 +1167,18 @@ _refresh_config () {
   
     # done    
     ecco 8 "Mapic configuration updated!"
+}
+_set_redis_auth () {
+    MAPIC_REDIS_AUTH=$(pwgen 40 1)
+    _write_env MAPIC_REDIS_AUTH $MAPIC_REDIS_AUTH
+    echo "Updated Redis authentication"
+
+}
+_set_mongo_auth () {
+    MAPIC_MONGO_AUTH=$(pwgen 40 1)
+    _write_env MAPIC_MONGO_AUTH $MAPIC_MONGO_AUTH
+    echo "Updated MongoDB authentication"
+
 }
 _print_config () {
     
@@ -1612,12 +1596,8 @@ _create_ssl () {
 
     # create certs
     if [ $MAPIC_DOMAIN = "localhost" ]; then
-        # cd $MAPIC_CLI_FOLDER/ssl
-        # bash create-ssl-localhost.sh
         _create_ssl_localhost
     else 
-        # cd $MAPIC_CLI_FOLDER/ssl
-        # bash create-ssl-public-domain.sh
         _create_ssl_public_domain
     fi
 
@@ -1626,9 +1606,9 @@ _create_ssl () {
 }
 _create_ssl_localhost () {
     docker run --rm -it --name openssl \
-    -v $MAPIC_CONFIG_FOLDER:/certs \
-    wallies/openssl \
-    openssl req -x509 -nodes \
+        -v $MAPIC_CONFIG_FOLDER:/certs \
+        wallies/openssl \
+        openssl req -x509 -nodes \
         -days 365 \
         -newkey rsa:2048 \
         -keyout /certs/privkey.key \
@@ -1823,7 +1803,6 @@ mapic_bench () {
     # run benchmark
     mapic_bench_run
 }
-
 
 mapic_bench_run () {
 
