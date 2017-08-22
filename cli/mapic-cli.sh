@@ -783,7 +783,7 @@ mapic_config_set () {
  
     # confirm new variable
     [[ "$FLAG" = "" ]] && m config get $3
-    [[ "$FLAG" = "value" ]] && echo $4
+    # [[ "$FLAG" = "value" ]] && echo $4
 }
 mapic_config_get_usage () {
     echo ""
