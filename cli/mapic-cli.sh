@@ -162,7 +162,7 @@ initialize () {
     # get osx/linux
     get_mapic_host_os
 
-    # hardcoded env files
+    # global env files
     MAPIC_ENV_FILE=/usr/local/bin/.mapic.env
     MAPIC_AWS_ENV_FILE=/usr/local/bin/.mapic.aws.env
 
@@ -189,27 +189,18 @@ initialize () {
         # set config folder
         MAPIC_CONFIG_FOLDER=$MAPIC_ROOT_FOLDER/cli/config
 
-        # cp default env file
+        # cp default env files
         cp $MAPIC_CLI_FOLDER/.mapic.default.env $MAPIC_ENV_FILE
         cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env $MAPIC_AWS_ENV_FILE 
         
         # create symlink for global mapic
         _create_mapic_symlink
 
-        # install dependencies on osx
-        if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
-            _install_osx_tools
-        fi
-
-        # install dependencies on linux
-        if [[ "$MAPIC_HOST_OS" == "linux" ]]; then
-            _install_linux_tools
-        fi
+        # install dependencies
+        _install_dependencies
 
         # update submodules
-        cd $MAPIC_ROOT_FOLDER
-        git submodule init
-        git submodule update --remote
+        _init_submodules
 
         # ensure editor
         _ensure_editor
@@ -262,6 +253,23 @@ _corrupted_install () {
     echo "Install is corrupted. Try downloading fresh with `curl -sSL https://get.mapic.io | sh`"
     exit 1 
 }
+_init_submodules () {
+    cd $MAPIC_ROOT_FOLDER
+    git submodule init
+    git submodule update --remote
+    git remote set-url origin git@github.com:mapic/mapic.git
+}
+_install_dependencies () {
+    # install dependencies on osx
+    if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
+        _install_osx_tools
+    fi
+
+    # install dependencies on linux
+    if [[ "$MAPIC_HOST_OS" == "linux" ]]; then
+        _install_linux_tools
+    fi
+}
 mapic_update () {
     cd $MAPIC_ROOT_FOLDER
     echo "Updating local repositories..."
@@ -278,18 +286,15 @@ mapic_update () {
     git pull origin master --rebase
 }
 _install_linux_tools () {
-    PWGEN=$(which pwgen)
-    if [ -z $PWGEN ]; then
-        apt-get update -y
-        apt-get install -y pwgen
-        # todo: move to docker container
-    fi
+
+    # realpath
     REALPATH=$(which realpath)
     if [ -z $REALPATH ]; then
         apt-get update -y
         apt-get install -y realpath
     fi
 
+    # git
     GITPATH=$(which git)
     if [ -z $GITPATH ]; then
         apt-get update -y
@@ -297,12 +302,15 @@ _install_linux_tools () {
     fi
 
     # certbot
-    sudo apt-get update -y
-    sudo apt-get install -7 software-properties-common
-    sudo add-apt-repository ppa:certbot/certbot
-    sudo apt-get update -y
-    sudo apt-get install -y python-certbot-nginx 
-    # todo: incorporate with nginx so refresh can be done on running server
+    CERTBOTPATH=$(which certbot)
+    if [ -z $CERTBOTPATH ]; then
+        # todo: incorporate with nginx so refresh can be done on running server
+        sudo apt-get update -y
+        sudo apt-get install -y --force-yes software-properties-common
+        sudo add-apt-repository -y --force-yes ppa:certbot/certbot
+        sudo apt-get update -y --force-yes
+        sudo apt-get install -y --force-yes python-certbot-nginx 
+    fi
 }
 _install_osx_tools () {
     
@@ -310,7 +318,6 @@ _install_osx_tools () {
     BREW=$(which brew)
     JQ=$(which jq)
     GREP=$(which grep)
-    PWGEN=$(which pwgen)
     REALPATH=$(which realpath)
    
 
@@ -358,17 +365,7 @@ _install_osx_tools () {
         fi
     fi
 
-    # pwget
-    if [ -z $PWGEN ]; then
-        cd $MAPIC_ROOT_FOLDER/tmp
-        wget "http://http.debian.net/debian/pool/main/p/pwgen/pwgen_2.07.orig.tar.gz"
-        tar xf pwgen_2.07.orig.tar.gz
-        cd pwget-2.07
-        ./configure
-        make && make install
-    fi
-
-    # grep
+    # realpath
     if [ -z $REALPATH ]; then
         if [ -z $BREW ]; then
             echo "Brew required for OSX. Please install 'realpath' manually:"
@@ -1160,28 +1157,26 @@ _refresh_config () {
     # echo "  Created secure auths..."
 
     # replace old config with defaults
-    cd $MAPIC_CLI_FOLDER/config
-    rm -rf files
-    yes | cp -rf default-files files
-    chmod +w files
+    # cd $MAPIC_CLI_FOLDER/config
+    # rm -rf files
+    # yes | cp -rf default-files files
+    # chmod +w files
    
     # print config
-    _print_config
+    # _print_config
   
     # done    
-    ecco 8 "Mapic configuration updated!"
+    # ecco 8 "Mapic configuration updated!"
 }
 _set_redis_auth () {
-    MAPIC_REDIS_AUTH=$(pwgen 40 1)
+    MAPIC_REDIS_AUTH=$(docker run mapic/pwgen 40)
     _write_env MAPIC_REDIS_AUTH $MAPIC_REDIS_AUTH
     echo "Updated Redis authentication"
-
 }
 _set_mongo_auth () {
-    MAPIC_MONGO_AUTH=$(pwgen 40 1)
+    MAPIC_MONGO_AUTH=$(docker run mapic/pwgen 40)
     _write_env MAPIC_MONGO_AUTH $MAPIC_MONGO_AUTH
     echo "Updated MongoDB authentication"
-
 }
 _print_config () {
     
