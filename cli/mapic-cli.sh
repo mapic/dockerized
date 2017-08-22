@@ -187,7 +187,7 @@ initialize () {
         MAPIC_COLOR_FILE=$MAPIC_CLI_FOLDER/.mapic.colors
 
         # set config folder
-        # MAPIC_CONFIG_FOLDER=$MAPIC_CLI_FOLDER/config/files
+        MAPIC_CONFIG_FOLDER=$MAPIC_ROOT_FOLDER/cli/config
 
         # cp default env file
         cp $MAPIC_CLI_FOLDER/.mapic.default.env $MAPIC_ENV_FILE
@@ -851,8 +851,8 @@ mapic_ps () {
 #  (__  ) /_/ /_/ / /  / /_  
 # /____/\__/\__,_/_/   \__/  
 mapic_up () {
-    # COMPOSEFILE=$MAPIC_CONFIG_FOLDER/stack.yml
-    STACK=$MAPIC_ROOT_FOLDER/cli/config/stack.yml
+    # STACK=$MAPIC_ROOT_FOLDER/cli/config/stack.yml
+    STACK=$MAPIC_CONFIG_FOLDER/stack.yml
     docker stack deploy --compose-file=$STACK mapic 
     echo "Mapic is up."
     docker service ls
@@ -1105,6 +1105,12 @@ _ensure_mapic_domain () {
         MAPIC_DOMAIN=$(m config prompt MAPIC_DOMAIN "Please provide a valid domain for the Mapic install")
     fi
 }
+_ensure_user_email () {
+    # ensure MAPIC_USER_EMAIL
+    if [ -z "$MAPIC_USER_EMAIL" ]; then
+        MAPIC_USER_EMAIL=$(m config prompt MAPIC_USER_EMAIL "Please provide an email for use with Mapic")
+    fi
+}
 _print_branches () {
     echo ""
     ecco 5 "Git branches:"
@@ -1131,6 +1137,9 @@ _print_branches () {
     echo ""
 }
 _refresh_config () {
+
+    echo "TODO: remove this!"
+    return
 
     echo ""
     ecco 8 "Refreshing configuration..."
@@ -1552,13 +1561,76 @@ _create_ssl () {
     # ensure domain
     _ensure_mapic_domain
 
+    # ensure email
+    _ensure_user_email
+
     # create certs
     if [ $MAPIC_DOMAIN = "localhost" ]; then
-        cd $MAPIC_CLI_FOLDER/ssl
-        bash create-ssl-localhost.sh
+        # cd $MAPIC_CLI_FOLDER/ssl
+        # bash create-ssl-localhost.sh
+        _create_ssl_localhost
     else 
-        cd $MAPIC_CLI_FOLDER/ssl
-        bash create-ssl-public-domain.sh
+        # cd $MAPIC_CLI_FOLDER/ssl
+        # bash create-ssl-public-domain.sh
+        _create_ssl_public_domain
+    fi
+
+    # create dhparams
+    _create_dhparams
+}
+_create_ssl_localhost () {
+    docker run --rm -it --name openssl \
+    -v $MAPIC_CONFIG_FOLDER:/certs \
+    wallies/openssl \
+    openssl req -x509 -nodes \
+        -days 365 \
+        -newkey rsa:2048 \
+        -keyout /certs/privkey.key \
+        -out /certs/fullchain.pem \
+        -subj "/C=NO/ST=Oslo/L=Oslo/O=Mapic/OU=IT Department/CN=localhost" || abort "Failed to create SSL certificates"
+
+}
+_create_ssl_public_domain () {
+    # certbot-auto
+    cd $MAPIC_CLI_FOLDER/ssl
+    certbot certonly \
+        --standalone \
+        --agree-tos \
+        --email "$MAPIC_USER_EMAIL" \
+        --hsts \
+        --force-renew \
+        --non-interactive \
+        --domain "$MAPIC_DOMAIN"           \
+        --domain proxy-a-"$MAPIC_DOMAIN"   \
+        --domain proxy-b-"$MAPIC_DOMAIN"   \
+        --domain proxy-c-"$MAPIC_DOMAIN"   \
+        --domain proxy-d-"$MAPIC_DOMAIN"   \
+        --domain tiles-a-"$MAPIC_DOMAIN"   \
+        --domain tiles-b-"$MAPIC_DOMAIN"   \
+        --domain tiles-c-"$MAPIC_DOMAIN"   \
+        --domain tiles-d-"$MAPIC_DOMAIN"   \
+        --domain  grid-a-"$MAPIC_DOMAIN"   \
+        --domain  grid-b-"$MAPIC_DOMAIN"   \
+        --domain  grid-c-"$MAPIC_DOMAIN"   \
+        --domain  grid-d-"$MAPIC_DOMAIN"   || abort
+       
+    echo "Created certificates, moving them to config folder ($MAPIC_CONFIG_FOLDER)"
+    cp /etc/letsencrypt/live/"$MAPIC_DOMAIN"/privkey.pem $MAPIC_CONFIG_FOLDER/privkey.key
+    cp /etc/letsencrypt/live/"$MAPIC_DOMAIN"/fullchain.pem $MAPIC_CONFIG_FOLDER/fullchain.pem
+}
+_create_dhparams () {
+    if  [[ -f "$MAPIC_CONFIG_FOLDER/dhparams.pem" ]]; then
+        echo 'Using pre-existing Strong Diffie-Hellmann Group'
+    else
+        echo 'Creating Strong Diffie-Hellmann Group'
+        docker run \
+            --rm \
+            -e "RANDFILE=.rnd" \
+            -it \
+            --name openssl \
+            -v $MAPIC_CONFIG_FOLDER:/certs \
+            wallies/openssl \
+            openssl dhparam -out /certs/dhparams.pem 2048 || abort "Failed to create Diffie-Hellmann group"
     fi
 }
 _scan_ssl () {
