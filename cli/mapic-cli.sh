@@ -647,6 +647,7 @@ _mapic_configure () {
     m ssl create
 
     # what else?
+    # set redis/mongo auth
 
     exit 0
 }
@@ -1263,6 +1264,8 @@ mapic_install_docker_unsupported () {
     exit 0
 }
 mapic_install_docker_ubuntu () {
+    
+    # install docker
     echo "Installing Docker!"
     cd $MAPIC_CLI_FOLDER/install
     bash install-docker-ubuntu.sh
@@ -1270,7 +1273,19 @@ mapic_install_docker_ubuntu () {
     # put docker in experimental mode for swarm
     # see https://github.com/moby/moby/issues/30585#issuecomment-280822231
     echo '{"experimental":true}' >> /etc/docker/daemon.json
-    sudo systemctl restart docker || service docker restart
+    echo "Restarting Docker in experimental mode."
+    read -p "Restart Docker now?  (y/n)" -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        
+        # restart docker
+        sudo systemctl restart docker || service docker restart
+
+         # init swarm
+        docker swarm init --advertise-addr $MAPIC_IP
+    else
+        echo "Please restart Docker manually to access experiemental mode needed for Docker Swarm"
+    fi
 }
 
 #   ____ _____  (_)
