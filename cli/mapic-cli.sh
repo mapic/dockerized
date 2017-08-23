@@ -1756,6 +1756,12 @@ _print_stack () {
     echo ""
     ecco 6 "docker ps"
     docker ps
+
+    # print more debug info for travis build
+    if [[ "$TRAVIS" == "true" ]]; then
+        echo 'docker inspect $(docker ps -q):'
+        docker inspect $(docker ps -q)
+    fi
 }
 #   / /____  _____/ /_
 #  / __/ _ \/ ___/ __/
