@@ -331,10 +331,6 @@ _install_linux_tools () {
     # init swarm
     docker swarm init --advertise-addr $MAPIC_IP
 
-    DOCKER_NODE_IP=$(docker node inspect self --format '{{ .Status.Addr  }}')
-
-    echo "DOCKER_NODE_IP: $DOCKER_NODE_IP"
-
     # pull mapic images
     docker pull mapic/pwgen
 }
@@ -1088,7 +1084,30 @@ mapic_install_master () {
 }
 mapic_install_travis () {
     # install whatever branch is designated in travis
-    _install_mapic
+    
+    # 1. install docker
+    # 2. set exp mode
+    # 3. init swarm with 127...
+
+    # install docker
+    echo "Installing Docker!"
+    cd $MAPIC_CLI_FOLDER/install
+    bash install-docker-ubuntu.sh
+
+    # put docker in experimental mode for swarm
+    echo '{"experimental":true}' >> /etc/docker/daemon.json
+    echo "Restarting Docker in experimental mode."
+
+    # restart docker
+    _restart_docker
+
+    # init swarm
+    docker swarm init --advertise-addr 127.0.0.1
+
+    # set env
+    _write_env MAPIC_USER_EMAIL travis@mapic.io
+    _write_env MAPIC_DOMAIN localhost
+
 }
 mapic_install_branch_usage () {
     echo ""
@@ -1174,32 +1193,8 @@ _print_branches () {
     echo ""
 }
 _refresh_config () {
-
     echo "TODO: remove this!"
     return
-
-    # echo ""
-    # ecco 8 "Refreshing configuration..."
-
-    # # create auth for redis/mongo
-    # MAPIC_REDIS_AUTH=$(pwgen 40 1)
-    # MAPIC_MONGO_AUTH=$(pwgen 40 1)
-    # _write_env MAPIC_REDIS_AUTH $MAPIC_REDIS_AUTH
-    # _write_env MAPIC_MONGO_AUTH $MAPIC_MONGO_AUTH
-
-    # echo "  Created secure auths..."
-
-    # replace old config with defaults
-    # cd $MAPIC_CLI_FOLDER/config
-    # rm -rf files
-    # yes | cp -rf default-files files
-    # chmod +w files
-   
-    # print config
-    # _print_config
-  
-    # done    
-    # ecco 8 "Mapic configuration updated!"
 }
 _set_redis_auth () {
     MAPIC_REDIS_AUTH=$(docker run mapic/pwgen 40)
@@ -1288,6 +1283,9 @@ mapic_install_docker_ubuntu () {
     # use experimental mode
     _set_experimental_docker
 }
+_install_docker_travis () {
+    mapic_install_docker_ubuntu
+}
 
 _set_experimental_docker () {
     # put docker in experimental mode for swarm
@@ -1295,26 +1293,20 @@ _set_experimental_docker () {
     echo '{"experimental":true}' >> /etc/docker/daemon.json
     echo "Restarting Docker in experimental mode."
 
-    if [[ "$TRAVIS" == "true" ]];then
+    read -p "Restart Docker now?  (y/n)" -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        
+        # restart docker
         _restart_docker
-        _init_docker_swarm
+
+         # init swarm
+        _init_docker_swarm    
+
     else
-        read -p "Restart Docker now?  (y/n)" -n 1 -r
-        if [[ $REPLY =~ ^[Yy]$ ]]
-        then
-            
-            # restart docker
-            _restart_docker
-
-             # init swarm
-            _init_docker_swarm    
-
-        else
-            echo "Please restart Docker manually to access experiemental mode needed for Docker Swarm"
-        fi
-
+        echo "Please restart Docker manually to access experiemental mode needed for Docker Swarm"
     fi
-    
+
 }
 _restart_docker () {
     sudo systemctl restart docker || service docker restart
