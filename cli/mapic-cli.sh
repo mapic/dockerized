@@ -324,6 +324,10 @@ _install_linux_tools () {
     # init swarm
     docker swarm init --advertise-addr $MAPIC_IP
 
+    DOCKER_NODE_IP=$(docker node inspect self --format '{{ .Status.Addr  }}')
+
+    echo "DOCKER_NODE_IP: $DOCKER_NODE_IP"
+
     # pull mapic images
     docker pull mapic/pwgen
 }
