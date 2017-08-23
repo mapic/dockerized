@@ -194,7 +194,7 @@ initialize () {
         cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env $MAPIC_AWS_ENV_FILE 
 
         # determine public ip
-        MAPIC_IP=$(curl ipinfo.io/ip)
+        _determine_ip
         
         # create symlink for global mapic
         _create_mapic_symlink
@@ -252,6 +252,13 @@ abort () {
 _corrupted_install () {
     echo "Install is corrupted. Try downloading fresh with `curl -sSL https://get.mapic.io | sh`"
     exit 1 
+}
+_determine_ip () {
+    MAPIC_IP=$(curl ipinfo.io/ip)
+
+    if [[ "$TRAVIS" == "true" ]]; then
+        MAPIC_IP=127.0.0.1
+    fi
 }
 _init_submodules () {
     cd $MAPIC_ROOT_FOLDER
