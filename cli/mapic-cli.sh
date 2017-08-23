@@ -33,7 +33,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
-MAPIC_CLI_VERSION=17.8.22
+MAPIC_CLI_VERSION=17.8.23
 
 # # # # # # # # # # # # # 
 #
@@ -192,6 +192,9 @@ initialize () {
         # cp default env files
         cp $MAPIC_CLI_FOLDER/.mapic.default.env $MAPIC_ENV_FILE
         cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env $MAPIC_AWS_ENV_FILE 
+
+        # determine public ip
+        MAPIC_IP=$(curl ipinfo.io/ip)
         
         # create symlink for global mapic
         _create_mapic_symlink
@@ -204,9 +207,6 @@ initialize () {
 
         # ensure editor
         _ensure_editor
-
-        # determine public ip
-        MAPIC_IP=$(curl ipinfo.io/ip)
 
         # now everything should work, time to write ENV
         _write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
@@ -319,9 +319,10 @@ _install_linux_tools () {
     DOCKERPATH=$(which docker)
     if [ -z $DOCKERPATH ]; then
         mapic_install_docker
-    else
-        echo "Docker already installed: $DOCKERPATH"
     fi
+
+    # init swarm
+    docker swarm init --advertise-addr $MAPIC_IP
 
     # pull mapic images
     docker pull mapic/pwgen
