@@ -885,11 +885,32 @@ mapic_ps () {
     exit 0
 }
 
+_test_config () {
+
+    # ensure mongo auth
+    if [ -z $MAPIC_MONGO_AUTH ]; then
+        _set_mongo_auth
+    fi
+
+    # ensure redis auth
+    if [ -z $MAPIC_REDIS_AUTH  ]; then
+        _set_redis_auth
+    fi
+
+    # todo:...
+    # ssl
+}
+
 #    _____/ /_____ ______/ /_
 #   / ___/ __/ __ `/ ___/ __/
 #  (__  ) /_/ /_/ / /  / /_  
 # /____/\__/\__,_/_/   \__/  
 mapic_up () {
+
+    # test sanity of config
+    _test_config
+
+    # start mapic stack
     STACK=$MAPIC_CONFIG_FOLDER/stack.yml
     docker stack deploy --compose-file=$STACK mapic 
     echo "Mapic is up."
