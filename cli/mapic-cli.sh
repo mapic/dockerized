@@ -1777,11 +1777,11 @@ _print_stack () {
     docker ps
 
     # print more debug info for travis build
-    if [[ "$TRAVIS" == "true" ]]; then
-        echo 'docker inspect $(docker stack services mapic -q):'
-        docker stack services mapic -q
-        docker inspect $(docker stack services mapic -q)
-    fi
+    # if [[ "$TRAVIS" == "true" ]]; then
+    #     echo 'docker inspect $(docker stack services mapic -q):'
+    #     docker stack services mapic
+    #     # docker inspect $(docker stack services mapic -q)
+    # fi
 }
 #   / /____  _____/ /_
 #  / __/ _ \/ ___/ __/
