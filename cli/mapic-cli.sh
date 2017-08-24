@@ -323,16 +323,8 @@ _install_linux_tools () {
     fi
 
     # docker
-    DOCKERPATH=$(which docker)
-    if [ -z $DOCKERPATH ]; then
-        mapic_install_docker
-    fi
+    mapic_install_docker
 
-    # init swarm
-    docker swarm init --advertise-addr $MAPIC_IP
-
-    # pull mapic images
-    docker pull mapic/pwgen
 }
 _install_osx_tools () {
     
@@ -407,9 +399,6 @@ _install_osx_tools () {
     if [ -z $DOCKERPATH ]; then
         mapic_install_docker
     fi
-    
-    # pull mapic images
-    docker pull mapic/pwgen
     
 }
 get_mapic_host_os () {
@@ -520,27 +509,25 @@ mapic_travis () {
 }
 mapic_travis_install () {
 
-    # print version
-    mapic_version
+    # # print version
+    # mapic_version
 
-    # install docker
-    mapic_install_docker_ubuntu
+    # # install docker
+    # mapic_install_docker_ubuntu
 
-    # print version
-    docker version
+    # # print version
+    # docker version
 
-    # set localhost
-    _write_env MAPIC_DOMAIN localhost
+    # # set localhost
+    # _write_env MAPIC_DOMAIN localhost
 
-    # install
-    _install_mapic
+    # # install
+    # _install_mapic
 
-    # configure
-    _mapic_configure
+    # # configure
+    # _mapic_configure
 }
-_init_docker_swarm () {
-    docker swarm init --advertise-addr $MAPIC_IP
-}
+
 mapic_travis_start () {
     mapic_up
     mapic_status
@@ -1197,12 +1184,12 @@ _refresh_config () {
     return
 }
 _set_redis_auth () {
-    MAPIC_REDIS_AUTH=$(docker run mapic/pwgen 40)
+    MAPIC_REDIS_AUTH=$(docker run mapic/tools pwgen 40)
     _write_env MAPIC_REDIS_AUTH $MAPIC_REDIS_AUTH
     echo "Updated Redis authentication"
 }
 _set_mongo_auth () {
-    MAPIC_MONGO_AUTH=$(docker run mapic/pwgen 40)
+    MAPIC_MONGO_AUTH=$(docker run mapic/tools pwgen 40)
     _write_env MAPIC_MONGO_AUTH $MAPIC_MONGO_AUTH
     echo "Updated MongoDB authentication"
 }
@@ -1274,42 +1261,50 @@ mapic_install_docker_unsupported () {
     exit 0
 }
 mapic_install_docker_ubuntu () {
-    
-    # install docker
-    echo "Installing Docker!"
-    cd $MAPIC_CLI_FOLDER/install
-    bash install-docker-ubuntu.sh
+
+    # install/update docker
+    _install_docker_ubuntu
 
     # use experimental mode
     _set_experimental_docker
-}
-_install_docker_travis () {
-    mapic_install_docker_ubuntu
-}
 
+    # init swarm
+    _init_docker_swarm
+    
+}
+_install_docker_ubuntu () {
+    echo "Installing Docker!"
+    cd $MAPIC_CLI_FOLDER/install
+    bash install-docker-ubuntu.sh
+}
+_init_docker_swarm () {
+    docker swarm init --advertise-addr $MAPIC_IP
+}
 _set_experimental_docker () {
+
     # put docker in experimental mode for swarm
-    # see https://github.com/moby/moby/issues/30585#issuecomment-280822231
     echo '{"experimental":true}' >> /etc/docker/daemon.json
     echo "Restarting Docker in experimental mode."
 
-    read -p "Restart Docker now?  (y/n)" -n 1 -r
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-        
-        # restart docker
-        _restart_docker
-
-         # init swarm
-        _init_docker_swarm    
-
-    else
-        echo "Please restart Docker manually to access experiemental mode needed for Docker Swarm"
-    fi
+    # restart
+    _restart_docker
 
 }
 _restart_docker () {
-    sudo systemctl restart docker || service docker restart
+    if [[ "$TRAVIS" == "true" ]]; then
+        # restart docker
+        sudo systemctl restart docker || service docker restart
+    else
+
+        # ask before restarting docker
+        read -p "Restart Docker now?  (y/n)" -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            sudo systemctl restart docker || service docker restart
+        else
+            echo "Please restart Docker manually to access experimental mode needed for Docker Swarm"
+        fi
+    fi
 }
 
 #   ____ _____  (_)
