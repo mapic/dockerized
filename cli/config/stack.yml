@@ -24,7 +24,9 @@ services:
     deploy:
       placement:
         # always on public IP node
-        constraints: [ node.ip == $MAPIC_IP ]
+        constraints: 
+        - node.role == manager
+        # - node.ip == $MAPIC_IP
     depends_on:
       - mile
       - engine
@@ -42,7 +44,9 @@ services:
       - $MAPIC_ENV_FILE
     deploy:
       placement:
-        constraints: [ node.ip == $MAPIC_IP ]
+        constraints: 
+          - node.role == manager
+          # - node.ip == $MAPIC_IP
     working_dir: /mapic/engine 
     command: ./start-server.sh
     volumes:
@@ -61,7 +65,9 @@ services:
     deploy:
       replicas: 1
       placement:
-        constraints: [ node.ip == $MAPIC_IP ]
+        constraints: 
+          - node.role == manager
+          # - node.ip == $MAPIC_IP
     working_dir: /mapic/mile 
     command: ./start-server.sh
     volumes:
@@ -81,7 +87,9 @@ services:
     deploy:
       replicas: 1
       placement:
-        constraints: [ node.ip == $MAPIC_IP ]
+        constraints: 
+          - node.role == manager
+          # - node.ip == $MAPIC_IP
     networks:
       mapic:
         aliases:
@@ -95,7 +103,9 @@ services:
       - mongo_store_localhost:/data/db
     deploy:
       placement:
-        constraints: [ node.ip == $MAPIC_IP ]
+        constraints: 
+          - node.role == manager
+          # - node.ip == $MAPIC_IP
     networks:
       mapic:
         aliases:
@@ -110,7 +120,9 @@ services:
       - postgis_store_localhost:/var/lib/postgresql
     deploy:
       placement:
-        constraints: [ node.ip == $MAPIC_IP ]
+        constraints: 
+          - node.role == manager
+          # - node.ip == $MAPIC_IP
     networks:
       mapic:
         aliases:
