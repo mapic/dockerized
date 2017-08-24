@@ -509,8 +509,8 @@ mapic_travis () {
 }
 mapic_travis_install () {
 
-    # # print version
-    # mapic_version
+    # print version
+    mapic_version
 
     # # install docker
     # mapic_install_docker_ubuntu
