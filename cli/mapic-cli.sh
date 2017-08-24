@@ -1758,7 +1758,8 @@ _print_stack () {
     # print more debug info for travis build
     if [[ "$TRAVIS" == "true" ]]; then
         echo 'docker inspect $(docker stack services mapic -q):'
-        docker inspect $(docker ps -q)
+        docker stack services mapic -q
+        docker inspect $(docker stack services mapic -q)
     fi
 }
 #   / /____  _____/ /_
