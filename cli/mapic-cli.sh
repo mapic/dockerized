@@ -33,7 +33,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
-MAPIC_CLI_VERSION=17.8.23
+MAPIC_CLI_VERSION=17.8.29
 
 # # # # # # # # # # # # # 
 #
@@ -1205,12 +1205,12 @@ _refresh_config () {
     return
 }
 _set_redis_auth () {
-    MAPIC_REDIS_AUTH=$(docker run mapic/tools pwgen 40)
+    MAPIC_REDIS_AUTH=$(docker run --rm mapic/tools pwgen 40)
     _write_env MAPIC_REDIS_AUTH $MAPIC_REDIS_AUTH
     echo "Updated Redis authentication"
 }
 _set_mongo_auth () {
-    MAPIC_MONGO_AUTH=$(docker run mapic/tools pwgen 40)
+    MAPIC_MONGO_AUTH=$(docker run --rm mapic/tools pwgen 40)
     _write_env MAPIC_MONGO_AUTH $MAPIC_MONGO_AUTH
     echo "Updated MongoDB authentication"
 }
