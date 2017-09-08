@@ -113,20 +113,21 @@ services:
         aliases:
           - mongo.docker
 
-  cache:
-    image: mapic/cache:latest
-    env_file:
-      - $MAPIC_ENV_FILE
-    volumes:
-      - mapic_cache_store:/mapic/cache
-    deploy:
-      placement:
-        constraints: 
-          - node.ip == $MAPIC_IP
-    networks:
-      mapic:
-        aliases:
-          - cache.docker
+  # cache:
+  #   image: mapic/cache:latest
+  #   env_file:
+  #     - $MAPIC_ENV_FILE
+  #   volumes:
+  #     - /home/ubuntu/docker-mapic-cache:/usr/src/app
+  #     - mapic_cache_store:/mapic/cache
+  #   deploy:
+  #     placement:
+  #       constraints: 
+  #         - node.ip == $MAPIC_IP
+  #   networks:
+  #     mapic:
+  #       aliases:
+  #         - cache.docker
 
   postgis:
     image: mapic/postgis:latest
