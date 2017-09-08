@@ -6,6 +6,7 @@ volumes:
   redis_layers_store_localhost:
   redis_stats_store_localhost:
   redis_tokens_store_localhost:
+  mapic_cache_store:
 
 networks:
   mapic:
@@ -67,8 +68,8 @@ services:
       placement:
         constraints: 
           # - node.role == manager
-          - node.ip != $MAPIC_IP
-          # - node.ip == $MAPIC_IP
+          # - node.ip != $MAPIC_IP
+          - node.ip == $MAPIC_IP
     working_dir: /mapic/mile 
     command: ./start-server.sh
     volumes:
@@ -111,6 +112,21 @@ services:
       mapic:
         aliases:
           - mongo.docker
+
+  cache:
+    image: mapic/cache:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - mapic_cache_store:/mapic/cache
+    deploy:
+      placement:
+        constraints: 
+          - node.ip == $MAPIC_IP
+    networks:
+      mapic:
+        aliases:
+          - cache.docker
 
   postgis:
     image: mapic/postgis:latest
