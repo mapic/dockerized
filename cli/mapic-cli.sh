@@ -956,6 +956,7 @@ mapic_logs () {
             nginx)          docker service logs -f mapic_nginx;;
             engine)         docker service logs -f mapic_engine;;
             redis)          docker service logs -f mapic_redis;;
+            cache)          docker service logs -f mapic_cache;;
             *)              mapic_logs_container_usage;
         esac 
         exit
