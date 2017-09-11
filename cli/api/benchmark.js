@@ -5,15 +5,17 @@ var async = require('async');
 var request = require('request');
 
 // create tile requests
-var MAPIC_BENCHMARK_TILES = process.env.MAPIC_BENCHMARK_TILES || 200;
+var MAPIC_BENCHMARK_TILES = process.env.MAPIC_BENCHMARK_TILES || 300;
+console.log('Benchmarking', MAPIC_BENCHMARK_TILES, 'tiles...');
 var benchmark_tiles = [];
 while (benchmark_tiles.length < MAPIC_BENCHMARK_TILES) {
     benchmark_tiles = benchmark_tiles.concat(tiles);
 }
 
-console.log('while done, ', benchmark_tiles.length);
+// console.log('while done, ', benchmark_tiles.length);
 
 // process.exit(0);
+var n = 0;
 
 // get access token
 utils.token(function (err, access_token) {
@@ -32,7 +34,9 @@ utils.token(function (err, access_token) {
     async.map(benchmark_tiles, function(url, callback) {
 
         // add access token
-        var tile = url + '?access_token=' + access_token;
+        var tile = url + '?force_render=true&access_token=' + access_token;
+
+        n++;
 
         // request tile
         request(tile, callback);
@@ -48,7 +52,8 @@ utils.token(function (err, access_token) {
         var benched = timeEnd - timeStart;
 
         // print benchmark as ms only
-        console.log(benched);
+        console.log('Benchmark:', benched, 'ms');
+        console.log('n:', n);
 
         // clean exit
         process.exit(0);

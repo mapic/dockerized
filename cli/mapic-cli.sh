@@ -1882,7 +1882,8 @@ mapic_bench_run () {
     BENCHMARK=$(docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node benchmark.js)
     
     echo ""
-    echo "Benchmark (ms): $BENCHMARK"
+    echo "$BENCHMARK"
+    # echo "Benchmark (ms): $BENCHMARK"
     echo ""
 }
 mapic_scale_mile () {

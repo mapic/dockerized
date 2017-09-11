@@ -27,7 +27,8 @@ services:
         # always on public IP node
         constraints: 
         # - node.role == manager
-        - node.ip == $MAPIC_IP
+        # - node.ip == $MAPIC_IP
+        - node.labels.web == true
     depends_on:
       - mile
       - engine
@@ -47,7 +48,8 @@ services:
       placement:
         constraints: 
           # - node.role == manager
-          - node.ip == $MAPIC_IP
+          # - node.ip == $MAPIC_IP
+          - node.labels.web == true
     working_dir: /mapic/engine 
     command: ./start-server.sh
     volumes:
@@ -69,7 +71,8 @@ services:
         constraints: 
           # - node.role == manager
           # - node.ip != $MAPIC_IP
-          - node.ip == $MAPIC_IP
+          # - node.ip == $MAPIC_IP
+          - node.labels.mile == true
     working_dir: /mapic/mile 
     command: ./start-server.sh
     volumes:
@@ -91,7 +94,8 @@ services:
       placement:
         constraints: 
           # - node.role == manager
-          - node.ip == $MAPIC_IP
+          # - node.ip == $MAPIC_IP
+          - node.labels.web == true
     networks:
       mapic:
         aliases:
@@ -107,7 +111,8 @@ services:
       placement:
         constraints: 
           # - node.role == manager
-          - node.ip == $MAPIC_IP
+          # - node.ip == $MAPIC_IP
+          - node.labels.web == true
     networks:
       mapic:
         aliases:
@@ -140,7 +145,8 @@ services:
       placement:
         constraints: 
           # - node.role == manager
-          - node.ip == $MAPIC_IP
+          # - node.ip == $MAPIC_IP
+          - node.labels.postgis == true
     networks:
       mapic:
         aliases:
