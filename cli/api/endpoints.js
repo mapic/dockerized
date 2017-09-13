@@ -9,6 +9,7 @@ module.exports = endpoint = {
         vectorize : '/v2/tiles/vectorize',
         import : '/v2/data/import',
         status : '/v2/data/import/status',
+        getStatus : '/v2/data/status'
     },
 
     projects : {

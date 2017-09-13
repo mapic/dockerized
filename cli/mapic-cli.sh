@@ -1858,33 +1858,27 @@ mapic_test_download_data () {
 }
 
 mapic_bench () {
-    echo ""
-    ecco 5 "Mapic Benchmark Tests"
-    echo ""
-    echo "Benchmarking Mile tileserver replication..."
-    echo ""
-
-    # run benchmark
-    mapic_bench_run
-}
-
-mapic_bench_run () {
 
     # get info on replicas
-    DOCKER_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n')
-    
-    echo "$get"
-    echo "Starting benchmark"
-    echo "$DOCKER_INFO"
+    DOCKER_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n' |   tail -c 20)
 
-    _write_env MAPIC_BENCHMARK_TILES 300
+    # set number of tiles to benchmark
+    MAPIC_BENCHMARK_NUMBER_OF_TILES=300
 
-    BENCHMARK=$(docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node benchmark.js)
-    
+    # write to env
+    _write_env MAPIC_BENCHMARK_NUMBER_OF_TILES $MAPIC_BENCHMARK_NUMBER_OF_TILES
+
     echo ""
-    echo "$BENCHMARK"
-    # echo "Benchmark (ms): $BENCHMARK"
-    echo ""
+    ecco 5 "Mapic Benchmark Tests"
+    ecco 5 "---------------------"
+    echo "Benchmarking Mile tileserver replication..."
+    echo "Number of active mapic/mile nodes: $DOCKER_INFO"
+    echo "Benchmarking $MAPIC_BENCHMARK_NUMBER_OF_TILES tiles..."
+
+    # run benchmark
+    docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/mapic -w /mapic node:6 sh benchmark.sh
+
+    echo "Benchmark done."    
 }
 mapic_scale_mile () {
     

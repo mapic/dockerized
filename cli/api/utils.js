@@ -4,7 +4,8 @@ var endpoints = require('./endpoints');
 
 // domain resolution compatible with localhost setup (must run from within Docker container)
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" 
-var domain = (process.env.MAPIC_API_DOMAIN == 'localhost') ? 'https://172.17.0.1' : 'https://' + process.env.MAPIC_API_DOMAIN;
+var MAPIC_API_DOMAIN = process.env.MAPIC_API_DOMAIN || process.env.MAPIC_DOMAIN;
+var domain = (MAPIC_API_DOMAIN == 'localhost') ? 'https://172.17.0.1' : 'https://' + MAPIC_API_DOMAIN;
 var api = supertest(domain);
 var debug = (process.env.MAPIC_DEBUG);
 
@@ -15,7 +16,7 @@ module.exports = utils = {
     token : function (done) {
         utils.get_access_token(function (err, tokens) {
             debug && console.log('token: err, tokens', err, tokens);
-            if (tokens.error) return done(tokens.error.message);
+            if (tokens && tokens.error) return done(tokens.error.message);
             done(err, tokens.access_token);
         });
     },
@@ -36,12 +37,12 @@ module.exports = utils = {
     get_access_token : function (done) {
         api.get(endpoints.users.token.token)
         .query({
-            username : process.env.MAPIC_API_USERNAME,
-            password : process.env.MAPIC_API_AUTH
+            username : process.env.MAPIC_API_USERNAME || 'localhost@mapic.io',
+            password : process.env.MAPIC_API_AUTH || 'localhost-password'
         })
         .send()
         .end(function (err, res) {
-            debug && console.log('get_access_token', err, res.text);
+            debug && console.log('get_access_token', err, res);
             if (!res || !res.text) return done('Failed to connect to Mapic API.');
             var tokens = utils.parse(res.text);
             done(err, tokens);

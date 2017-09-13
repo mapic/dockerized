@@ -17,3 +17,4 @@ open-data
 cli/config/files/*
 cli/config/*.pem
 cli/config/*.key
+cli/api/open-data
