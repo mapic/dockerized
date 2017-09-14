@@ -366,6 +366,14 @@ _install_linux_tools () {
         sudo apt-get install -y --force-yes python-certbot-nginx >/dev/null 2>&1
     fi
 
+    # rsub
+    RSUB=$(which rsub)
+    if [ -z $RSUB ]; then
+        echo "Installing rsub editor..."
+        cp $MAPIC_CLI_FOLDER/install/rsub /usr/local/bin/rsub
+        chmod +x /usr/local/bin/rsub
+    fi
+
 }
 _install_osx_tools () {
     
