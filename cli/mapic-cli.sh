@@ -203,6 +203,9 @@ initialize () {
         # install dependencies
         _install_dependencies
 
+        # ensure docker is installed
+        mapic_install_docker
+
         # update submodules
         _init_submodules
 
@@ -281,11 +284,17 @@ mapic_init () {
 }
 mapic_init_manager () {
     echo "manager init"
-    mapic_install_docker
+    # mapic_install_docker
+
+    # swarm mode
+    # exp mode
 }
 mapic_init_worker () {
     echo "worker init"
-    mapic_install_docker
+    # mapic_install_docker
+
+    # swarm mode
+    # exp mode
 }
 _init_submodules () {
     cd $MAPIC_ROOT_FOLDER
@@ -299,7 +308,7 @@ _install_dependencies () {
     if [[ "$MAPIC_HOST_OS" == "linux" ]]; then
         _install_linux_tools
     fi
-    
+
     # install dependencies on osx
     if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
         _install_osx_tools
@@ -331,15 +340,17 @@ _install_linux_tools () {
     # realpath
     REALPATH=$(which realpath)
     if [ -z $REALPATH ]; then
-        apt-get update -y
-        apt-get install -y realpath
+        echo "Installing realpath..."
+        apt-get update -y >/dev/null 2>&1
+        apt-get install -y realpath >/dev/null 2>&1
     fi
 
     # git
     GITPATH=$(which git)
     if [ -z $GITPATH ]; then
-        apt-get update -y
-        apt-get install -y git
+        echo "Installing git..."
+        apt-get update -y >/dev/null 2>&1
+        apt-get install -y git >/dev/null 2>&1
     fi
 
     # certbot
@@ -347,15 +358,13 @@ _install_linux_tools () {
     if [ -z $CERTBOTPATH ]; then
         # todo: incorporate with nginx so refresh can be done on running server
         # perhaps put in docker image
-        sudo apt-get update -y
-        sudo apt-get install -y --force-yes software-properties-common
-        sudo add-apt-repository -y ppa:certbot/certbot
-        sudo apt-get update -y
-        sudo apt-get install -y --force-yes python-certbot-nginx 
+        echo "Installing Let's Encrypt..."
+        sudo apt-get update -y >/dev/null 2>&1
+        sudo apt-get install -y --force-yes software-properties-common >/dev/null 2>&1
+        sudo add-apt-repository -y ppa:certbot/certbot >/dev/null 2>&1
+        sudo apt-get update -y >/dev/null 2>&1
+        sudo apt-get install -y --force-yes python-certbot-nginx >/dev/null 2>&1
     fi
-
-    # docker
-    # mapic_install_docker
 
 }
 _install_osx_tools () {
@@ -405,8 +414,8 @@ _install_osx_tools () {
             echo "brew install grep --with-default-names"
         else
             echo "Installing grep..."
-            brew update
-            brew install grep --with-default-names
+            brew update >/dev/null 2>&1
+            brew install grep --with-default-names >/dev/null 2>&1
             GREPV=$(grep --version)
             echo "$GREPV installed"
         fi
@@ -420,18 +429,12 @@ _install_osx_tools () {
         else
             echo "Installing realpath..."
             # realpath
-            brew update
-            brew install coreutils
+            brew update >/dev/null 2>&1
+            brew install coreutils >/dev/null 2>&1
             REALPATHV=$(realpath --version | grep realpath)
             echo "$REALPATHV installed"
         fi
     fi
-    
-    # docker
-    # if [ -z $DOCKERPATH ]; then
-    #     mapic_install_docker
-    # fi
-    
 }
 get_mapic_host_os () {
     case "$OSTYPE" in
@@ -1298,7 +1301,6 @@ mapic_install_docker_ubuntu () {
     
 }
 _install_docker_ubuntu () {
-    echo "Installing Docker!"
     cd $MAPIC_CLI_FOLDER/install
     bash install-docker-ubuntu.sh
 }
