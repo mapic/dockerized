@@ -5,6 +5,7 @@
 # or:
 #   'wget -qO- https://get.mapic.io/ | sh'
 #
+#
 # todo: 
 # - windows compatibility
 
