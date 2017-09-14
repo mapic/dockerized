@@ -4,8 +4,7 @@ All notable changes to all repositories in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
-##### [17.8](https://github.com/mapic/mapic/releases/tag/v17.8)
+## [17.9](https://github.com/mapic/mapic/releases/tag/v17.9)
 ### `mapic/mapic`
 - Swarm mode: Mapic is now running on n nodes
 - Replicating `mile` tileserver on n nodes
@@ -21,11 +20,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Implemented Tor Project relay on all nodes: `mapic tor start` 
 - Added visualizer for Docker nodes: `mapic viz start`
     - Port 8080 is closed in AWS, so only ssh tunnel can access visualizer
-    - NB! Ensure port 8080 is closed to public in your setup!
+    - NB: Ensure port 8080 is closed to public in your setup.
     - You need to add `LocalForward 8080 localhost:8080` to /.ssh/config on your localhost
     - Only accessible in the browser @ localhost:8080
 - Moved most configuration to ENV, removed all dependency on config files
 - Bugfixes
+- Run benchmarks with `mapic bench` 
+- Scale service with `mapic scale` 
 
 ### `mapic/mile` 
 - Cleaned up stale ENV and naming
