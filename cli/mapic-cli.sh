@@ -1857,16 +1857,63 @@ mapic_test_download_data () {
     fi
 }
 
+mapic_bench_usage () {
+    echo ""
+    echo "Usage: mapic bench [OPTIONS] COMMAND"
+    echo ""
+    echo "Commands:"
+    echo "  run         Run benchmark tests"
+    echo "  help        This screen"
+    echo ""
+    echo "Options:"
+    echo "  --dataset   Absolute path of dataset to use for benchmark, if other than default"
+    echo "  --tiles     Number of tiles to request (Default: 300)"
+    echo ""
+    exit 0
+}
 mapic_bench () {
+    test -z "$2" && mapic_bench_usage
+    case "$2" in
+        run)        mapic_bench_run "$@";;
+        help)       mapic_bench_usage ;;
+        *)          mapic_bench_usage;;
+    esac 
+}
 
-    # get info on replicas
-    DOCKER_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n' |   tail -c 20)
+mapic_bench_run () {
 
-    # set number of tiles to benchmark
+    # defaults
     MAPIC_BENCHMARK_NUMBER_OF_TILES=300
+    MAPIC_BENCHMARK_DATASET_PATH=$MAPIC_CLI_FOLDER/api/benchmark-data.zip
+    MAPIC_BENCHMARK_UPLOADED_DATA_LAYER=
+
+    # get options
+    while [ ! $# -eq 0 ]
+    do
+        case "$1" in
+            --dataset)
+                MAPIC_BENCHMARK_DATASET_PATH=$2;;
+            --tiles)
+                MAPIC_BENCHMARK_NUMBER_OF_TILES=$2;;
+            --layer_id)
+                MAPIC_BENCHMARK_UPLOADED_DATA_LAYER=$2;;
+            --help)
+                mapic_bench_usage;;
+        esac
+        shift
+    done
 
     # write to env
     _write_env MAPIC_BENCHMARK_NUMBER_OF_TILES $MAPIC_BENCHMARK_NUMBER_OF_TILES
+    _write_env MAPIC_BENCHMARK_DATASET_PATH $MAPIC_BENCHMARK_DATASET_PATH
+    _write_env MAPIC_BENCHMARK_UPLOADED_DATA_LAYER $MAPIC_BENCHMARK_UPLOADED_DATA_LAYER
+
+    echo "MAPIC_BENCHMARK_DATASET_PATH: $MAPIC_BENCHMARK_DATASET_PATH"
+    echo "MAPIC_BENCHMARK_NUMBER_OF_TILES: $MAPIC_BENCHMARK_NUMBER_OF_TILES"
+    echo "MAPIC_BENCHMARK_UPLOADED_DATA_LAYER: $MAPIC_BENCHMARK_UPLOADED_DATA_LAYER"
+
+    # get info on replicas
+    DOCKER_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n' |   tail -c 20)
 
     echo ""
     ecco 5 "Mapic Benchmark Tests"
@@ -1875,8 +1922,9 @@ mapic_bench () {
     echo "Number of active mapic/mile nodes: $DOCKER_INFO"
     echo "Benchmarking $MAPIC_BENCHMARK_NUMBER_OF_TILES tiles..."
 
+    # exit 
     # run benchmark
-    docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/mapic -w /mapic node:6 sh benchmark.sh
+    docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/mapic --volume $MAPIC_BENCHMARK_DATASET_PATH:/data/$MAPIC_BENCHMARK_DATASET_PATH -w /mapic node:6 sh benchmark.sh
 
     echo "Benchmark done."    
 }

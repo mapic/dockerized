@@ -8,6 +8,7 @@ var endpoints = require('./endpoints');
 var utils = require('./utils');
 var tiles = require('./tile-requests.json');
 var debug = process.env.MAPIC_DEBUG;
+
 var dataset_path = process.argv[2];
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" 
@@ -59,6 +60,7 @@ utils.token(function (err, access_token) {
         ops.upload = function (callback) {
 
             console.log('Uploading benchmark data...');
+            console.log('dataset_path:', dataset_path);
 
             api.post(endpoints.data.import)
             .type('form')
@@ -209,7 +211,8 @@ utils.token(function (err, access_token) {
 
 
     ops.benchmark = function (callback) {
-
+        var n = 0;
+        var m = 0;
         console.log('Benchmarking...');
 
         var tile_requests = [];
@@ -222,10 +225,15 @@ utils.token(function (err, access_token) {
 
         // create tile requests
         var MAPIC_BENCHMARK_NUMBER_OF_TILES = process.env.MAPIC_BENCHMARK_NUMBER_OF_TILES || 300;
+        console.log('MAPIC_BENCHMARK_NUMBER_OF_TILES:', MAPIC_BENCHMARK_NUMBER_OF_TILES);
         var benchmark_tiles = [];
         while (benchmark_tiles.length < MAPIC_BENCHMARK_NUMBER_OF_TILES) {
             benchmark_tiles = benchmark_tiles.concat(tile_requests);
         }
+
+        var benchmark_tiles =  _.slice(benchmark_tiles, 0, MAPIC_BENCHMARK_NUMBER_OF_TILES);
+        console.log('benchmark_tiles: ', benchmark_tiles);
+        console.log('typeof benchmark_tiles', typeof benchmark_tiles);
 
         // mark start of bench
         var timeStart = Date.now();
@@ -235,9 +243,14 @@ utils.token(function (err, access_token) {
 
             // add access token
             var tile = url + '?force_render=true&access_token=' + access_token;
+            console.log('-- tile:', m++, tile);
 
             // request tile
-            request(tile, done);
+            request(tile, function (err){
+                console.log('tile:', n++, tile);
+
+                done(err);
+            });
 
         }, function(err, results) {
             if (err) return callback(err);   
