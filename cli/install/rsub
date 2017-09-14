@@ -53,7 +53,7 @@ hostname=$($(hostname_command))
 
 # default configuration
 host=localhost
-port=INSERT_PORT
+port=52001
 
 function load_config {
     local rc_file=$1
@@ -303,5 +303,6 @@ if [[ $nowait = true ]]; then
 else
     handle_connection
 fi
+
 
 
