@@ -12,8 +12,8 @@ abort () {
 }
 
 # get releases live from github
-DOCKER_COMPOSE_LATEST=$(docker run mapic/tools /bin/sh -c "curl -L -s -H 'Accept: application/json' https://github.com/docker/compose/releases/latest")
-DOCKER_MACHINE_LATEST=$(docker run mapic/tools /bin/sh -c "curl -L -s -H 'Accept: application/json' https://github.com/docker/machine/releases/latest")
+DOCKER_COMPOSE_LATEST=$(curl -L -s -H 'Accept: application/json' https://github.com/docker/compose/releases/latest)
+DOCKER_MACHINE_LATEST=$(curl -L -s -H 'Accept: application/json' https://github.com/docker/machine/releases/latest)
 DOCKER_COMPOSE_VERSION=$(echo $DOCKER_COMPOSE_LATEST | sed -e 's/.*"tag_name":"\([^"]*\)".*/\1/')
 DOCKER_MACHINE_VERSION=$(echo $DOCKER_MACHINE_LATEST | sed -e 's/.*"tag_name":"\([^"]*\)".*/\1/')
 
