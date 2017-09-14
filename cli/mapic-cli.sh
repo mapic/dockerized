@@ -57,6 +57,7 @@ mapic_cli_usage () {
     echo "  scale               Scale containers across nodes"
     echo ""
     echo "Commands:"
+    echo "  init                Initialize Mapic"
     echo "  configure           Automatically configure Mapic"
     echo "  install             Install Mapic"
     echo "  config              View and edit Mapic config"
@@ -113,6 +114,7 @@ m () {
 
         # documented API
         install)    mapic_install "$@";;
+        init)       mapic_init "$@";;
         start)      mapic_up;;
         up)         mapic_up;;
         restart)    mapic_restart;;
@@ -137,7 +139,6 @@ m () {
         debug)      mapic_debug "$@";;
         domain)     mapic_domain "$@";;
         travis)     mapic_travis "$@";;
-        # env)        mapic_config "$@";; # deprecated
         edit)       mapic_edit "$@";;
         version)    mapic_version "$@";;
         info)       mapic_info "$@";;
@@ -260,6 +261,32 @@ _determine_ip () {
         MAPIC_IP=127.0.0.1
     fi
 }
+mapic_init_usage () {
+    echo ""
+    echo "Usage: mapic init COMMAND"
+    echo ""
+    echo "Commands:"
+    echo "  manager     Initialize Mapic as a manager node"
+    echo "  worker      Initialize Mapic as a worker node"
+    echo ""
+    exit 0
+}
+mapic_init () {
+    test -z "$2" && mapic_init_usage
+    case "$2" in
+        manager)    mapic_init_manager "$@";;
+        worker)     mapic_init_worker "$@";;
+        *)          mapic_init_usage;;
+    esac 
+}
+mapic_init_manager () {
+    echo "manager init"
+    mapic_install_docker
+}
+mapic_init_worker () {
+    echo "worker init"
+    mapic_install_docker
+}
 _init_submodules () {
     cd $MAPIC_ROOT_FOLDER
     git submodule init
@@ -268,31 +295,36 @@ _init_submodules () {
 }
 _install_dependencies () {
 
+    # install dependencies on linux
+    if [[ "$MAPIC_HOST_OS" == "linux" ]]; then
+        _install_linux_tools
+    fi
+    
     # install dependencies on osx
     if [[ "$MAPIC_HOST_OS" == "osx" ]]; then
         _install_osx_tools
     fi
 
-    # install dependencies on linux
-    if [[ "$MAPIC_HOST_OS" == "linux" ]]; then
-        _install_linux_tools
-    fi
-
 }
 mapic_update () {
-    cd $MAPIC_ROOT_FOLDER
     echo "Updating local repositories..."
+
     ecco 4 "mapic/mapic"
+    cd $MAPIC_ROOT_FOLDER
     git pull origin master --rebase
-    cd $MAPIC_ROOT_FOLDER/mile
+
     ecco 4 "mapic/mile"
+    cd $MAPIC_ROOT_FOLDER/mile
     git pull origin master --rebase
-    cd $MAPIC_ROOT_FOLDER/engine
+
     ecco 4 "mapic/engine"
+    cd $MAPIC_ROOT_FOLDER/engine
     git pull origin master --rebase
-    cd $MAPIC_ROOT_FOLDER/mapic.js
+
     ecco 4 "mapic/mapic.js"
+    cd $MAPIC_ROOT_FOLDER/mapic.js
     git pull origin master --rebase
+
 }
 _install_linux_tools () {
 
@@ -323,7 +355,7 @@ _install_linux_tools () {
     fi
 
     # docker
-    mapic_install_docker
+    # mapic_install_docker
 
 }
 _install_osx_tools () {
@@ -396,9 +428,9 @@ _install_osx_tools () {
     fi
     
     # docker
-    if [ -z $DOCKERPATH ]; then
-        mapic_install_docker
-    fi
+    # if [ -z $DOCKERPATH ]; then
+    #     mapic_install_docker
+    # fi
     
 }
 get_mapic_host_os () {
@@ -512,22 +544,7 @@ mapic_travis_install () {
     # print version
     mapic_version
 
-    # # install docker
-    # mapic_install_docker_ubuntu
-
-    # # print version
-    # docker version
-
-    # # set localhost
-    # _write_env MAPIC_DOMAIN localhost
-
-    # # install
-    # _install_mapic
-
-    # # configure
-    # _mapic_configure
 }
-
 mapic_travis_start () {
     mapic_up
     mapic_status
@@ -625,25 +642,32 @@ mapic_scale () {
 # / /__/ /_/ / / / / __/ / /_/ / 
 # \___/\____/_/ /_/_/ /_/\__, /  
 #                       /____/   
+mapic_configure_usage () {
+    echo ""
+    echo "Usage: mapic configure [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  manager     Configure Mapic as a manager node"
+    echo "  stack       Configure Docker Swarm stack"
+    echo "  aws         Configure Amazon AWS integration"
+    echo ""
+    exit 0
+}
 mapic_configure () {
-    test -z "$2" && _mapic_configure
+    test -z "$2" && mapic_configure_usage
     case "$2" in
+        manager)    _mapic_configure_manager "$@";;
         stack)      _mapic_configure_stack "$@";;
-        aws)        _ensure_aws_creds "$@";;
-        *)          _mapic_configure;;
+        aws)        _mapic_configure_aws "$@";;
+        *)          mapic_configure_usage;;
     esac 
 }
-_mapic_configure () {
-    # _refresh_config
-
-    # first install, things that needs configuring:
-
+_mapic_configure_manager () {
     # 1. domain + email
     # 2. aws creds
     # 3. dns (if not localhost)
     # 4. ssl 
     # 5. stack is automaitcally configured with ENV inside stack.yml
-
 
     # domain
     _ensure_mapic_domain
@@ -663,10 +687,16 @@ _mapic_configure () {
     # what else?
     # set redis/mongo auth
 
+    ecco 5 "Mapic is configured!"
+
     exit 0
 }
-_mapic_configure_travis () {
-    echo "travis"
+_mapic_configure_stack () {
+    echo "todo"
+}
+_mapic_configure_aws () {
+    _ensure_aws_creds
+    # todo: test config
 }
 _ensure_mapic_domain () {
     # ensure MAPIC_DOMAIN
