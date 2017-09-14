@@ -893,6 +893,9 @@ mapic_ps () {
 
 _test_config () {
 
+    # ensure domain is set
+    _ensure_domain
+
     # ensure mongo auth
     if [ -z $MAPIC_MONGO_AUTH ]; then
         _set_mongo_auth
@@ -1298,6 +1301,8 @@ mapic_install_docker_ubuntu () {
 
     # init swarm
     _init_docker_swarm
+
+    # todo: init swarm only if manager
     
 }
 _install_docker_ubuntu () {
