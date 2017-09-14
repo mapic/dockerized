@@ -25,6 +25,10 @@ On OSX or Ubuntu:
 # install mapic cli
 curl -sSL https://get.mapic.io  | sh
 
+```
+
+### Install Mapic
+```
 # enter folder
 cd mapic
 
