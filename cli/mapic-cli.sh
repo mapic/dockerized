@@ -258,7 +258,7 @@ _corrupted_install () {
     exit 1 
 }
 _determine_ip () {
-    MAPIC_IP=$(curl ipinfo.io/ip)
+    MAPIC_IP=$(curl -sSL ipinfo.io/ip)
 
     if [[ "$TRAVIS" == "true" ]]; then
         MAPIC_IP=127.0.0.1
