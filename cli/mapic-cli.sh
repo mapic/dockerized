@@ -721,34 +721,8 @@ mapic_config () {
         *)          mapic_config_usage;;
     esac 
 }
-# mapic_config_refresh_usage () {
-#     echo ""
-#     echo "Usage: mapic config refresh [OPTIONS]"
-#     echo ""
-#     echo "Attempts to reset configuration to default and working condition."
-#     echo ""
-#     echo "Options:"
-#     echo "  all         Refresh all Mapic configuration files"
-#     echo "  engine      Refresh Mapic Engine config"
-#     echo "  mile        Refresh Mapic Mile config"
-#     echo "  mapicjs     Refresh Mapic.js config"
-#     echo "  nginx       Refresh NGINX config"
-#     echo "  redis       Refresh Redis config"
-#     echo "  mongo       Refresh Mongo config"
-#     echo "  postgis     Refresh PostGIS config"
-#     echo "  slack       Refresh Slack config"
-#     echo ""
-#     exit 0
-# }
-# mapic_config_refresh () {
-#     _refresh_config
-# }
 
-# deprecated, todo: remove
-# mapic_env () {
-#     mapic_config "$@"
-# }
-mapic_config_set_help () {
+mapic_config_set_usage () {
     echo ""
     echo "Usage: mapic config set KEY VALUE"
     echo ""
@@ -780,7 +754,6 @@ mapic_config_set () {
  
     # confirm new variable
     [[ "$FLAG" = "" ]] && m config get $3
-    # [[ "$FLAG" = "value" ]] && echo $4
 }
 mapic_config_get_usage () {
     echo ""
@@ -1885,7 +1858,7 @@ mapic_bench_run () {
     # defaults
     MAPIC_BENCHMARK_NUMBER_OF_TILES=300
     MAPIC_BENCHMARK_DATASET_PATH=$MAPIC_CLI_FOLDER/api/benchmark-data.zip
-    MAPIC_BENCHMARK_UPLOADED_DATA_LAYER=
+    MAPIC_BENCHMARK_UPLOADED_DATA_LAYER=$MAPIC_BENCHMARK_UPLOADED_DATA_LAYER
 
     # get options
     while [ ! $# -eq 0 ]
@@ -1908,9 +1881,11 @@ mapic_bench_run () {
     _write_env MAPIC_BENCHMARK_DATASET_PATH $MAPIC_BENCHMARK_DATASET_PATH
     _write_env MAPIC_BENCHMARK_UPLOADED_DATA_LAYER $MAPIC_BENCHMARK_UPLOADED_DATA_LAYER
 
-    echo "MAPIC_BENCHMARK_DATASET_PATH: $MAPIC_BENCHMARK_DATASET_PATH"
-    echo "MAPIC_BENCHMARK_NUMBER_OF_TILES: $MAPIC_BENCHMARK_NUMBER_OF_TILES"
-    echo "MAPIC_BENCHMARK_UPLOADED_DATA_LAYER: $MAPIC_BENCHMARK_UPLOADED_DATA_LAYER"
+    if [[ "$MAPIC_DEBUG" == true ]]; then
+        echo "MAPIC_BENCHMARK_DATASET_PATH: $MAPIC_BENCHMARK_DATASET_PATH"
+        echo "MAPIC_BENCHMARK_NUMBER_OF_TILES: $MAPIC_BENCHMARK_NUMBER_OF_TILES"
+        echo "MAPIC_BENCHMARK_UPLOADED_DATA_LAYER: $MAPIC_BENCHMARK_UPLOADED_DATA_LAYER"
+    fi
 
     # get info on replicas
     DOCKER_INFO=$(docker stack services mapic | grep mapic_mile |  head -c -30 | tail -c +21 | tr -d '\n' |   tail -c 20)
@@ -1919,7 +1894,7 @@ mapic_bench_run () {
     ecco 5 "Mapic Benchmark Tests"
     ecco 5 "---------------------"
     echo "Benchmarking Mile tileserver replication..."
-    echo "Number of active mapic/mile nodes: $DOCKER_INFO"
+    echo "Number of active Mile tileserver nodes: $DOCKER_INFO"
     echo "Benchmarking $MAPIC_BENCHMARK_NUMBER_OF_TILES tiles..."
 
     # exit 

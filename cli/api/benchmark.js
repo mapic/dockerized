@@ -21,7 +21,6 @@ var default_style = "{\"stops\":[{\"val\":32000,\"col\":{\"r\":255,\"g\":255,\"b
 
 // already uploaded data
 var MAPIC_BENCHMARK_UPLOADED_DATA_LAYER = process.env.MAPIC_BENCHMARK_UPLOADED_DATA_LAYER
-// var MAPIC_BENCHMARK_UPLOADED_DATA_LAYER = 'layer_id-f59e9d84-34ad-48f3-85ce-21726c3f43c0';
 var MAPIC_API_DATASET_TITLE = 'benchmark-data';
 
 var ops = {};
@@ -46,7 +45,6 @@ utils.token(function (err, access_token) {
     // we must upload
     if (!MAPIC_BENCHMARK_UPLOADED_DATA_LAYER) {
 
-
         // get user
         ops.get_user = function (callback) {
             console.log('Authenticating...');
@@ -57,21 +55,30 @@ utils.token(function (err, access_token) {
             }, true);
         };
 
+        // upload benchmark data
         ops.upload = function (callback) {
 
-            console.log('Uploading benchmark data...');
-            console.log('dataset_path:', dataset_path);
+            fs.stat(dataset_path, function (err, stats) {
+                if (err) return callback(err);
 
-            api.post(endpoints.data.import)
-            .type('form')
-            .field('access_token', access_token)
-            .field('data', fs.createReadStream(path.resolve(__dirname, dataset_path)))
-            .end(function (err, res) {
-                var result = utils.parse(res.text);
-                tmp.file_id = result.file_id;
-                tmp.upload_status = res.body;
-                callback();
-            });
+                // get data size
+                var size = parseInt(stats.size/1000000) + 'MB';
+
+                console.log('Uploading benchmark data: ', path.basename(dataset_path) + ' (' + size + ')');
+
+                api.post(endpoints.data.import)
+                .type('form')
+                .field('access_token', access_token)
+                .field('data', fs.createReadStream(path.resolve(__dirname, dataset_path)))
+                .end(function (err, res) {
+                    var result = utils.parse(res.text);
+                    tmp.file_id = result.file_id;
+                    tmp.upload_status = res.body;
+                    callback();
+                });
+
+            })
+
 
         };
 
@@ -109,6 +116,7 @@ utils.token(function (err, access_token) {
             }, 500);
         };
 
+        // create temp project
         ops.create_project = function (callback) {
             console.log('Creating benchmark project...')
 
@@ -138,6 +146,7 @@ utils.token(function (err, access_token) {
             });
         };
 
+        // create tile layer
         ops.create_tile_layer = function (callback) {
 
             console.log('Creating tile layer...');
@@ -173,7 +182,7 @@ utils.token(function (err, access_token) {
             });
         };
 
-
+        // create layer
         ops.create_engine_layer = function (callback) {
 
             console.log('Creating layer...');
@@ -206,53 +215,45 @@ utils.token(function (err, access_token) {
 
     } else {
         console.log('Using existing benchmark data...');
-    }
+    };
 
 
-
+    // run benchmark
     ops.benchmark = function (callback) {
         var n = 0;
         var m = 0;
         console.log('Benchmarking...');
 
+        // create tile requests
         var tile_requests = [];
-
+        var benchmark_tiles = [];
+        var MAPIC_BENCHMARK_NUMBER_OF_TILES = process.env.MAPIC_BENCHMARK_NUMBER_OF_TILES || 300;
         _.each(tiles, function (t) {
             var ta = t.replace('MAPIC_DOMAIN', process.env.MAPIC_DOMAIN);
             var tb = ta.replace('LAYER_ID', MAPIC_BENCHMARK_UPLOADED_DATA_LAYER);
             tile_requests.push(tb);
         });
-
-        // create tile requests
-        var MAPIC_BENCHMARK_NUMBER_OF_TILES = process.env.MAPIC_BENCHMARK_NUMBER_OF_TILES || 300;
-        console.log('MAPIC_BENCHMARK_NUMBER_OF_TILES:', MAPIC_BENCHMARK_NUMBER_OF_TILES);
-        var benchmark_tiles = [];
         while (benchmark_tiles.length < MAPIC_BENCHMARK_NUMBER_OF_TILES) {
             benchmark_tiles = benchmark_tiles.concat(tile_requests);
         }
 
+        // get exact number of tile request
         var benchmark_tiles =  _.slice(benchmark_tiles, 0, MAPIC_BENCHMARK_NUMBER_OF_TILES);
-        console.log('benchmark_tiles: ', benchmark_tiles);
-        console.log('typeof benchmark_tiles', typeof benchmark_tiles);
 
         // mark start of bench
         var timeStart = Date.now();
 
-        // request all tiles
-        async.map(benchmark_tiles, function(url, done) {
-
-            // add access token
-            var tile = url + '?force_render=true&access_token=' + access_token;
-            console.log('-- tile:', m++, tile);
-
-            // request tile
-            request(tile, function (err){
-                console.log('tile:', n++, tile);
-
-                done(err);
+        // limit concurrent requests
+        var req_ops = [];
+        _.each(benchmark_tiles, function (url) {
+            req_ops.push(function (done) {
+                // request tile
+                var tile = url + '?force_render=true&access_token=' + access_token;
+                request(tile, done);
             });
+        });
 
-        }, function(err, results) {
+        async.parallelLimit(req_ops, 100, function (err, results) {
             if (err) return callback(err);   
 
             // calc benchmark
@@ -260,7 +261,9 @@ utils.token(function (err, access_token) {
             var benched = timeEnd - timeStart;
 
             // print benchmark as ms only
+            console.log('');
             console.log('Benchmark completed:', benched, 'ms');
+            console.log('');
 
             callback();
         });
