@@ -578,6 +578,7 @@ mapic_travis_start () {
     mapic_status
     mapic_logs
     sleep 60
+    docker inspect $(docker stack services mapic -q)
     mapic_status
     sleep 60
     mapic_status
