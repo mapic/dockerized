@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Cleaned up stale ENV and naming
 - Removed Kue and clustering. Scaling will be handled through Docker Swarm
 - Removed `redistemp` (was only needed for Kue)
+- Added pre-rendering of tiles
 
 ## [17.7](https://github.com/mapic/mapic/releases/tag/v17.7)
 Released: 2017-07-03
