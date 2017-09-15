@@ -902,7 +902,7 @@ mapic_ps () {
 _test_config () {
 
     # ensure domain is set
-    _ensure_domain
+    _ensure_mapic_domain
 
     # ensure mongo auth
     if [ -z $MAPIC_MONGO_AUTH ]; then

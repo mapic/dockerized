@@ -71,8 +71,8 @@ services:
         constraints: 
           # - node.role == manager
           # - node.ip != $MAPIC_IP
-          - node.ip == $MAPIC_IP
-          # - node.labels.mile == true
+          # - node.ip == $MAPIC_IP
+          - node.labels.mile == true
     working_dir: /mapic/mile 
     command: ./start-server.sh
     volumes:
