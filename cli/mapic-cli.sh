@@ -573,6 +573,7 @@ mapic_travis_install () {
 
 }
 mapic_travis_start () {
+    cat cli/config/stack.yml
     mapic_up
     mapic_status
     mapic_logs
@@ -595,6 +596,7 @@ mapic_travis_start () {
     sleep 60
     mapic_status
     sleep 60
+    docker inspect $(docker service ls -q)
     mapic_status
     mapic_test_all
     mapic_down
