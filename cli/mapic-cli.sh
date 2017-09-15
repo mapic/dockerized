@@ -75,6 +75,7 @@ mapic_cli_usage () {
     echo "  test                Run Mapic tests"
     echo "  bench               Run Mapic benchmark tests"
     echo "  update              Update Mapic repositories"
+    echo "  node                Manage Docker nodes"
     echo ""
     echo "API commands:"
     echo "  api login           Authenticate with (any) Mapic API"
@@ -147,6 +148,7 @@ m () {
         scale)      mapic_scale "$@";;
         bench)      mapic_bench "$@";;
         update)     mapic_update "$@";;
+        node)       mapic_node "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
         -h)         mapic_cli_usage;;
@@ -476,6 +478,20 @@ ecco_sameline () {
     COLOR="c_"$1
     TEXT=${@:2}
     printf "${!COLOR}${TEXT}${c_reset}" 
+}
+mapic_node () {
+    echo ""
+    echo "Manage Docker nodes"
+    echo ""
+    echo "  Add label to Docker nodes like so:"
+    echo ""
+    echo "      docker node update --add-label mile=true vycxdgqtd8pzqa40v85mw4rpu"
+    echo ""
+    echo "    where last string is node-id. Node-id is found with 'docker node ls'"
+    echo ""  
+    echo "  Designate nodes in stack.yml with node.labels.LABEL == LABEL_VALUE to target respective nodes."
+    echo ""
+    echo "  See cli/config/stack.yml for more."
 }
 mapic_info () {
 
