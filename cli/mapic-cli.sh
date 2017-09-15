@@ -638,14 +638,26 @@ mapic_volume_rm () {
     fi
 }
 
+mapic_scale_usage () {
+    echo ""
+    echo "Usage: mapic scale SERVICE NODES"
+    echo ""
+    echo "  eg. 'mapic scale mile 4' will scale Mile tileserver to four nodes."
+    echo ""
+    echo "Services:"
+    echo "  mile        Mapic tileserver"
+    echo ""
+    exit 0
+}
 mapic_scale () {
-    echo ""
-    echo "Scaling Mapic"
-    echo ""
-    echo "Please use manual commands. Example:"
-    echo ""
-    echo "  docker service scale mapic_mile=3"
-    echo ""
+    test -z "$2" && mapic_scale_usage
+    case "$2" in
+        mile)       _scale_mile "$@";;
+        *)          mapic_scale_usage;;
+    esac 
+}
+_scale_mile () {
+    docker service scale mapic_mile=$3
 }
 
 #   _________  ____  / __(_)___ _
