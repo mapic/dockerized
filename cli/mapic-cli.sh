@@ -233,7 +233,7 @@ initialize () {
     # source env file
     set -o allexport
     source $MAPIC_ENV_FILE
-    source $MAPIC_AWS_ENV_FILE
+    # source $MAPIC_AWS_ENV_FILE
     source $MAPIC_COLOR_FILE
 
     # mark [debug mode]
@@ -721,7 +721,11 @@ _mapic_configure_manager () {
     _ensure_aws_creds
 
     # dns
-    m dns create
+    read -p "Do you want to create DNS entries for $MAPIC_DOMAIN?  (y/n)" -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo "Creating DNS entries..."
+        m dns create
+    fi
 
     # ssl
     m ssl create
@@ -2026,7 +2030,7 @@ mapic_viz_start () {
         --name=swarm-visualizer \
         --publish=8080:8080/tcp \
         --detach \
-        --constraint=node.labels.domain_node==true \
+        --constraint=node.ip==$MAPIC_IP \
         --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
         mapic/swarm-visualizer
 }
