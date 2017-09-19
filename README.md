@@ -102,11 +102,17 @@ mapic logs postgis
 # stop mapic server
 mapic stop
 
+# scale
+mapic scale mile 3 
+
 ```
 
 ### Interact with the Mapic API
 Commands for interacting with any running Mapic server's API. 
 ```bash
+# login
+mapic api login
+
 # create user
 mapic api user create
 
@@ -130,7 +136,7 @@ Mapic is built with Docker. Docker images for Mapic are available on the [Docker
 
 
 ## Licence 
-Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations and NGO's, as well as for-profit businesses.
+Mapic is built entirely open source. We believe in a collaborative environment for creating strong solutions for an industry that is constantly moving. The Mapic platform is open for anyone to use and contribute to, which makes it an ideal platform for government organisations and NGO's, as well as for-profit businesses. Please see https://mapic.io for hosted solutions.
 
 Mapic is licensed under the [AGPL licence](https://github.com/mapic/mapic/blob/master/LICENCE).
 
