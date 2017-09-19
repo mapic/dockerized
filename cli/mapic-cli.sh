@@ -566,6 +566,7 @@ mapic_travis () {
     case "$2" in
         install)    mapic_travis_install "$@";;
         start)      mapic_travis_start "$@";;
+        stack)      mapic_travis_stack "$@";;
         *)          mapic_travis_usage;;
     esac 
 }
@@ -574,6 +575,10 @@ mapic_travis_install () {
     # print version
     mapic_version
 
+}
+mapic_travis_stack () {
+    cd $MAPIC_CLI_FOLDER/install
+    cp stack.travis.yml stack.yml
 }
 mapic_travis_start () {
     cat cli/config/stack.yml

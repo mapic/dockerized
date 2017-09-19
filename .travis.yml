@@ -16,6 +16,7 @@ install:
   - sudo mapic config set MAPIC_USER_EMAIL travis@mapic.io
   - sudo mapic config set MAPIC_DOMAIN localhost
   - sudo mapic ssl create
+  - sudo mapic travis stack
 
 script:
   - sudo mapic travis start

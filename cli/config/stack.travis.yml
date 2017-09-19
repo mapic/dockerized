@@ -1,0 +1,124 @@
+version: '3'
+volumes: 
+  mapic_data_store_localhost:
+  mongo_store_localhost:
+  postgis_store_localhost:
+  redis_layers_store_localhost:
+  redis_stats_store_localhost:
+  redis_tokens_store_localhost:
+  mapic_cache_store:
+
+networks:
+  mapic:
+
+services:
+
+  nginx:
+    image: mapic/nginx:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      # ssl certificates
+      - ${MAPIC_CONFIG_FOLDER}/privkey.key:/mapic/privkey.key
+      - ${MAPIC_CONFIG_FOLDER}/fullchain.pem:/mapic/fullchain.pem
+      - ${MAPIC_CONFIG_FOLDER}/dhparams.pem:/mapic/dhparams.pem
+    deploy:
+      placement:
+        constraints: 
+        - node.role == manager
+    depends_on:
+      - mile
+      - engine
+    ports:
+      - 443:443
+      - 80:80
+    networks:
+      mapic:
+        aliases:
+          - nginx.docker
+
+  engine:
+    image: mapic/geo:latest 
+    env_file:
+      - $MAPIC_ENV_FILE
+    deploy:
+      placement:
+        constraints: 
+          - node.role == manager
+    working_dir: /mapic/engine 
+    command: ./start-server.sh
+    volumes:
+      - ${MAPIC_ROOT_FOLDER}/engine:/mapic/engine
+      - ${MAPIC_ROOT_FOLDER}/mapic.js:/mapic/mapic.js
+      - mapic_data_store_localhost:/data
+    networks:
+      mapic:
+        aliases:
+          - engine.docker
+
+  mile: 
+    image: mapic/geo:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    deploy:
+      replicas: 1
+      placement:
+        constraints: 
+          - node.role == manager
+    working_dir: /mapic/mile 
+    command: ./start-server.sh
+    volumes:
+      - ${MAPIC_ROOT_FOLDER}/mile:/mapic/mile
+      - mapic_data_store_localhost:/data
+    networks:
+      mapic:
+        aliases:
+          - mile.docker
+ 
+  redis:
+    image: mapic/redis:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - redis_layers_store_localhost:/data
+    deploy:
+      replicas: 1
+      placement:
+        constraints: 
+          - node.role == manager
+    networks:
+      mapic:
+        aliases:
+          - redis.docker
+
+  mongo: 
+    image: mapic/mongo:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - mongo_store_localhost:/data/db
+    deploy:
+      placement:
+        constraints: 
+          - node.role == manager
+    networks:
+      mapic:
+        aliases:
+          - mongo.docker
+
+  postgis:
+    image: mapic/postgis:latest
+    env_file:
+      - $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+      - postgis_store_localhost:/var/lib/postgresql
+    deploy:
+      placement:
+        constraints: 
+          - node.role == manager
+    networks:
+      mapic:
+        aliases:
+          - postgis.docker
+  
