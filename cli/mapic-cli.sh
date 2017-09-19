@@ -225,6 +225,9 @@ initialize () {
         _write_env MAPIC_IP $MAPIC_IP
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
 
+        # ping
+        _ping_cli_install
+
     fi
 
     # set which folder mapic was executed from
@@ -678,6 +681,14 @@ mapic_scale () {
 _scale_mile () {
     docker service scale mapic_mile=$3
 }
+_ping_cli_install () {
+    cd $MAPIC_CLI_FOLDER/install
+    bash ping.sh "CLI installed @ $MAPIC_IP"
+}
+_ping_mapic_install () {
+    cd $MAPIC_CLI_FOLDER/install
+    bash ping.sh "Mapic installed @ $MAPIC_DOMAIN @ $MAPIC_IP"
+}
 
 #   _________  ____  / __(_)___ _
 #  / ___/ __ \/ __ \/ /_/ / __ `/
@@ -734,6 +745,9 @@ _mapic_configure_manager () {
     # set redis/mongo auth
 
     ecco 5 "Mapic is configured!"
+
+    # ping
+    _ping_mapic_install
 
     exit 0
 }
