@@ -577,7 +577,7 @@ mapic_travis_install () {
 
 }
 mapic_travis_stack () {
-    cd $MAPIC_CLI_FOLDER/install
+    cd $MAPIC_CLI_FOLDER/config
     cp stack.travis.yml stack.yml
 }
 mapic_travis_start () {
