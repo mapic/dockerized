@@ -4,6 +4,11 @@ All notable changes to all repositories in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Unreleased  
+### `mapic/mapic.js` 
+- Bugfix: regression
+
+
 ## [17.9](https://github.com/mapic/mapic/releases/tag/v17.9)
 ### `mapic/mapic`
 - Swarm mode: Mapic is now running on n nodes
