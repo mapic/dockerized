@@ -9,13 +9,13 @@ var domain = (MAPIC_API_DOMAIN == 'localhost') ? 'https://172.17.0.1' : 'https:/
 var api = supertest(domain);
 var debug = (process.env.MAPIC_DEBUG);
 
-debug && console.log('process.env: ', process.env);
+debug && console.log('Environment: \n', process.env);
 
 module.exports = utils = {
 
     token : function (done) {
         utils.get_access_token(function (err, tokens) {
-            debug && console.log('token: err, tokens', err, tokens);
+            debug && console.log('Access token: ', tokens);
             if (tokens && tokens.error) return done(tokens.error.message);
             done(err, tokens.access_token);
         });
@@ -42,7 +42,6 @@ module.exports = utils = {
         })
         .send()
         .end(function (err, res) {
-            debug && console.log('get_access_token', err, res);
             if (!res || !res.text) return done('Failed to connect to Mapic API.');
             var tokens = utils.parse(res.text);
             done(err, tokens);

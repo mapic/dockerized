@@ -1996,7 +1996,7 @@ mapic_bench_run () {
 
     # exit 
     # run benchmark
-    docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/mapic --volume $MAPIC_BENCHMARK_DATASET_PATH:/data/$MAPIC_BENCHMARK_DATASET_PATH -w /mapic node:6 sh benchmark.sh
+    docker run -it --rm --env-file $MAPIC_ENV_FILE -e MAPIC_BENCHMARK_NUMBER_OF_TILES=$MAPIC_BENCHMARK_NUMBER_OF_TILES --volume $MAPIC_CLI_FOLDER/api:/mapic --volume $MAPIC_BENCHMARK_DATASET_PATH:/data/$MAPIC_BENCHMARK_DATASET_PATH -w /mapic node:6 sh benchmark.sh
 
     echo "Benchmark done."    
 }
