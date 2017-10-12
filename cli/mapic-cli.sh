@@ -1484,8 +1484,17 @@ mapic_api_project () {
         create)     mapic_api_project_create "$@";;
         delete)     mapic_api_project_delete "$@";;
         inspect)    mapic_api_project_inspect "$@";;
+        list)       mapic_api_project_list "$@";;
         *)          mapic_api_project_usage;
     esac 
+}
+mapic_api_project_list () {
+    cd $MAPIC_CLI_FOLDER/api
+    bash list-projects.sh 
+}
+mapic_api_project_delete () {
+    cd $MAPIC_CLI_FOLDER/api
+    bash delete-project.sh "$@"
 }
 mapic_api_project_create_usage () {
     echo ""
