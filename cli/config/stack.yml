@@ -6,7 +6,6 @@ volumes:
   redis_layers_store_localhost:
   redis_stats_store_localhost:
   redis_tokens_store_localhost:
-  mapic_cache_store:
 
 networks:
   mapic:
@@ -18,17 +17,13 @@ services:
     env_file:
       - $MAPIC_ENV_FILE
     volumes:
-      # ssl certificates
       - ${MAPIC_CONFIG_FOLDER}/privkey.key:/mapic/privkey.key
       - ${MAPIC_CONFIG_FOLDER}/fullchain.pem:/mapic/fullchain.pem
       - ${MAPIC_CONFIG_FOLDER}/dhparams.pem:/mapic/dhparams.pem
     deploy:
       placement:
-        # always on public IP node
         constraints: 
-        # - node.role == manager
         - node.ip == $MAPIC_IP
-        # - node.labels.web == true
     depends_on:
       - mile
       - engine
@@ -47,14 +42,11 @@ services:
     deploy:
       placement:
         constraints: 
-          # - node.role == manager
           - node.ip == $MAPIC_IP
-          # - node.labels.web == true
     working_dir: /mapic/engine 
     command: ./start-server.sh
     volumes:
-      - ${MAPIC_ROOT_FOLDER}/engine:/mapic/engine
-      - ${MAPIC_ROOT_FOLDER}/mapic.js:/mapic/mapic.js
+      - ${MAPIC_ROOT_FOLDER}:/mapic
       - mapic_data_store_localhost:/data
     networks:
       mapic:
@@ -66,17 +58,14 @@ services:
     env_file:
       - $MAPIC_ENV_FILE
     deploy:
-      replicas: 1
+      mode: global
       placement:
         constraints: 
-          # - node.role == manager
-          # - node.ip != $MAPIC_IP
-          # - node.ip == $MAPIC_IP
-          - node.labels.mile == true
+          - node.ip != $MAPIC_IP
     working_dir: /mapic/mile 
     command: ./start-server.sh
     volumes:
-      - ${MAPIC_ROOT_FOLDER}/mile:/mapic/mile
+      - ${MAPIC_ROOT_FOLDER}:/mapic
       - mapic_data_store_localhost:/data
     networks:
       mapic:
@@ -93,9 +82,7 @@ services:
       replicas: 1
       placement:
         constraints: 
-          # - node.role == manager
           - node.ip == $MAPIC_IP
-          # - node.labels.web == true
     networks:
       mapic:
         aliases:
@@ -110,29 +97,11 @@ services:
     deploy:
       placement:
         constraints: 
-          # - node.role == manager
           - node.ip == $MAPIC_IP
-          # - node.labels.web == true
     networks:
       mapic:
         aliases:
           - mongo.docker
-
-  # cache:
-  #   image: mapic/cache:latest
-  #   env_file:
-  #     - $MAPIC_ENV_FILE
-  #   volumes:
-  #     - /home/ubuntu/docker-mapic-cache:/usr/src/app
-  #     - mapic_cache_store:/mapic/cache
-  #   deploy:
-  #     placement:
-  #       constraints: 
-  #         - node.ip == $MAPIC_IP
-  #   networks:
-  #     mapic:
-  #       aliases:
-  #         - cache.docker
 
   postgis:
     image: mapic/postgis:latest
@@ -144,9 +113,10 @@ services:
     deploy:
       placement:
         constraints: 
-          # - node.role == manager
           - node.ip == $MAPIC_IP
-          # - node.labels.postgis == true
+      resources:
+        limits:
+          cpus: '0.9'
     networks:
       mapic:
         aliases:
