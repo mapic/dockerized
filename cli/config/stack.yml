@@ -60,7 +60,7 @@ services:
     env_file:
       - $MAPIC_ENV_FILE
     deploy:
-      mode: global
+      replicas: 1
       placement:
         constraints: 
           - node.ip != $MAPIC_IP
