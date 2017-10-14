@@ -1,10 +1,10 @@
 {
   "name": "mapic",
-  "version": "17.7.1",
+  "version": "17.9",
   "description": "Mapic Web Map Engine",
   "scripts": {
-    "test": "cd scripts/test && ./run-all-tests.sh",
-    "start": "./restart-mapic.sh"
+    "test": "mapic test all",
+    "start": "mapic start"
   },
   "repository": {
     "type": "git",
