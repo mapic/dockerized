@@ -110,6 +110,9 @@ mapic_cli () {
     fi
 }
 m () {
+
+    # ping
+    _ping_mapic_command $@
     
     case "$1" in
 
@@ -690,7 +693,12 @@ _ping_cli_install () {
 }
 _ping_mapic_install () {
     cd $MAPIC_CLI_FOLDER/install
-    bash ping.sh "Mapic installed @ $MAPIC_DOMAIN @ $MAPIC_IP"
+    bash ping.sh "Mapic installed @ $MAPIC_DOMAIN @ $MAPIC_IP" &
+}
+_ping_mapic_command () {
+    MCMD="mapic $@"
+    cd $MAPIC_CLI_FOLDER/install
+    bash ping.sh "Mapic CLI command @ $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
 }
 
 #   _________  ____  / __(_)___ _
