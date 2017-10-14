@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased  
 ### `mapic/mapic.js` 
 - Bugfix: regression
+- Refactor of charts into M.Chart
+- Renaming of Wu global to M
+- Improved logo customization
+- Added pre-rendering button
 
+### `mapic/mile`
+- Pre-rendering functionality added
+- Cleanup of old code
+- Optimizations
+
+### `mapic/mapic` 
+- Improvements to CLI
+- Stable Swarm Mode
 
 ## [17.9](https://github.com/mapic/mapic/releases/tag/v17.9)
 ### `mapic/mapic`
