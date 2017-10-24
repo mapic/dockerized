@@ -574,12 +574,8 @@ mapic_travis () {
     esac 
 }
 mapic_travis_install () {
-
     # print version
     mapic_version
-
-   
-
 }
 mapic_travis_stack () {
     cd $MAPIC_CLI_FOLDER/config
@@ -592,29 +588,7 @@ mapic_travis_start () {
     mapic_logs
     mapic_travis_ready_check
     echo "All done with ready checks..."
-    sleep 120
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # sleep 60
-    # mapic_status
-    # # mapic_test_all
-    # # mapic_down
+    sleep 240
 }
 mapic_travis_ready_check () {
     PREPARING=$(docker stack ps mapic | grep "Preparing")
