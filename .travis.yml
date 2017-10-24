@@ -19,3 +19,4 @@ install:
 
 script:
   - sudo mapic travis start
+  - sudo mapic test all

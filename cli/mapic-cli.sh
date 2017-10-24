@@ -608,8 +608,8 @@ mapic_travis_start () {
     mapic_status
     sleep 60
     mapic_status
-    mapic_test_all
-    mapic_down
+    # mapic_test_all
+    # mapic_down
 }
 
 mapic_volume_usage () {
@@ -689,7 +689,7 @@ _scale_mile () {
 }
 _ping_cli_install () {
     cd $MAPIC_CLI_FOLDER/install
-    bash ping.sh "CLI installed @ $MAPIC_IP"
+    bash ping.sh "CLI installed @ $MAPIC_IP (CLI version: $MAPIC_CLI_VERSION)"
 }
 _ping_mapic_install () {
     cd $MAPIC_CLI_FOLDER/install
@@ -698,7 +698,11 @@ _ping_mapic_install () {
 _ping_mapic_command () {
     MCMD="mapic $@"
     cd $MAPIC_CLI_FOLDER/install
-    bash ping.sh "Mapic CLI command @ $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
+    if [ -z "$TRAVIS" ]; then
+        bash ping.sh "Mapic CLI command @ $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
+    else 
+        bash ping.sh "TRAVIS: $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
+    fi
 }
 
 #   _________  ____  / __(_)___ _
