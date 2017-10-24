@@ -592,6 +592,7 @@ mapic_travis_start () {
     mapic_logs
     mapic_travis_ready_check
     echo "All done with ready checks..."
+    sleep 120
     # sleep 60
     # mapic_status
     # sleep 60
