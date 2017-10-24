@@ -578,6 +578,8 @@ mapic_travis_install () {
     # print version
     mapic_version
 
+   
+
 }
 mapic_travis_stack () {
     cd $MAPIC_CLI_FOLDER/config
@@ -588,28 +590,40 @@ mapic_travis_start () {
     mapic_up
     mapic_status
     mapic_logs
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    sleep 60
-    mapic_status
-    # mapic_test_all
-    # mapic_down
+    mapic_travis_ready_check
+    echo "All done with ready checks..."
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # sleep 60
+    # mapic_status
+    # # mapic_test_all
+    # # mapic_down
+}
+mapic_travis_ready_check () {
+    PREPARING=$(docker stack ps mapic | grep "Preparing")
+    if [[ "$PREPARING" == "" ]]; then
+        echo "Mapic is running and ready..."
+    else
+        echo "Still preparing images..."
+        sleep 10
+        mapic_travis_ready_check
+    fi
 }
 
 mapic_volume_usage () {
