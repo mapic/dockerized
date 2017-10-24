@@ -1902,9 +1902,20 @@ mapic_test () {
     esac 
 }
 mapic_test_all () {
-    mapic_test_engine
-    mapic_test_mile
-    mapic_test_js
+
+    # engine tests
+    mapic_test_ensure_data_engine
+    mapic run engine npm test || mapic_test_failed "$@"
+
+    # mile tests
+    mapic_test_ensure_data_mile
+    mapic run mile npm test || mapic_test_failed "$@"
+
+    # mapicjs tests
+    mapic_test_ensure_data_mapicjs
+    mapic run engine bash public/test/test.sh || mapic_test_failed "$@"
+    
+    exit 0;
 }
 mapic_test_engine () {
     echo "Testing Mapic Engine"
