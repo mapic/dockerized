@@ -591,6 +591,7 @@ mapic_travis_start () {
     sleep 240
 }
 mapic_travis_ready_check () {
+    mapic_status
     PREPARING=$(docker stack ps mapic | grep "Preparing")
     if [[ "$PREPARING" == "" ]]; then
         echo "Mapic is running and ready..."
