@@ -63,6 +63,7 @@ services:
       replicas: 1
       placement:
         constraints: 
+          # - node.ip == $MAPIC_IP
           - node.ip != $MAPIC_IP
     working_dir: /mapic/mile 
     command: ./start-server.sh
@@ -116,9 +117,9 @@ services:
       placement:
         constraints: 
           - node.ip == $MAPIC_IP
-      resources:
-        limits:
-          cpus: '0.9'
+      # resources:
+      #   limits:
+      #     cpus: '0.9'
     networks:
       mapic:
         aliases:
