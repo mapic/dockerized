@@ -519,6 +519,7 @@ mapic_schedule () {
     case "$2" in
         day)        mapic_schedule_day "$@";;
         night)      mapic_schedule_night "$@";;
+        register)   mapic_schedule_register "$@";;
         *)          mapic_schedule_usage;;
     esac 
 }
@@ -529,6 +530,41 @@ mapic_schedule_day () {
 mapic_schedule_night () {
     cd $MAPIC_CLI_FOLDER/management
     bash ec2-schedule-night.sh
+}
+mapic_schedule_register () {
+echo "todo"
+# cronjob: 
+#  
+# ┌────────── minute (0 - 59)
+# │ ┌──────── hour (0 - 23)
+# │ │ ┌────── day of month (1 - 31)
+# │ │ │ ┌──── month (1 - 12)
+# │ │ │ │ ┌── day of week (0 - 6 => Sunday - Saturday, or
+# │ │ │ │ │                1 - 7 => Monday - Sunday)
+# ↓ ↓ ↓ ↓ ↓
+# * * * * * command to be executed
+
+# # monday
+# 0 7 * * 1  mapic schedule day     
+# 0 19 * * 1 mapic schedule night   
+
+# # tuseday
+# 0 7 * * 2  mapic schedule day     
+# 0 19 * * 2 mapic schedule night   
+
+# # wednesday
+# 0 7 * * 3  mapic schedule day     
+# 0 19 * * 3 mapic schedule night   
+
+# # thursday
+# 0 7 * * 4  mapic schedule day     
+# 0 19 * * 4 mapic schedule night   
+
+# # friday
+# 0 7 * * 5  mapic schedule day     
+# 0 19 * * 5 mapic schedule night   
+
+# # night mode until monday again
 }
 mapic_delayed_usage () {
     echo ""
