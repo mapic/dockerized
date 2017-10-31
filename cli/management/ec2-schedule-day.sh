@@ -7,7 +7,6 @@
 #
 
 SCALE=${MAPIC_DAY_SCALE:-8} # nodes
-DELAY=120 # seconds
 INSTANCES_FILE=$MAPIC_CLI_FOLDER/.mapic.aws-ec2.env
 
 echo "Scheduling Mapic for daytime mode..."
@@ -37,8 +36,8 @@ done < "$INSTANCES_FILE"
 
 # re-scale mapic
 # it will take some time for instances to be ready, so delay scaling...
-mapic delayed $DELAY mapic scale mile 4 &   # half, due to messed up load balancing of docker containers
-mapic delayed $DELAY mapic scale mile $SCALE &
+mapic delayed 100 mapic scale mile 4 &   # half, due to messed up load balancing of docker containers
+mapic delayed 110 mapic scale mile $SCALE &
 
 
 echo "Mapic is now scaled for DAYTIME mode"
