@@ -11,7 +11,7 @@ logs/*
 *.log
 *.mapic.env
 cli/.mapic.env
-cli/.mapic.aws-ec2.json
+cli/.mapic.aws-ec2.env
 tmp/
 tmp/*
 open-data
