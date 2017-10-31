@@ -5,11 +5,13 @@
 #
 # this script is run from host cronjob, with no additional logic
 #
-
+export HOME=$MAPIC_HOME
 SCALE=${MAPIC_NIGHT_SCALE:-2}
 INSTANCES_FILE=$MAPIC_CLI_FOLDER/.mapic.aws-ec2.env
 
 echo "Scheduling Mapic for night-mode..."
+
+env
 
 # check for aws cli
 AWSCLI=$(which aws)

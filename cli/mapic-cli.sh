@@ -199,6 +199,9 @@ initialize () {
         # set config folder
         MAPIC_CONFIG_FOLDER=$MAPIC_ROOT_FOLDER/cli/config
 
+        # set home folder
+        MAPIC_HOME=$HOME
+
         # cp default env files
         cp $MAPIC_CLI_FOLDER/.mapic.default.env $MAPIC_ENV_FILE
         cp $MAPIC_CLI_FOLDER/.mapic.default.aws.env $MAPIC_AWS_ENV_FILE 
@@ -231,6 +234,7 @@ initialize () {
         _write_env MAPIC_CONFIG_FOLDER $MAPIC_CONFIG_FOLDER
         _write_env MAPIC_IP $MAPIC_IP
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
+        _write_env MAPIC_HOME $MAPIC_HOME
 
         # ping
         _ping_cli_install
@@ -532,7 +536,9 @@ mapic_schedule_night () {
     bash ec2-schedule-night.sh
 }
 mapic_schedule_register () {
-echo "todo"
+    cd $MAPIC_CLI_FOLDER/management
+    bash ec2-schedule-register.sh
+# echo "todo"
 # cronjob: 
 #  
 # ┌────────── minute (0 - 59)

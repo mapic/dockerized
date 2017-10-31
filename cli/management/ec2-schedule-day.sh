@@ -6,6 +6,7 @@
 # this script is run from host cronjob, with no additional logic
 #
 
+export HOME=$MAPIC_HOME
 SCALE=${MAPIC_DAY_SCALE:-8} # nodes
 INSTANCES_FILE=$MAPIC_CLI_FOLDER/.mapic.aws-ec2.env
 
