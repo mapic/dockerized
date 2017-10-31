@@ -90,6 +90,8 @@ mapic_cli_usage () {
     echo "  edit                Edit mapic-cli.sh source file"
     echo "  tor                 Run Tor Project non-exit relays"
     echo "  viz                 Visualize Docker nodes graphically"
+    echo "  schedule            Schedule AWS instances"
+    echo "  delayed             Execute job after n seconds of sleep"
     echo ""
     fi
     exit 0
@@ -152,6 +154,8 @@ m () {
         bench)      mapic_bench "$@";;
         update)     mapic_update "$@";;
         node)       mapic_node "$@";;
+        schedule)   mapic_schedule "$@";;
+        delayed)    mapic_delayed "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
         -h)         mapic_cli_usage;;
@@ -499,6 +503,55 @@ mapic_node () {
     echo ""
     echo "  See cli/config/stack.yml for more."
 }
+mapic_schedule_usage () {
+    echo ""
+    echo "Usage: mapic schedule COMMAND"
+    echo ""
+    echo "Commands:"
+    echo "  day          Schedule up day-time instances"
+    echo "  night        Schedule down to night-time (and weekend) only instances"
+    echo "  register     Register cronjob"
+    echo ""
+    exit 1
+}
+mapic_schedule () {
+    test -z "$2" && mapic_schedule_usage
+    case "$2" in
+        day)        mapic_schedule_day "$@";;
+        night)      mapic_schedule_night "$@";;
+        *)          mapic_schedule_usage;;
+    esac 
+}
+mapic_schedule_day () {
+    cd $MAPIC_CLI_FOLDER/management
+    bash ec2-schedule-day.sh
+}
+mapic_schedule_night () {
+    cd $MAPIC_CLI_FOLDER/management
+    bash ec2-schedule-night.sh
+}
+mapic_delayed_usage () {
+    echo ""
+    echo "Usage: mapic delayed DELAY COMMAND"
+    echo ""
+    echo "Options:"
+    echo "  DELAY        Seconds delay before execution"
+    echo "  COMMAND      Any bash compatible command"
+    echo ""
+    echo "Example: mapic delayed 60 mapic scale mile 3"
+    exit 1
+}
+mapic_delayed () {
+    test -z "$2" && mapic_schedule_usage
+    test -z "$3" && mapic_schedule_usage
+
+    # sleep n seconds
+    echo "Delaying execution of [${@:3}] for $2 seconds..."
+    sleep $2
+
+    # execute
+    ${@:3}
+}
 mapic_info () {
 
     # docker nodes
@@ -675,7 +728,8 @@ mapic_scale () {
     esac 
 }
 _scale_mile () {
-    docker service scale mapic_mile=$3
+    docker service scale mapic_mile=$3 >/dev/null 2>&1
+    echo "mapic/mile scaled to $3 nodes..."
 }
 _ping_cli_install () {
     cd $MAPIC_CLI_FOLDER/install
@@ -2027,7 +2081,7 @@ mapic_scale_mile () {
     echo "Scaling to $1 replicas of mapic/mile"
 
     # scale services
-    docker service scale mapic_mile=$1
+    docker service scale mapic_mile=$1 
 
     echo "Please allow a few minutes for correct number of replicas to become active (especially when scaling down)."
 }

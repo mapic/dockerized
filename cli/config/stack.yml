@@ -60,7 +60,10 @@ services:
     env_file:
       - $MAPIC_ENV_FILE
     deploy:
-      replicas: 1
+      replicas: 2
+      # resources:
+        # reservations:
+          # cpus: '0.51'
       placement:
         constraints: 
           # - node.ip == $MAPIC_IP
