@@ -11,8 +11,6 @@ INSTANCES_FILE=$MAPIC_CLI_FOLDER/.mapic.aws-ec2.env
 
 echo "Scheduling Mapic for night-mode..."
 
-env
-
 # check for aws cli
 AWSCLI=$(which aws)
 if [[ -z $AWSCLI ]]; then
