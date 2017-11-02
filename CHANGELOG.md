@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-
+### `mapic/mapic.js` 
+- Added support for exporting `.csv` directly from charted deformation points
 
 ## [17.10](https://github.com/mapic/mapic/releases/tag/v17.10)
 ### `mapic/mapic.js` 
