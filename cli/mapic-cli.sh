@@ -235,6 +235,7 @@ initialize () {
         _write_env MAPIC_IP $MAPIC_IP
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         _write_env MAPIC_HOME $MAPIC_HOME
+        _write_env TRAVIS $TRAVIS
 
         # ping
         _ping_cli_install
@@ -754,7 +755,7 @@ _ping_mapic_command () {
     if [ -z "$TRAVIS" ]; then
         bash ping.sh "Mapic CLI command @ $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
     else 
-        bash ping.sh "TRAVIS: $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
+        bash ping.sh "`travis:` $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
     fi
 }
 
