@@ -1,4 +1,5 @@
-## latest updated, before connection issues
+# stack.yml for travis build
+# (all nodes run on manager)
 
 version: '3'
 volumes: 
@@ -60,10 +61,6 @@ services:
     env_file:
       - $MAPIC_ENV_FILE
     deploy:
-      replicas: 2
-      # resources:
-        # reservations:
-          # cpus: '0.51'
       placement:
         constraints: 
           - node.role == manager
@@ -84,7 +81,6 @@ services:
     volumes:
       - redis_layers_store_localhost:/data
     deploy:
-      replicas: 1
       placement:
         constraints: 
           - node.role == manager
