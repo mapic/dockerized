@@ -41,6 +41,8 @@ services:
     image: mapic/geo:latest 
     env_file:
       - $MAPIC_ENV_FILE
+    environment:
+      - TRAVIS
     deploy:
       placement:
         constraints: 
@@ -59,6 +61,8 @@ services:
     image: mapic/geo:latest
     env_file:
       - $MAPIC_ENV_FILE
+    environment:
+      - TRAVIS
     deploy:
       replicas: 2
       # resources:
