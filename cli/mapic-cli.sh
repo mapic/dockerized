@@ -644,7 +644,7 @@ mapic_travis_stack () {
     cp stack.travis.yml stack.yml
 }
 mapic_travis_start () {
-    cat cli/config/stack.yml
+    cat $MAPIC_CLI_FOLDER/config/stack.yml
     mapic_up
     mapic_status
     mapic_logs
@@ -754,7 +754,7 @@ _ping_mapic_command () {
     if [ -z "$TRAVIS" ]; then
         bash ping.sh "Mapic CLI command @ $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
     else 
-        bash ping.sh "\`travis\`: $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
+        bash ping.sh "\`[travis]\` $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
     fi
 }
 
