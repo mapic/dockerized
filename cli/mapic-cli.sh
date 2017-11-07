@@ -333,6 +333,11 @@ _install_dependencies () {
 
 }
 mapic_update () {
+
+    # todo: update git / yarn / etc
+    #   docker run -it --rm -v /home/ubuntu/mapic/engine/package.json:/app/package.json creack/ncu -u -a
+    #   docker run -it --rm -v /home/ubuntu/mapic/engine:/app -w /app node:6 yarn upgrade
+
     echo "Updating local repositories..."
 
     ecco 4 "mapic/mapic"
