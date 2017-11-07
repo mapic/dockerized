@@ -627,7 +627,6 @@ mapic_travis_usage () {
     exit 1
 }
 mapic_travis () {
-    echo "mapic_travis $@"
     test -z "$2" && mapic_travis_usage
     case "$2" in
         install)    mapic_travis_install "$@";;
@@ -755,7 +754,7 @@ _ping_mapic_command () {
     if [ -z "$TRAVIS" ]; then
         bash ping.sh "Mapic CLI command @ $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
     else 
-        bash ping.sh "`travis:` $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
+        bash ping.sh "\`travis\`: $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
     fi
 }
 
