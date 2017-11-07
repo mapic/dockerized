@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ## Unreleased
 ### `mapic/mapic.js` 
 - Added support for exporting `.csv` directly from charted deformation points
+- Added support for 
 
 ### `mapic/mapic` 
 - Added automatic scheduling for AWS EC2 resources: `mapic schedule day|night|register`
