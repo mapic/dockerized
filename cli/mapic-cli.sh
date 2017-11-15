@@ -2028,6 +2028,7 @@ mapic_bench_usage () {
     echo "Options:"
     echo "  --dataset   Absolute path of dataset to use for benchmark, if other than default"
     echo "  --tiles     Number of tiles to request (Default: 300)"
+    echo "  --layer-id  Layer ID to use for benchmarking"
     echo ""
     exit 0
 }

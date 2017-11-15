@@ -6,8 +6,10 @@ var request = require('request');
 var supertest = require('supertest');
 var endpoints = require('./endpoints');
 var utils = require('./utils');
-var tiles = require('./tile-requests.json');
+var tiles = require('./tile-requests-2.json');
 var debug = process.env.MAPIC_DEBUG;
+
+console.log('tiles: ', tiles);
 
 var dataset_path = process.argv[2];
 
