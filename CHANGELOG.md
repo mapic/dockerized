@@ -4,12 +4,16 @@ All notable changes to all repositories in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## Unreleased
-### `mapic/mapic.js` 
-- Added support for exporting `.csv` directly from charted deformation points
-- Added support for 
-
 ### `mapic/mapic` 
 - Added automatic scheduling for AWS EC2 resources: `mapic schedule day|night|register`
+
+### `mapic/mapic.js` 
+- Added support for exporting `.csv` directly from charted deformation points
+- Added support for graph data layer
+
+### `mapic/mile`
+- Improved bbox calculation of extent
+- Optimized processing of empty tiles
 
 ## [17.10](https://github.com/mapic/mapic/releases/tag/v17.10)
 ### `mapic/mapic.js` 
