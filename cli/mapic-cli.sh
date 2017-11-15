@@ -76,6 +76,7 @@ mapic_cli_usage () {
     echo "  bench               Run Mapic benchmark tests"
     echo "  update              Update Mapic repositories"
     echo "  node                Manage Docker nodes"
+    echo "  reload              Reload Docker service"
     echo ""
     echo "API commands:"
     echo "  api login           Authenticate with (any) Mapic API"
@@ -156,6 +157,7 @@ m () {
         node)       mapic_node "$@";;
         schedule)   mapic_schedule "$@";;
         delayed)    mapic_delayed "$@";;
+        reload)     mapic_reload "$@";;
         help)       mapic_cli_usage;;
         --help)     mapic_cli_usage;;
         -h)         mapic_cli_usage;;
@@ -566,6 +568,26 @@ mapic_delayed () {
 
     # execute
     ${@:3}
+}
+mapic_reload_usage (){
+    echo ""
+    echo "Usage: mapic reload SERVICE"
+    echo ""
+    echo "Services:"
+    echo "  mile        Update mile services"
+    echo ""
+    exit 1
+}
+mapic_reload () {
+    test -z "$2" && mapic_reload_usage
+    case "$2" in
+        mile)       mapic_reload_mile "$@";;
+        *)          mapic_reload_usage;;
+    esac 
+}
+mapic_reload_mile () {
+    echo "Reloading mile services..."
+    docker service update mapic_mile --force --detach=true --update-parallelism=0
 }
 mapic_info () {
 
