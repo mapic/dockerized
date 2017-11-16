@@ -33,7 +33,7 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
-MAPIC_CLI_VERSION=17.10.24
+MAPIC_CLI_VERSION=17.11.16
 
 # # # # # # # # # # # # # 
 #
@@ -1097,6 +1097,7 @@ mapic_flush () {
 # /_/\____/\__, /____/  
 #         /____/     
 mapic_logs_container_usage () {
+    echo "22"
     echo ""
     echo "Usage: mapic logs [container]"
     echo ""
@@ -1109,6 +1110,7 @@ mapic_logs_container_usage () {
     exit 1
 }   
 mapic_logs () {
+    echo "ml"
     if [[ -n "$2" ]]; then
         case "$2" in
             mongo)          docker service logs -f mapic_mongo;;
@@ -1123,6 +1125,7 @@ mapic_logs () {
         exit
     fi
     if [[ "$TRAVIS" == "true" ]]; then
+        echo "travis"
         # stream logs
         docker service logs -f mapic_mile         &
         docker service logs -f mapic_postgis      &
@@ -1132,6 +1135,7 @@ mapic_logs () {
         docker service logs -f mapic_redis        &
     else
         # print current logs
+        echo "else"
         docker service logs mapic_redis
         docker service logs mapic_mongo      
         docker service logs mapic_nginx      
@@ -1186,11 +1190,24 @@ mapic_enter_usage () {
     exit 1
 }
 mapic_enter () {
-    [ -z "$1" ] && mapic_enter_usage
-    [ -z "$2" ] && mapic_enter_usage
+    test -z $1 && mapic_enter_usage
+    test -z $2 && mapic_enter_usage
+    case "$2" in
+        db)         mapic_enter_db "$@";;
+        *)          mapic_enter_container "$@";;
+    esac 
+   
+}
+mapic_enter_container () {
     C=$(docker ps -q --filter name=$2)
-    [ -z "$C" ] && mapic_enter_usage_missing_container "$@"
+    test -z "$C" && mapic_enter_usage_missing_container "$@"
     docker exec -it $C bash
+}
+mapic_enter_db () {
+    C=$(docker ps -q --filter name=engine)
+    echo "Entering PostGIS database. Do \quit to exit."
+    echo ""
+    docker exec -it $C bash scripts/postgis/enter_db.sh
 }
 mapic_enter_usage_missing_container () {
     echo "No container matched filter: $2" 
