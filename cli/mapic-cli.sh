@@ -769,8 +769,18 @@ mapic_scale () {
     esac 
 }
 _scale_mile () {
-    docker service scale mapic_mile=$3 >/dev/null 2>&1
-    echo "mapic/mile scaled to $3 nodes..."
+    
+    SCALE=$3
+    if [[ "$3" == "auto" ]]; then
+        # autoscale to x replicas per node for all nodes minus one
+        MILE_REPLICAS_PER_NODE=2
+        NODES=$(docker node ls | grep Ready | wc -l)
+        SCALE=$((($NODES - 1) * $MILE_REPLICAS_PER_NODE))
+    fi
+    
+    # scale services
+    docker service scale mapic_mile=$SCALE > /dev/null 2>&1
+    echo "Scaling mapic/mile to $SCALE nodes...done!"
 }
 _ping_cli_install () {
     cd $MAPIC_CLI_FOLDER/install
