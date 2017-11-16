@@ -8,7 +8,6 @@ var endpoints = require('./endpoints');
 var utils = require('./utils');
 var benchmark_json = require('./benchmark.json');
 var debug = process.env.MAPIC_DEBUG;
-
 var dataset_path = process.argv[2];
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" 
@@ -27,7 +26,9 @@ var ops = {};
 var tmp = {};
 
 // get access token
+process.stdout.write('Connecting to Mapic API @ ' + domain + '...');
 utils.token(function (err, access_token) {
+    console.log('success!');
 
     // check if got access token
     if (err || !access_token) {

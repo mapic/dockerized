@@ -583,6 +583,7 @@ mapic_reload () {
     case "$2" in
         mile)       mapic_reload_mile "$@";;
         nginx)      mapic_reload_nginx "$@";;
+        engine)     mapic_reload_engine "$@";;
         *)          mapic_reload_usage;;
     esac 
 }
@@ -593,6 +594,10 @@ mapic_reload_mile () {
 mapic_reload_nginx () {
     echo "Reloading nginx service..."
     docker service update mapic_nginx --force --detach=true --update-parallelism=0
+}
+mapic_reload_nginx () {
+    echo "Reloading engine service..."
+    docker service update mapic_engine --force --detach=true --update-parallelism=0
 }
 mapic_info () {
 
@@ -2143,8 +2148,7 @@ mapic_bench_run () {
     echo ""
     ecco 5 "Mapic Benchmark Tests"
     ecco 5 "---------------------"
-    echo "Benchmarking mapic/mile replication..."
-    echo "Number of active Mile tileserver nodes: $DOCKER_INFO"
+    echo "Number of active mapic/mile nodes: $DOCKER_INFO"
     echo "Benchmarking $MAPIC_BENCHMARK_SIZE dataset with $MAPIC_BENCHMARK_NUMBER_OF_TILES tiles..."
 
     # run benchmark
