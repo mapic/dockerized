@@ -582,12 +582,17 @@ mapic_reload () {
     test -z "$2" && mapic_reload_usage
     case "$2" in
         mile)       mapic_reload_mile "$@";;
+        nginx)      mapic_reload_nginx "$@";;
         *)          mapic_reload_usage;;
     esac 
 }
 mapic_reload_mile () {
     echo "Reloading mile services..."
     docker service update mapic_mile --force --detach=true --update-parallelism=0
+}
+mapic_reload_nginx () {
+    echo "Reloading nginx service..."
+    docker service update mapic_nginx --force --detach=true --update-parallelism=0
 }
 mapic_info () {
 
