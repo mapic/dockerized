@@ -1,0 +1,55 @@
+{
+    "large" : {
+        "name" : "8D_stavanger_may2017_shape.zip",
+        "layer_id" : "layer_id-635c3a35-1b00-4f92-b2de-b9377b05fb75",
+        "tiles" : [
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4225/2427.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4225/2425.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4225/2426.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4225/2428.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4226/2426.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4226/2425.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4226/2427.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4226/2424.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4226/2428.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4228/2426.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4228/2425.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4228/2427.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4228/2424.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4228/2428.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/12/2114/1213.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/12/2112/1213.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/12/2114/1212.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/12/2112/1212.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/12/2113/1213.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/12/2111/1214.png"
+        ]
+    },
+
+    "small" : {
+        "name" : "benchmark-data.zip",
+        "layer_id" : "layer_id-c32429fa-772d-4c9d-9b95-dd530fdebc24",
+        "tiles" : [
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20249/12644.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20248/12644.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20249/12645.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20248/12645.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20248/12643.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20249/12643.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20250/12644.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20247/12644.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20250/12643.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20247/12645.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20247/12643.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20250/12645.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/14/10125/6322.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/14/10123/6322.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/14/10123/6321.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/14/10125/6321.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/14/10124/6321.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/14/10124/6322.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20248/12643.png",
+            "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20247/12645.png"
+        ]
+    }
+}
