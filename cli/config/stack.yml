@@ -66,8 +66,8 @@ services:
           # cpus: '0.51'
       placement:
         constraints: 
-          - node.ip == $MAPIC_IP
-          # - node.ip != $MAPIC_IP
+          # - node.ip == $MAPIC_IP
+          - node.ip != $MAPIC_IP
     working_dir: /mapic/mile 
     command: ./start-server.sh
     volumes:
