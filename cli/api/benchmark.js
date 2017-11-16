@@ -214,23 +214,25 @@ utils.token(function (err, access_token) {
         };
 
     } else {
-        console.log('Using existing benchmark data...');
+        // console.log('Using existing benchmark data...');
+        process.stdout.write('Using existing benchmark data: ')
     };
 
     // run benchmark
     ops.benchmark = function (callback) {
         var n = 0;
         var m = 0;
-        console.log('Benchmarking...');
 
         // create tile requests
         var tile_requests = [];
         var MAPIC_BENCHMARK_NUMBER_OF_TILES = process.env.MAPIC_BENCHMARK_NUMBER_OF_TILES || 100;
 
-        var bench_size = 'large';
+        var bench_size = process.env.MAPIC_BENCHMARK_SIZE;
         var tile_url_template = benchmark_json[bench_size].tiles;
         var tile_layer_id = benchmark_json[bench_size].layer_id;
         var mapic_domain = process.env.MAPIC_DOMAIN;
+
+        console.log(benchmark_json[bench_size].name);
 
         // replace domain / layer_id
         _.each(tile_url_template, function (t) {
@@ -265,6 +267,7 @@ utils.token(function (err, access_token) {
             });
         });
 
+        console.log('Benchmarking...');
         async.parallelLimit(req_ops, 100, function (err, results) {
             if (err) return callback(err);   
 

@@ -2061,7 +2061,8 @@ mapic_bench_usage () {
     echo "Usage: mapic bench [OPTIONS] COMMAND"
     echo ""
     echo "Commands:"
-    echo "  run         Run benchmark tests"
+    echo "  large       Run large benchmark tests"
+    echo "  small       Run small benchmark tests"
     echo "  help        This screen"
     echo ""
     echo "Options:"
@@ -2074,7 +2075,8 @@ mapic_bench_usage () {
 mapic_bench () {
     test -z "$2" && mapic_bench_usage
     case "$2" in
-        run)        mapic_bench_run "$@";;
+        large)      mapic_bench_run "$@";;
+        small)      mapic_bench_run "$@";;
         help)       mapic_bench_usage ;;
         *)          mapic_bench_usage;;
     esac 
@@ -2099,6 +2101,10 @@ mapic_bench_run () {
                 MAPIC_BENCHMARK_UPLOADED_DATA_LAYER=$2;;
             --help)
                 mapic_bench_usage;;
+            large)
+                MAPIC_BENCHMARK_SIZE=large;;
+            small)
+                MAPIC_BENCHMARK_SIZE=small;;
         esac
         shift
     done
@@ -2107,11 +2113,13 @@ mapic_bench_run () {
     _write_env MAPIC_BENCHMARK_NUMBER_OF_TILES $MAPIC_BENCHMARK_NUMBER_OF_TILES
     _write_env MAPIC_BENCHMARK_DATASET_PATH $MAPIC_BENCHMARK_DATASET_PATH
     _write_env MAPIC_BENCHMARK_UPLOADED_DATA_LAYER $MAPIC_BENCHMARK_UPLOADED_DATA_LAYER
+    _write_env MAPIC_BENCHMARK_SIZE $MAPIC_BENCHMARK_SIZE
 
     if [[ "$MAPIC_DEBUG" == true ]]; then
         echo "MAPIC_BENCHMARK_DATASET_PATH: $MAPIC_BENCHMARK_DATASET_PATH"
         echo "MAPIC_BENCHMARK_NUMBER_OF_TILES: $MAPIC_BENCHMARK_NUMBER_OF_TILES"
         echo "MAPIC_BENCHMARK_UPLOADED_DATA_LAYER: $MAPIC_BENCHMARK_UPLOADED_DATA_LAYER"
+        echo "MAPIC_BENCHMARK_SIZE: $MAPIC_BENCHMARK_SIZE"
     fi
 
     # get info on replicas
@@ -2120,13 +2128,12 @@ mapic_bench_run () {
     echo ""
     ecco 5 "Mapic Benchmark Tests"
     ecco 5 "---------------------"
-    echo "Benchmarking Mile tileserver replication..."
+    echo "Benchmarking mapic/mile replication..."
     echo "Number of active Mile tileserver nodes: $DOCKER_INFO"
-    echo "Benchmarking $MAPIC_BENCHMARK_NUMBER_OF_TILES tiles..."
+    echo "Benchmarking $MAPIC_BENCHMARK_SIZE dataset with $MAPIC_BENCHMARK_NUMBER_OF_TILES tiles..."
 
-    # exit 
     # run benchmark
-    docker run -it --rm --env-file $MAPIC_ENV_FILE -e MAPIC_BENCHMARK_NUMBER_OF_TILES=$MAPIC_BENCHMARK_NUMBER_OF_TILES --volume $MAPIC_CLI_FOLDER/api:/mapic --volume $MAPIC_BENCHMARK_DATASET_PATH:/data/$MAPIC_BENCHMARK_DATASET_PATH -w /mapic node:6 sh benchmark.sh
+    docker run -it --rm --env-file $MAPIC_ENV_FILE -e MAPIC_BENCHMARK_NUMBER_OF_TILES=$MAPIC_BENCHMARK_NUMBER_OF_TILES -e MAPIC_BENCHMARK_SIZE=$MAPIC_BENCHMARK_SIZE --volume $MAPIC_CLI_FOLDER/api:/mapic --volume $MAPIC_BENCHMARK_DATASET_PATH:/data/$MAPIC_BENCHMARK_DATASET_PATH -w /mapic node:6 sh benchmark.sh
 
     echo "Benchmark done."    
 }
