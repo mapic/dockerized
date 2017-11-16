@@ -82,7 +82,6 @@ services:
     volumes:
       - redis_layers_store_localhost:/data
     deploy:
-      replicas: 1
       placement:
         constraints: 
           - node.ip == $MAPIC_IP
