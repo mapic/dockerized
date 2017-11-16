@@ -61,9 +61,6 @@ services:
       - $MAPIC_ENV_FILE
     deploy:
       replicas: 1
-      # resources:
-        # reservations:
-          # cpus: '0.51'
       placement:
         constraints: 
           # - node.ip == $MAPIC_IP
@@ -120,9 +117,6 @@ services:
       placement:
         constraints: 
           - node.ip == $MAPIC_IP
-      # resources:
-      #   limits:
-      #     cpus: '0.9'
     networks:
       mapic:
         aliases:
