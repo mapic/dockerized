@@ -10,9 +10,6 @@ var tiles = require('./tile-requests.json');
 var benchmark_json = require('./benchmark.json');
 var debug = process.env.MAPIC_DEBUG;
 
-console.log('tiles: ', tiles);
-console.log('benchmark_json: ', benchmark_json);
-
 var dataset_path = process.argv[2];
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" 
@@ -221,83 +218,23 @@ utils.token(function (err, access_token) {
         console.log('Using existing benchmark data...');
     };
 
-    // // get layer
-    // ops.get_layer = function (callback) {
-
-    //     var layer_id = MAPIC_BENCHMARK_UPLOADED_DATA_LAYER || tmp.layer.id;
-    //     console.log('get_layer!!');
-    //     console.log('layer_id: ', layer_id);
-    //     tmp.layer_id = layer_id;
-
-
-    //     api.get('/v2/tiles/layer')
-    //     .query({
-    //         layerUuid : layer_id,
-    //         access_token : access_token
-    //     })
-    //     .end(function (err, response) {
-    //         if (err) return callback(err);
-    //         // console.log('getlayer response', response.text, err);
-
-    //         var layer = JSON.parse(response.text);
-    //         var metadata = JSON.parse(layer.options.metadata);
-    //         var extent = metadata.extent;
-
-    //         // console.log('metadat: ', metadata);
-    //         console.log('layuer: ', layer);
-    //         console.log('extent:', extent);
-
-    //         tmp.extent = extent;
-
-    //         tmp.getLayer = response.text;
-    //         callback();
-    //     });
-
-    // };
-
-
     // run benchmark
     ops.benchmark = function (callback) {
         var n = 0;
         var m = 0;
         console.log('Benchmarking...');
 
-        // var set_of_tiles = tools._getPreRenderTiles(tmp.extent, tmp.layer_id);
-        // console.log('set_of_tiles', set_of_tiles, _.size(set_of_tiles));
-
         // create tile requests
         var tile_requests = [];
-        // var benchmark_tiles = [];
         var MAPIC_BENCHMARK_NUMBER_OF_TILES = process.env.MAPIC_BENCHMARK_NUMBER_OF_TILES || 100;
-        // _.each(tiles, function (t) {
-        //     var ta = t.replace('MAPIC_DOMAIN', process.env.MAPIC_DOMAIN);
-        //     var tb = ta.replace('LAYER_ID', MAPIC_BENCHMARK_UPLOADED_DATA_LAYER);
-        //     tile_requests.push(tb);
-        // });
-        // while (benchmark_tiles.length < MAPIC_BENCHMARK_NUMBER_OF_TILES) {
-        //     benchmark_tiles = benchmark_tiles.concat(tile_requests);
-        // }
-
-        // _.each(set_of_tiles, function (tile) {
-        //     var tile_url = 'https://tiles-a-' + process.env.MAPIC_DOMAIN + '/v2/tiles/' + tile.layer_id + '/' + tile.z + '/' + tile.x + '/' + tile.y + '.png';
-        //     tile_url += '?force_render=true&access_token=' + access_token;
-        //     tile_requests.push(tile_url);
-        // });
-
-        // console.log('tile_requests', tile_requests, _.size(tile_requests));
-
-        // // get exact number of tile request
-        // var benchmark_tiles =  _.slice(tile_requests, 0, MAPIC_BENCHMARK_NUMBER_OF_TILES);
-
-        // console.log('benchmark_tiles', benchmark_tiles, _.size(benchmark_tiles));
 
         var bench_size = 'large';
         var tile_url_template = benchmark_json[bench_size].tiles;
         var tile_layer_id = benchmark_json[bench_size].layer_id;
         var mapic_domain = process.env.MAPIC_DOMAIN;
 
+        // replace domain / layer_id
         _.each(tile_url_template, function (t) {
-
             var a = t.replace('MAPICDOMAIN', mapic_domain);
             var b = a.replace('LAYERID', tile_layer_id);
             var url = b + '?force_render=true&access_token=' + access_token;
@@ -306,25 +243,17 @@ utils.token(function (err, access_token) {
             tile_requests.push(url);
         });
 
+        // calc number of tiless
         var template_size = _.size(tile_url_template);
         var desired_tiles = MAPIC_BENCHMARK_NUMBER_OF_TILES;
         var multiplier = parseInt(desired_tiles / template_size); // eg. 300 / 20 = 15
 
-        console.log('template_size', template_size);
-        console.log('desired_tiles', desired_tiles);
-        console.log('multiplier', multiplier);
-
+        // create tile requests
         var all_benchmarks_requests = [];
         _.times(multiplier, function (i) {
             all_benchmarks_requests.push(tile_requests);
         });
-
         all_benchmarks_requests = _.flatten(all_benchmarks_requests);
-
-        console.log('size all_benchmarks_requests', _.size(all_benchmarks_requests));
-
-        console.log('all_benchmarks_requests', all_benchmarks_requests);
-
 
         // mark start of bench
         var timeStart = Date.now();
@@ -333,10 +262,6 @@ utils.token(function (err, access_token) {
         var req_ops = [];
         _.each(all_benchmarks_requests, function (url) {
             req_ops.push(function (done) {
-                console.log('url', url);
-                // request tile
-                // var tile = url + '?force_render=true&access_token=' + access_token;
-                // console.log('tile:', tile);
                 request(url, done);
             });
         });
@@ -394,72 +319,3 @@ utils.token(function (err, access_token) {
 
 
 });
-
-var tools = {
-
-    _getPreRenderTiles : function (extent, layer_id) {
-        var tiles = [];
-        var zoom = 10;
-        _.times(4, function (z) {
-            // z++;
-            var zz = zoom + z;
-            tiles.push(tools._getPreRenderTilesAtZoom(extent, layer_id, zz));
-        });
-        return _.flatten(tiles);
-    },
-
-    _getPreRenderTilesAtZoom : function (extent, layer_id, zoom) {
-
-        // latitude
-        var north = parseFloat(extent[1]);
-        var south = parseFloat(extent[3]);
-
-        // longitutde
-        var west = parseFloat(extent[0]);
-        var east = parseFloat(extent[2]);
-
-        var minLng = west;
-        var maxLng = east;
-        var minLat = south;
-        var maxLat = north;
-
-        var minTileX = tools.lon_to_tile_x(minLng, zoom);
-        var maxTileX = tools.lon_to_tile_x(maxLng, zoom);
-
-        var minTileY = tools.lat_to_tile_y(minLat, zoom);
-        var maxTileY = tools.lat_to_tile_y(maxLat, zoom);
-
-        var x = minTileX;
-        var z = zoom;
-        var tiles = [];
-        while (x <= maxTileX) {
-            var y = minTileY;
-            while (y <= maxTileY) {
-                y++;
-                var tile = layer_id + '/' + z + '/' + y + '/' + x
-                var tile = {
-                    layer_id : layer_id, 
-                    layerUuid : layer_id,
-                    z : z, 
-                    x : x, 
-                    y : y,
-                    type : 'png',
-
-                }
-                tiles.push(tile);
-            }
-            x++;
-        }
-        return tiles;
-    },
-
-    deg_to_rad : function (deg) {
-        return deg * Math.PI / 180;
-    },
-    lon_to_tile_x : function (lon, zoom) {
-        return parseInt(Math.floor( (lon + 180) / 360 * (1<<zoom) ));
-    },
-    lat_to_tile_y : function (lat, zoom) {
-        return Math.floor((1 - Math.log(Math.tan(tools.deg_to_rad(lat)) + 1 / Math.cos(tools.deg_to_rad(lat))) / Math.PI) / 2 * Math.pow(2, zoom));
-    },
-}

@@ -1,6 +1,7 @@
 {
     "large" : {
         "name" : "8D_stavanger_may2017_shape.zip",
+        "url" : "",
         "layer_id" : "layer_id-635c3a35-1b00-4f92-b2de-b9377b05fb75",
         "tiles" : [
             "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/13/4225/2427.png",
@@ -28,6 +29,7 @@
 
     "small" : {
         "name" : "benchmark-data.zip",
+        "url" : "https://github.com/mapic/open-data/raw/master/benchmark-data.zip",
         "layer_id" : "layer_id-c32429fa-772d-4c9d-9b95-dd530fdebc24",
         "tiles" : [
             "https://tiles-a-MAPICDOMAIN/v2/tiles/LAYERID/15/20249/12644.png",
