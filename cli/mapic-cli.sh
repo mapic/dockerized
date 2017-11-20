@@ -2211,6 +2211,12 @@ mapic_viz_stop () {
     echo "Stopping Swarm Visualizer..."
     docker service rm swarm-visualizer
 }
+mapic_tor_usage () {
+    echo ""
+    echo "Usage: mapic tor start|stop|status"
+    echo ""
+    exit 1
+}
 mapic_tor () {
     test -z "$2" && mapic_tor_usage
     case "$2" in
@@ -2220,16 +2226,13 @@ mapic_tor () {
         *)          mapic_tor_usage;;
     esac 
 }
-mapic_tor_usage () {
-    mapic_tor_status
-}
 mapic_tor_status () {
     echo ""
     docker service ps tor-relay
 }
 mapic_tor_start () {
     echo "Starting Tor relays..."
-    docker pull mapic/tor-relay:latest >/dev/null 2>&1
+    docker pull mapic/tor-relay:latest >/dev/null
     docker service create --mode global --detach -p 9001:9001 --name tor-relay mapic/tor-relay:latest
 }
 mapic_tor_stop () {
