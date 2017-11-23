@@ -4,6 +4,8 @@ All notable changes to all repositories in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## Unreleased
+### `mapic/mapic.js` 
+- Added support for M.Layer.Graph
 
 ## [17.11](https://github.com/mapic/mapic/releases/tag/v17.11)
 ### `mapic/mapic` 
