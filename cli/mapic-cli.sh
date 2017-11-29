@@ -1756,6 +1756,7 @@ mapic_api_user_usage () {
     echo "Options:"
     echo "  list        List registered users"
     echo "  create      Create user"
+    echo "  rm          Remove user"
     echo "  super       Promote user to superadmin"
     echo ""
     exit 1
@@ -1766,6 +1767,7 @@ mapic_api_user () {
         list)       mapic_api_user_list "$@";;
         create)     mapic_api_user_create "$@";;
         super)      mapic_api_user_super "$@";;
+        rm)         mapic_api_user_remove "$@";;
         *)          mapic_api_user_usage;
     esac 
 }
@@ -1786,6 +1788,17 @@ mapic_api_user_create () {
     test -z "$7" && mapic_api_user_create_usage
     cd $MAPIC_CLI_FOLDER/api
     bash create-user.sh "${@:4}"
+}
+mapic_api_user_remove_usage () {
+    echo ""
+    echo "Usage: mapic api user rm [EMAIL]"
+    echo ""
+    exit 1
+}
+mapic_api_user_remove () {
+    test -z "$4" && mapic_api_user_remove_usage
+    cd $MAPIC_CLI_FOLDER/api
+    bash delete-user.sh "${@:4}"
 }
 mapic_api_user_super_usage () {
     echo ""
@@ -1826,7 +1839,7 @@ mapic_run () {
     test -z "$3" && mapic_run_usage
     C=$(docker ps -q --filter name=$2)
     test -z "$C" && mapic_enter_usage_missing_container "$@"
-    docker exec -e MAPIC_DEBUG=$MAPIC_DEBUG $C  ${@:3}
+    docker exec -it -e MAPIC_DEBUG=$MAPIC_DEBUG $C  ${@:3}
 }
 
 #    __________/ /

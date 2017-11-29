@@ -1,13 +1,10 @@
-## latest updated, before connection issues
-
 version: '3'
+
 volumes: 
-  mapic_data_store_localhost:
-  mongo_store_localhost:
-  postgis_store_localhost:
-  redis_layers_store_localhost:
-  redis_stats_store_localhost:
-  redis_tokens_store_localhost:
+  mapic_store_data:
+  mapic_store_mongo:
+  mapic_store_postgis:
+  mapic_store_redis:
 
 networks:
   mapic:
@@ -16,8 +13,7 @@ services:
 
   nginx:
     image: mapic/nginx:latest
-    env_file:
-      - $MAPIC_ENV_FILE
+    env_file: $MAPIC_ENV_FILE
     volumes:
       - ${MAPIC_CONFIG_FOLDER}/privkey.key:/mapic/privkey.key
       - ${MAPIC_CONFIG_FOLDER}/fullchain.pem:/mapic/fullchain.pem
@@ -39,17 +35,16 @@ services:
 
   engine:
     image: mapic/geo:latest 
-    env_file:
-      - $MAPIC_ENV_FILE
+    env_file: $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_ROOT_FOLDER}:/mapic
+      - mapic_store_data:/data
     deploy:
       placement:
         constraints: 
           - node.ip == $MAPIC_IP
     working_dir: /mapic/engine 
     command: ./start-server.sh
-    volumes:
-      - ${MAPIC_ROOT_FOLDER}:/mapic
-      - mapic_data_store_localhost:/data
     networks:
       mapic:
         aliases:
@@ -57,8 +52,10 @@ services:
 
   mile: 
     image: mapic/geo:latest
-    env_file:
-      - $MAPIC_ENV_FILE
+    env_file: $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_ROOT_FOLDER}:/mapic
+      - mapic_store_data:/data
     deploy:
       replicas: 1
       resources:
@@ -70,9 +67,6 @@ services:
           - node.ip != $MAPIC_IP
     working_dir: /mapic/mile 
     command: ./start-server.sh
-    volumes:
-      - ${MAPIC_ROOT_FOLDER}:/mapic
-      - mapic_data_store_localhost:/data
     networks:
       mapic:
         aliases:
@@ -80,10 +74,9 @@ services:
  
   redis:
     image: mapic/redis:latest
-    env_file:
-      - $MAPIC_ENV_FILE
+    env_file: $MAPIC_ENV_FILE
     volumes:
-      - redis_layers_store_localhost:/data
+      - mapic_store_redis:/data
     deploy:
       placement:
         constraints: 
@@ -95,10 +88,9 @@ services:
 
   mongo: 
     image: mapic/mongo:latest
-    env_file:
-      - $MAPIC_ENV_FILE
+    env_file: $MAPIC_ENV_FILE
     volumes:
-      - mongo_store_localhost:/data/db
+      - mapic_store_mongo:/data/db
     deploy:
       placement:
         constraints: 
@@ -110,11 +102,10 @@ services:
 
   postgis:
     image: mapic/postgis:latest
-    env_file:
-      - $MAPIC_ENV_FILE
+    env_file: $MAPIC_ENV_FILE
     volumes:
       - ${MAPIC_CONFIG_FOLDER}:/mapic/config
-      - postgis_store_localhost:/var/lib/postgresql
+      - mapic_store_postgis:/var/lib/postgresql
     deploy:
       placement:
         constraints: 

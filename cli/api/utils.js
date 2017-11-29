@@ -1,3 +1,6 @@
+var child_process = require('child_process');
+child_process.execSync("yarn",{stdio:[0]});
+
 var _ = require('lodash');
 var supertest = require('supertest');
 var endpoints = require('./endpoints');
@@ -48,8 +51,12 @@ module.exports = utils = {
         });
     },
 
+    isObject : function (o) {
+        return (o !== null && typeof o === 'object')
+    },
+
     parse : function (body) {
-        if (_.isObject(body)) return body;
+        if (utils.isObject(body)) return body;
         try { var parsed = JSON.parse(body); } 
         catch (e) { return console.log('failed to parse:', body);}
         return parsed;
