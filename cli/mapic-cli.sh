@@ -358,6 +358,9 @@ mapic_pull () {
     cd $MAPIC_ROOT_FOLDER/mapic.js
     git pull origin master --rebase
 
+    ecco 4 "git status:"
+    git status
+
 }
 _install_linux_tools () {
 
