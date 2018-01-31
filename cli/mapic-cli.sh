@@ -361,6 +361,7 @@ mapic_pull () {
 
     echo ""
     ecco 4 "git status:"
+    cd $MAPIC_ROOT_FOLDER
     git status
     echo ""
 
