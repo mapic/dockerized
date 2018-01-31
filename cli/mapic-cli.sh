@@ -336,10 +336,7 @@ _install_dependencies () {
 }
 mapic_pull () {
 
-    # todo: update git / yarn / etc
-    #   docker run -it --rm -v /home/ubuntu/mapic/engine/package.json:/app/package.json creack/ncu -u -a
-    #   docker run -it --rm -v /home/ubuntu/mapic/engine:/app -w /app node:6 yarn upgrade
-
+    echo ""
     echo "Pulling latest repositories..."
 
     echo ""
@@ -365,6 +362,7 @@ mapic_pull () {
     echo ""
     ecco 4 "git status:"
     git status
+    echo ""
 
 }
 _install_linux_tools () {
