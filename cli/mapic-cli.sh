@@ -342,22 +342,27 @@ mapic_pull () {
 
     echo "Pulling latest repositories..."
 
+    echo ""
     ecco 4 "mapic/mapic"
     cd $MAPIC_ROOT_FOLDER
     git pull origin master --rebase
 
+    echo ""
     ecco 4 "mapic/mile"
     cd $MAPIC_ROOT_FOLDER/mile
     git pull origin master --rebase
 
+    echo ""
     ecco 4 "mapic/engine"
     cd $MAPIC_ROOT_FOLDER/engine
     git pull origin master --rebase
 
+    echo ""
     ecco 4 "mapic/mapic.js"
     cd $MAPIC_ROOT_FOLDER/mapic.js
     git pull origin master --rebase
 
+    echo ""
     ecco 4 "git status:"
     git status
 
