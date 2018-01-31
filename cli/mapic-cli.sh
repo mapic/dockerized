@@ -74,7 +74,7 @@ mapic_cli_usage () {
     echo "  info                Display Mapic info"
     echo "  test                Run Mapic tests"
     echo "  bench               Run Mapic benchmark tests"
-    echo "  update              Update Mapic repositories"
+    echo "  pull                Pull latest Mapic repositories"
     echo "  node                Manage Docker nodes"
     echo "  reload              Reload Docker service"
     echo ""
@@ -153,7 +153,7 @@ m () {
         viz)        mapic_viz "$@";;
         scale)      mapic_scale "$@";;
         bench)      mapic_bench "$@";;
-        update)     mapic_update "$@";;
+        pull)       mapic_pull "$@";;
         node)       mapic_node "$@";;
         schedule)   mapic_schedule "$@";;
         delayed)    mapic_delayed "$@";;
@@ -334,13 +334,13 @@ _install_dependencies () {
     fi
 
 }
-mapic_update () {
+mapic_pull () {
 
     # todo: update git / yarn / etc
     #   docker run -it --rm -v /home/ubuntu/mapic/engine/package.json:/app/package.json creack/ncu -u -a
     #   docker run -it --rm -v /home/ubuntu/mapic/engine:/app -w /app node:6 yarn upgrade
 
-    echo "Updating local repositories..."
+    echo "Pulling latest repositories..."
 
     ecco 4 "mapic/mapic"
     cd $MAPIC_ROOT_FOLDER
