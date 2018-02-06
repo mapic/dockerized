@@ -1,0 +1,34 @@
+{
+    "title" : "Hallingdal Snow Cover - 2016",
+    "options" : {
+        "type" : "scf",
+        "dateformat" : "YYYYMMDD"
+    },
+    "datasets" : "/tmp/globesar/datasets/2016_01/",
+    "masks" : [
+        {
+            "title" : "hallingdal",
+            "description" : "Nedbørsfelt: Hallingdalsvassdraget",
+            "geojson" : "/tmp/globesar/masks/hallingdal/hallingdal.geojson",
+            "data" : "/tmp/globesar/masks/hallingdal/hallingdal.scf.json",
+            "meta" : {
+                "title" : "hallingdal",
+                "description" : "description",
+                "område" : "hallingdal",
+                "kraftverk" : "mår",
+                "feltnavn" : "aka title",
+                "areal" : "338.45 km2",
+                "årlig tilsig" : "323 mm"
+            }
+        },
+        {
+            "title" : "rjukan",
+            "description" : "Kraftverk",
+            "geojson" : "/tmp/globesar/masks/rjukan/rjukan.union.geojson",
+            "data" : "/tmp/globesar/masks/rjukan/rjukan.scf.json",
+            "meta" : {
+                "title" : "rjukan"
+            }
+        }
+    ]
+}

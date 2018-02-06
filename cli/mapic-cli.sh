@@ -1747,8 +1747,7 @@ mapic_api_upload_snow () {
     test -z "$4" && mapic_api_upload_usage
 
     cd $MAPIC_CLI_FOLDER/api
-    # bash upload-datacube.sh $4
-    docker run -v $PWD:/sdk/ -v /:/data --env-file $(mapic config file) -it node node /sdk/upload_datacube.js $1
+    docker run -v $PWD:/sdk/ -v /:/data --env-file $(mapic config file) -it node node /sdk/upload_datacube.js $4
 
 }
 mapic_api_upload_dataset () {
