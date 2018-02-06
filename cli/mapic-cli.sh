@@ -1703,23 +1703,58 @@ _api_create_project () {
     fi
 }
 
+mapic_api_upload_cube_usage () {
+    echo ""
+    echo "Usage: mapic api upload_cube DATASET"
+    echo ""
+    echo "Dataset:"
+    echo "  JSON file of cube"
+    echo ""
+    exit 1 
+}
 
 mapic_api_upload_usage () {
     echo ""
-    echo "Usage: mapic api upload DATASET [OPTIONS]"
+    echo "Usage: mapic api upload TYPE path [OPTIONS]"
     echo ""
-    echo "Dataset:"
-    echo "  Absolute path of dataset to upload"
+    echo "Types of upload:"
+    echo "  Dataset     Upload a dataset"
+    echo "  Snow        Upload a snow-raster timeseries"
+    echo ""
+    echo "Path:"
+    echo "  Absolute path of JSON file or dataset to upload"
     echo ""
     echo "Options:"
     echo "  --project-id        Project id"
+    echo ""
+    echo "Examples:"
+    echo "  mapic api upload dataset /tmp/raster.tiff"
+    echo "  mapic api upload snow snow-project.json"
+    echo ""
+    echo "See https://github.com/mapic/mapic/wiki/Upload-Snow-Raster-Datasets for more information."
     echo ""
     exit 1 
 }
 mapic_api_upload () {
     test -z "$3" && mapic_api_upload_usage
+    case "$3" in
+        dataset)    mapic_api_upload_dataset "$@";;
+        snow)       mapic_api_upload_snow "$@";;
+        *)          mapic_api_upload_usage;
+    esac 
+}
+mapic_api_upload_snow () {
+    test -z "$4" && mapic_api_upload_usage
 
-    MAPIC_API_UPLOAD_DATASET=$(realpath "$3")
+    cd $MAPIC_CLI_FOLDER/api
+    # bash upload-datacube.sh $4
+    docker run -v $PWD:/sdk/ -v /:/data --env-file $(mapic config file) -it node node /sdk/upload_datacube.js $1
+
+}
+mapic_api_upload_dataset () {
+    test -z "$4" && mapic_api_upload_usage
+
+    MAPIC_API_UPLOAD_DATASET=$(realpath "$4")
     MAPIC_API_UPLOAD_PROJECT=$MAPIC_API_PROJECT_CREATE_ID
     API_DIR=$MAPIC_CLI_FOLDER/api
 
@@ -1727,10 +1762,10 @@ mapic_api_upload () {
     do
         case "$1" in
             --project)
-                MAPIC_API_UPLOAD_PROJECT=$2
+                MAPIC_API_UPLOAD_PROJECT=$3
                 ;;
             --dataset)
-                MAPIC_API_UPLOAD_DATASET=$(realpath "$2")
+                MAPIC_API_UPLOAD_DATASET=$(realpath "$3")
                 ;;
         esac
         shift
