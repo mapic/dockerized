@@ -1,10 +1,10 @@
 {
-    "title" : "Hallingdal Snow Cover - 2016-2017",
+    "title" : "Hallingdal Snow Cover - 2017-2018",
     "options" : {
         "type" : "scf",
         "dateformat" : "YYYYMMDD"
     },
-    "datasets" : "/tmp/globesar/datasets/2016-2017/",
+    "datasets" : "/tmp/globesar/datasets/2017-2018/",
     "masks" : [
         {
             "title" : "hallingdal",
@@ -12,13 +12,7 @@
             "geojson" : "/tmp/globesar/masks/hallingdal/hallingdal.geojson",
             "data" : "/tmp/globesar/masks/hallingdal/hallingdal.scf.json",
             "meta" : {
-                "title" : "hallingdal",
-                "description" : "description",
-                "område" : "hallingdal",
-                "kraftverk" : "mår",
-                "feltnavn" : "aka title",
-                "areal" : "338.45 km2",
-                "årlig tilsig" : "323 mm"
+                "title" : "hallingdal"
             }
         },
         {
