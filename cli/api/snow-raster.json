@@ -1,10 +1,10 @@
 {
-    "title" : "Hallingdal Snow Cover - 2016",
+    "title" : "Hallingdal Snow Cover - 2016-2017",
     "options" : {
         "type" : "scf",
         "dateformat" : "YYYYMMDD"
     },
-    "datasets" : "/tmp/globesar/datasets/2016_01/",
+    "datasets" : "/tmp/globesar/datasets/2016-2017/",
     "masks" : [
         {
             "title" : "hallingdal",
