@@ -4,8 +4,15 @@ All notable changes to all repositories in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## Unreleased
+
+## [18.02](https://github.com/mapic/mapic/releases/tag/v18.02)
 ### `mapic/mapic.js` 
 - Added support for M.Layer.Graph
+- Improved support for Snow Visualization
+
+### `mapic/mapic`
+- Added more commands to CLI: `mapic api upload snow`, `mapic pull`, `mapic api user rm`
+
 
 ## [17.11](https://github.com/mapic/mapic/releases/tag/v17.11)
 ### `mapic/mapic` 
@@ -22,7 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ### `mapic/mile`
 - Improved bbox calculation of extent
 - Optimized processing of empty tiles
-- Optimized reading from PostGIS, improved by order of magnitude
+- Optimized reading from PostGIS, improved by orders of magnitude
 
 ## [17.10](https://github.com/mapic/mapic/releases/tag/v17.10)
 ### `mapic/mapic.js` 
