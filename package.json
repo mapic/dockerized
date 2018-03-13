@@ -1,6 +1,6 @@
 {
   "name": "mapic",
-  "version": "17.10.27",
+  "version": "18.3.13",
   "description": "Mapic Web Map Engine",
   "scripts": {
     "test": "mapic test all",

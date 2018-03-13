@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ## Unreleased
 ### `mapic/mapic.js` 
 - Added support for M.Layer.Graph
+- Added support for wider color ranges
+- Plenty of bugfixes
 
 ## [17.11](https://github.com/mapic/mapic/releases/tag/v17.11)
 ### `mapic/mapic` 
