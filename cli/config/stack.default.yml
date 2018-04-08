@@ -1,0 +1,117 @@
+version: '3'
+
+volumes: 
+  mapic_store_data:
+  mapic_store_mongo:
+  mapic_store_postgis:
+  mapic_store_redis:
+
+networks:
+  mapic:
+
+services:
+
+  nginx:
+    image: mapic/nginx:latest
+    env_file: $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_CONFIG_FOLDER}/privkey.key:/mapic/privkey.key
+      - ${MAPIC_CONFIG_FOLDER}/fullchain.pem:/mapic/fullchain.pem
+      - ${MAPIC_CONFIG_FOLDER}/dhparams.pem:/mapic/dhparams.pem
+    deploy:
+      placement:
+        constraints: 
+        - node.ip == $MAPIC_IP
+    depends_on:
+      - mile
+      - engine
+    ports:
+      - 443:443
+      - 80:80
+    networks:
+      mapic:
+        aliases:
+          - nginx.docker
+
+  engine:
+    image: mapic/geo:latest 
+    env_file: $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_ROOT_FOLDER}:/mapic
+      - mapic_store_data:/data
+    deploy:
+      placement:
+        constraints: 
+          - node.ip == $MAPIC_IP
+    working_dir: /mapic/engine 
+    command: ./start-server.sh
+    networks:
+      mapic:
+        aliases:
+          - engine.docker
+
+  mile: 
+    image: mapic/geo:latest
+    env_file: $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_ROOT_FOLDER}:/mapic
+      - mapic_store_data:/data
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.40'
+      placement:
+        constraints: 
+          - node.ip == $MAPIC_IP
+          # - node.ip != $MAPIC_IP
+    working_dir: /mapic/mile 
+    command: ./start-server.sh
+    networks:
+      mapic:
+        aliases:
+          - mile.docker
+ 
+  redis:
+    image: mapic/redis:latest
+    env_file: $MAPIC_ENV_FILE
+    volumes:
+      - mapic_store_redis:/data
+    deploy:
+      placement:
+        constraints: 
+          - node.ip == $MAPIC_IP
+    networks:
+      mapic:
+        aliases:
+          - redis.docker
+
+  mongo: 
+    image: mapic/mongo:latest
+    env_file: $MAPIC_ENV_FILE
+    volumes:
+      - mapic_store_mongo:/data/db
+    deploy:
+      placement:
+        constraints: 
+          - node.ip == $MAPIC_IP
+    networks:
+      mapic:
+        aliases:
+          - mongo.docker
+
+  postgis:
+    image: mapic/postgis:latest
+    env_file: $MAPIC_ENV_FILE
+    volumes:
+      - ${MAPIC_CONFIG_FOLDER}:/mapic/config
+      - mapic_store_postgis:/var/lib/postgresql
+    deploy:
+      placement:
+        constraints: 
+          - node.ip == $MAPIC_IP
+    networks:
+      mapic:
+        aliases:
+          - postgis.docker
+  

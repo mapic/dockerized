@@ -1,0 +1,28 @@
+{
+    "title" : "Hallingdal Snow Cover - 2017-2018",
+    "options" : {
+        "type" : "scf",
+        "dateformat" : "YYYYMMDD"
+    },
+    "datasets" : "/tmp/globesar/datasets/2017-2018/",
+    "masks" : [
+        {
+            "title" : "hallingdal",
+            "description" : "Nedbørsfelt: Hallingdalsvassdraget",
+            "geojson" : "/tmp/globesar/masks/hallingdal/hallingdal.geojson",
+            "data" : "/tmp/globesar/masks/hallingdal/hallingdal.scf.json",
+            "meta" : {
+                "title" : "hallingdal"
+            }
+        },
+        {
+            "title" : "rjukan",
+            "description" : "Kraftverk",
+            "geojson" : "/tmp/globesar/masks/rjukan/rjukan.union.geojson",
+            "data" : "/tmp/globesar/masks/rjukan/rjukan.scf.json",
+            "meta" : {
+                "title" : "rjukan"
+            }
+        }
+    ]
+}
