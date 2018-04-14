@@ -4,6 +4,14 @@ All notable changes to all repositories in this project will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## Unreleased
+### `mapic/mapic.js` 
+- Added help button for Snow layer
+
+### `mapic/mapic`
+- Improved upload flow
+
+### `mapic/mile`
+- Add tests for updating masks in Cube Layer
 
 ## [18.02](https://github.com/mapic/mapic/releases/tag/v18.02)
 ### `mapic/mapic.js` 
