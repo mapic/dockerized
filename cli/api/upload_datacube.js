@@ -31,7 +31,9 @@ var api = supertest(domain);
 
 // get dataset.json
 if (!args[2]) return console.log('Please provide a .json file. Usage: ./upload_dataset.sh dataset.json');
-var dataset = require('/sdk/' + args[2]);
+// var dataset = require('/sdk/' + args[2]);
+console.log('args', args[2]);
+var dataset = require('/dataset.json');
 
 console.log('dataset', dataset);
 console.log('config: ', config);
