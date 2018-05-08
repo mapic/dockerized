@@ -15,10 +15,21 @@ const ftp = new jsftp({
   pass: process.env.MAPIC_FTP_PASS, // Password
 });
 
+const CUBE_ID = process.argv[2];
+if (!CUBE_ID) {
+    console.log('');
+    console.log('Usage: node ftp-update-scf-cube.js CUBE_ID');
+    console.log('');
+    process.exit(1);
+}
+
+console.log('CUBE_ID: ', CUBE_ID);
+
+// process.exit();
 
 const PATTERN = 'SCF_MOD_';
 const DATE_PATTERN = 'YYYYMMDD';
-const CUBE_ID = "cube-c47bc1da-2cdb-40a5-983c-e656a916060b";
+// const CUBE_ID = "cube-c47bc1da-2cdb-40a5-983c-e656a916060b";
 var cube_object = {};
 
 var access_token = '';
@@ -92,6 +103,8 @@ ops.push(function (cube, callback) {
     var date_string = date_string_1.split('.tif')[0];
     var last_date = moment(date_string, DATE_PATTERN);
 
+    console.log('last_date', last_date);
+
     // find files in ftp which are AFTER the last date in dataset
     filtered_files.forEach(function (f) {
 
@@ -104,6 +117,9 @@ ops.push(function (cube, callback) {
             filtered_date_files.push(f);
         }
     });
+
+    console.log('filtered_files', filtered_files)
+    console.log('filtered_date_files', filtered_date_files);
 
     callback();
 });
@@ -133,6 +149,11 @@ ops.push(function (callback) {
                 }
                 var status = res.body;
 
+                // get timestamp
+                var d1 = file.split(PATTERN)[1];
+                var d2 = d1.split('.tif')[0];
+                var timestamp = moment(d2, DATE_PATTERN).format();
+
                 // test data
                 var data = {
                     access_token : access_token,
@@ -140,7 +161,7 @@ ops.push(function (callback) {
                     datasets : [{
                         id : status.file_id,
                         description : file,
-                        timestamp : moment().format()
+                        timestamp : timestamp
                     }]
                 }
 
@@ -171,14 +192,19 @@ ops.push(function (callback) {
     var mask_names = [];
     var filtered_mask_names = [];
     cube.masks.forEach(function (m) {
-        mask_names.push('mask-' + m.meta.title + '.scf.json');
+        // mask_names.push('mask-' + m.meta.title + '.scf.json');
+
+        if (m.meta && m.meta.scfdata) {
+            var mask_name = m.meta.scfdata;
+            mask_names.push(mask_name);
+        }
     });
 
     ftp_files.forEach(function (f) {
-
         if (_.includes(mask_names, f.name)) {
             filtered_mask_names.push(f.name);
         }
+
     });
 
     // for each file
@@ -186,11 +212,12 @@ ops.push(function (callback) {
 
         // download file
         var filepath = '/tmp/' + file;
+
         ftp.get(file, filepath, function (err) {
 
-            var scf_file = fs.readFileSync(filepath, 'utf-8');
+            var scf_file_contents = fs.readFileSync(filepath, 'utf-8');
 
-            scf[file] = scf_file;
+            scf[file] = scf_file_contents;
 
             done();
         });
@@ -206,12 +233,11 @@ ops.push(function (callback) {
 
         var scf_data = JSON.parse(value);
         var scf_filename = key;
-        var mask_name_1 = key.split('mask-')[1];
-        var mask_name = mask_name_1.split('.scf.json')[0];
 
         _.each(cube_object.masks, function (v, idx) {
-        
-            if (v.meta.title == mask_name) {
+
+            if (v.meta && v.meta.scfdata == scf_filename) {
+                console.log('matching maskname... ', v.meta.scfdata);
 
                 // check if same
                 var original_data = JSON.stringify(cube_object.masks[idx].data);
@@ -219,14 +245,12 @@ ops.push(function (callback) {
 
                 if (original_data != new_data) {
                     cube_object.masks[idx].data = scf_data;
+
+                    console.log('updated SCF cube data!');
                 }
-
             }
-
-        })
-
+        });
     });
-
 
     callback();
 });
@@ -234,6 +258,9 @@ ops.push(function (callback) {
 ops.push(function (callback) {
     // save cube with new data...
     async.eachSeries(cube_object.masks, function (m, done) {
+
+        // debug
+        return callback();
 
         // update cube mask
         api.post('/v2/cubes/updateMask')
@@ -251,23 +278,5 @@ async.waterfall(ops, function (err) {
     console.log('async done', err);
     process.exit();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
