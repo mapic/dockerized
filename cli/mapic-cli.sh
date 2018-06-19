@@ -1611,6 +1611,7 @@ mapic_api_project_usage () {
     echo "  create      Create new project"
     echo "  delete      Delete existing project"
     echo "  inspect     Inspect existing project"
+    echo "  update      Update existing project"
     echo ""
     exit 1
 }
@@ -1620,9 +1621,18 @@ mapic_api_project () {
         create)     mapic_api_project_create "$@";;
         delete)     mapic_api_project_delete "$@";;
         inspect)    mapic_api_project_inspect "$@";;
+        update)     mapic_api_project_update "$@";;
         list)       mapic_api_project_list "$@";;
         *)          mapic_api_project_usage;
     esac 
+}
+mapic_api_project_update () {
+    echo "mapic api project update"
+    cd $MAPIC_CLI_FOLDER/api 
+    # todo: dynamic cube IDs
+    # todo: dynamic ftp details
+    CUBE_ID=cube-4058a673-c0e0-4bad-a6ad-7e0039489540
+    docker run -v "$PWD":/wd -w /wd --env-file /usr/local/bin/.mapic.env node node ftp-update-scf-cube.js $CUBE_ID
 }
 mapic_api_project_list () {
     cd $MAPIC_CLI_FOLDER/api

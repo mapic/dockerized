@@ -260,7 +260,7 @@ ops.push(function (callback) {
     async.eachSeries(cube_object.masks, function (m, done) {
 
         // debug
-        return callback();
+        // return callback();
 
         // update cube mask
         api.post('/v2/cubes/updateMask')
@@ -269,7 +269,10 @@ ops.push(function (callback) {
             cube_id : CUBE_ID,
             mask : m
         })
-        .end(done);
+        .end(function (err, result) {
+            console.log('updated mask data, err, result', err);
+            done(err);
+        });
     }, callback);
 });
 
