@@ -129,49 +129,80 @@ ops.push(function (callback) {
     // for each file
     async.eachSeries(filtered_date_files, function (file, done) {
 
+        console.log('');
+        console.log('');
+        console.log('');
+        console.log('getting file from ftp:', file);
+
         // download file
-        ftp.get(file, '/tmp/' + file, function (err) {
+        ftp.get(file, '/tmp/' + file, function (err, result) {
             
             if (err) {
                 console.error("There was an error retrieving the file.");
                 return done(err);
             }
 
-            // upload dataset
-            api.post('/v2/data/import')
-            .type('form')
-            .field('access_token', access_token)
-            .field('data', fs.createReadStream(path.resolve('/tmp/' + file)))
-            .end(function (err, res) {
-                if (err) {
-                    console.log('post/import err:', err);
-                    return done(err);
-                }
-                var status = res.body;
+            console.log('');
+            console.log('');
+            console.log('');
+            console.log('got file from ftp:', file);
+            console.log('result:', result);
 
-                // get timestamp
-                var d1 = file.split(PATTERN)[1];
-                var d2 = d1.split('.tif')[0];
-                var timestamp = moment(d2, DATE_PATTERN).format();
+            fs.stat('/tmp/' + file, function(err, stats) {
+                console.log('stats on file:', err, stats);
 
-                // test data
-                var data = {
-                    access_token : access_token,
-                    cube_id : CUBE_ID,
-                    datasets : [{
-                        id : status.file_id,
-                        description : file,
-                        timestamp : timestamp
-                    }]
-                }
 
-                // add dataset to cube
-                api.post('/v2/cubes/add')
-                .send(data)
+                // upload dataset
+                api.post('/v2/data/import')
+                .type('form')
+                .field('access_token', access_token)
+                .field('data', fs.createReadStream(path.resolve('/tmp/' + file)))
                 .end(function (err, res) {
-                    if (err) return done(err);
-                    var cube = res.body;
-                    done();
+                    if (err) {
+                        console.log('post/import err:', err);
+                        return done(err);
+                    }
+                    var status = res.body;
+
+                    console.log('status.file_id', status.file_id);
+
+                    if (!status.file_id) {
+                        console.log('No file id -- something went wrong during upload!')
+                        console.log('status: ', status);
+                        console.log('skipping....');
+                        return done();
+                    } else {
+                        console.log('status:', status);
+                    }
+
+                    // get timestamp
+                    var d1 = file.split(PATTERN)[1];
+                    var d2 = d1.split('.tif')[0];
+                    var timestamp = moment(d2, DATE_PATTERN).format();
+
+                    // test data
+                    var data = {
+                        access_token : access_token,
+                        cube_id : CUBE_ID,
+                        datasets : [{
+                            id : status.file_id,
+                            description : file,
+                            timestamp : timestamp
+                        }]
+                    }
+
+                    // add dataset to cube
+                    api.post('/v2/cubes/add')
+                    .send(data)
+                    .end(function (err, res) {
+                        if (err) return done(err);
+                        var cube = res.body;
+                        
+
+                        setTimeout(done, 2000);
+                        // done();
+                    });
+                
                 });
             });
         });
@@ -219,7 +250,7 @@ ops.push(function (callback) {
 
             scf[file] = scf_file_contents;
 
-            done();
+            setTimeout(done, 2000);
         });
     }, callback);
 
@@ -271,7 +302,9 @@ ops.push(function (callback) {
         })
         .end(function (err, result) {
             console.log('updated mask data, err, result', err);
-            done(err);
+            setTimeout(function () {
+                done(err);
+            }, 2000);
         });
     }, callback);
 });
