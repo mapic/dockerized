@@ -1,16 +1,15 @@
 var supertest = require('supertest');
 var utils = require('./utils');
 var token = utils.token;
-var MAPIC_API_CREATE_PROJECT_NAME = process.env.MAPIC_API_CREATE_PROJECT_NAME;  
-var MAPIC_API_CREATE_PROJECT_PUBLIC = process.env.MAPIC_API_CREATE_PROJECT_PUBLIC; 
+var MAPIC_API_PROJECT_CREATE_NAME = process.env.MAPIC_API_PROJECT_CREATE_NAME;  
+var MAPIC_API_PROJECT_CREATE_PUBLIC = process.env.MAPIC_API_PROJECT_CREATE_PUBLIC; 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" 
 var domain = (process.env.MAPIC_API_DOMAIN == 'localhost') ? 'https://172.17.0.1' : 'https://' + process.env.MAPIC_API_DOMAIN;
 var api = supertest(domain);
 
-
 token(function (err, access_token) {
     var project_json = {
-        "name": MAPIC_API_CREATE_PROJECT_NAME || 'New project - ' + new Date().toDateString(),
+        "name": MAPIC_API_PROJECT_CREATE_NAME || 'New project - ' + new Date().toDateString(),
         "description": "",
         "access": {
             "edit": [],
@@ -18,7 +17,7 @@ token(function (err, access_token) {
             "options": {
                 "share": true,
                 "download": true,
-                "isPublic": MAPIC_API_CREATE_PROJECT_PUBLIC
+                "isPublic": MAPIC_API_PROJECT_CREATE_PUBLIC
             }
         },
         "access_token": access_token

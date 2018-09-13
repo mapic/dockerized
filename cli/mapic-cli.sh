@@ -1594,7 +1594,7 @@ _test_api_login () {
     if [ "$1" = "quiet" ]; then
         QUIET=true
     fi
-    docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node test-login.js >/dev/null 2>&1
+    docker run -it --rm --env-file $MAPIC_ENV_FILE --volume $MAPIC_CLI_FOLDER/api:/wd -w /wd node:slim node test-login.js >/dev/null 2>&1
     EXITCODE=$?
     if [ $EXITCODE = 1 ]; then
         echo ""
@@ -1684,10 +1684,11 @@ mapic_api_project_create_usage () {
     echo "Usage: mapic api project create [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  --name NAME    Name of project"
-    echo "  --public       Make project public"
-    echo "  --private      Make project private"
-    echo "  --help         This help screen"
+    echo "  --project_name NAME     Name of project"
+    echo "  --public                Make project public"
+    echo "  --private               Make project private"
+    echo "  --quiet                 Only return project_id. Useful for scripting."
+    echo "  --help                  This help screen"
     echo ""
     exit 0
 }
@@ -1695,10 +1696,14 @@ mapic_api_project_create () {
 
     ARGS=$@
     PUBLIC=false
+    HUSH=false
     while [ ! $# -eq 0 ]
     do
         case "$1" in
             --name)
+                NAME=$2
+                ;;
+            --project_name)
                 NAME=$2
                 ;;
             --public)
@@ -1706,6 +1711,9 @@ mapic_api_project_create () {
                 ;;
             --private)
                 PUBLIC=false
+                ;;
+            --quiet)
+                HUSH=true
                 ;;
             --help)
                 mapic_api_project_create_usage
@@ -1726,15 +1734,19 @@ mapic_api_project_create () {
     test -z $MAPIC_API_PROJECT_CREATE_NAME && m config prompt MAPIC_API_PROJECT_CREATE_NAME "Please enter a project name"
 
     # create project
-    _api_create_project
+    _api_create_project $HUSH
 
 }
 
 _api_create_project () {
 
+    HUSH=$1
+
     # create project
-    RESULT=$(docker run -it --env-file $MAPIC_ENV_FILE -e "MAPIC_API_PROJECT_CREATE_NAME=$MAPIC_API_PROJECT_CREATE_NAME" -e "MAPIC_API_PROJECT_CREATE_PUBLIC=$MAPIC_API_PROJECT_CREATE_PUBLIC" --volume $MAPIC_CLI_FOLDER/api:/tmp -w /tmp node:6 node create-project.js)
+    RESULT=$(docker run -it --env-file $MAPIC_ENV_FILE -e "MAPIC_API_PROJECT_CREATE_NAME=$MAPIC_API_PROJECT_CREATE_NAME" -e "MAPIC_API_PROJECT_CREATE_PUBLIC=$MAPIC_API_PROJECT_CREATE_PUBLIC" --volume $MAPIC_CLI_FOLDER/api:/workdir -w /workdir node:slim node create-project.js)
    
+    echo "lolol $RESULT"
+
     # get exit code
     EXITCODE=$?
 
@@ -1744,7 +1756,15 @@ _api_create_project () {
     fi
 
     if [ $EXITCODE = 0 ]; then
-        echo "Created project!"
+
+        # print success message
+        if [ "$HUSH" = "false" ]; then
+            echo "Successfully created project!"
+        fi
+
+        # print project_id
+        echo $RESULT
+
         # _write_env MAPIC_PROJECT_CREATE_ID $RESULT
         _write_env MAPIC_API_PROJECT_CREATE_ID $RESULT
     fi
@@ -1825,10 +1845,10 @@ mapic_api_upload_dataset () {
     _test_api_login
 
     # install npm packages
-    docker run -it --rm --volume $API_DIR:/tmp --workdir /tmp node:slim npm install --silent >/dev/null 2>&1
+    docker run -it --rm --volume $API_DIR:/wd --workdir /wd node:slim npm install --silent >/dev/null 2>&1
 
     # upload data
-    docker run -it --rm --name mapic_uploader --volume $API_DIR:/tmp --volume $MAPIC_API_UPLOAD_DATASET:/mapic_upload$MAPIC_API_UPLOAD_DATASET --workdir /tmp --env-file $MAPIC_ENV_FILE node:slim node upload-data.js
+    docker run -it --rm --name mapic_uploader --volume $API_DIR:/wd --volume $MAPIC_API_UPLOAD_DATASET:/mapic_upload$MAPIC_API_UPLOAD_DATASET --workdir /wd --env-file $MAPIC_ENV_FILE node:slim node upload-data.js
 
 }
 
