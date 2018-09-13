@@ -1650,7 +1650,7 @@ mapic_api_layer_create () {
     MAPIC_API_LAYER_CREATE_PROJECT_ID=
     MAPIC_API_LAYER_CREATE_LAYER_TYPE=
     MAPIC_API_LAYER_CREATE_LAYER_TITLE=
-    MAPIC_API_VERBOSE=true
+    MAPIC_API_VERBOSE=false
     while [ ! $# -eq 0 ]
     do
         case "$1" in
@@ -1663,8 +1663,8 @@ mapic_api_layer_create () {
             --layer-title)
                 MAPIC_API_LAYER_CREATE_LAYER_TITLE=$2
                 ;;
-            --quiet)
-                MAPIC_API_VERBOSE=false
+            --verbose)
+                MAPIC_API_VERBOSE=true
                 ;;
         esac
         shift
@@ -1753,7 +1753,7 @@ mapic_api_project_create_usage () {
     echo "  --project-name NAME     Name of project"
     echo "  --public                Make project public"
     echo "  --private               Make project private"
-    echo "  --quiet                 Only return project_id. Useful for scripting."
+    echo "  --verbose               Verbose output. Without this flag, the function will return project_id only (useful for scripting)."
     echo "  --help                  This help screen"
     echo ""
     exit 0
@@ -1762,7 +1762,7 @@ mapic_api_project_create () {
 
     ARGS=$@
     PUBLIC=false
-    HUSH=false
+    VERBOSE=true
     while [ ! $# -eq 0 ]
     do
         case "$1" in
@@ -1778,8 +1778,8 @@ mapic_api_project_create () {
             --private)
                 PUBLIC=false
                 ;;
-            --quiet)
-                HUSH=true
+            --verbose)
+                VERBOSE=false
                 ;;
             --help)
                 mapic_api_project_create_usage
@@ -1800,19 +1800,17 @@ mapic_api_project_create () {
     test -z $MAPIC_API_PROJECT_CREATE_NAME && m config prompt MAPIC_API_PROJECT_CREATE_NAME "Please enter a project name"
 
     # create project
-    _api_create_project $HUSH
+    _api_create_project $VERBOSE
 
 }
 
 _api_create_project () {
 
-    HUSH=$1
+    VERBOSE=$1
 
     # create project
     RESULT=$(docker run -it --env-file $MAPIC_ENV_FILE -e "MAPIC_API_PROJECT_CREATE_NAME=$MAPIC_API_PROJECT_CREATE_NAME" -e "MAPIC_API_PROJECT_CREATE_PUBLIC=$MAPIC_API_PROJECT_CREATE_PUBLIC" --volume $MAPIC_CLI_FOLDER/api:/workdir -w /workdir node:slim node create-project.js)
    
-    echo "lolol $RESULT"
-
     # get exit code
     EXITCODE=$?
 
@@ -1824,7 +1822,7 @@ _api_create_project () {
     if [ $EXITCODE = 0 ]; then
 
         # print success message
-        if [ "$HUSH" = "false" ]; then
+        if [ "$VERBOSE" = "true" ]; then
             echo "Successfully created project!"
         fi
 
