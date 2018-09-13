@@ -1549,6 +1549,7 @@ mapic_api_usage () {
     echo "  user            Show and edit users"
     echo "  upload          Upload data"
     echo "  project         Handle projects"
+    echo "  layer           Handle layers"
     echo ""
     mapic_api_display_config
     exit 1 
@@ -1560,6 +1561,7 @@ mapic_api () {
         user)       mapic_api_user "$@";;
         upload)     mapic_api_upload "$@";;
         project)    mapic_api_project "$@";;
+        layer)      mapic_api_layer "$@";;
         *)          mapic_api_usage;
     esac 
 }
@@ -1603,11 +1605,46 @@ _test_api_login () {
         test -z $QUIET && ecco 4 "Successfully logged in!"
     fi
 }
+mapic_api_layer_usage () {
+    echo ""
+    echo "Usage: mapic api layer COMMAND"
+    echo ""
+    echo "Commands:"
+    echo "  create      Create new layer"
+    echo "  delete      Delete existing layer"
+    echo "  inspect     Inspect existing layer"
+    echo "  update      Update existing layer"
+    echo ""
+    echo "Example: mapic api layer update --"
+    echo ""
+    exit 1
+}
+mapic_api_layer () {
+    test -z "$3" && mapic_api_layer_usage
+    case "$3" in
+        create)     mapic_api_layer_create "$@";;
+        delete)     mapic_api_layer_delete "$@";;
+        inspect)    mapic_api_layer_inspect "$@";;
+        update)     mapic_api_layer_update "$@";;
+        list)       mapic_api_layer_list "$@";;
+        *)          mapic_api_layer_usage;
+    esac 
+}
+mapic_api_layer_update () {
+    echo "mapic api layer update"
+    cd $MAPIC_CLI_FOLDER/api 
+    # todo: dynamic cube IDs
+    # todo: dynamic ftp details
+    CUBE_ID=cube-4058a673-c0e0-4bad-a6ad-7e0039489540
+    docker run -v "$PWD":/wd -w /wd --env-file /usr/local/bin/.mapic.env node node ftp-update-scf-cube.js $CUBE_ID
+}
+
+
 mapic_api_project_usage () {
     echo ""
     echo "Usage: mapic api project COMMAND"
     echo ""
-    echo "Command:"
+    echo "Commands:"
     echo "  create      Create new project"
     echo "  delete      Delete existing project"
     echo "  inspect     Inspect existing project"
