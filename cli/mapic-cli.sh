@@ -1610,12 +1610,12 @@ mapic_api_layer_usage () {
     echo "Usage: mapic api layer COMMAND"
     echo ""
     echo "Commands:"
-    echo "  create      Create new layer"
-    echo "  delete      Delete existing layer"
-    echo "  inspect     Inspect existing layer"
-    echo "  update      Update existing layer"
+    echo "  create      Create layer"
+    echo "  delete      Delete layer"
+    echo "  inspect     Inspect layer"
+    echo "  update      Update layer"
     echo ""
-    echo "Example: mapic api layer update --"
+    echo "Example: mapic api layer update --help"
     echo ""
     exit 1
 }
@@ -1630,15 +1630,81 @@ mapic_api_layer () {
         *)          mapic_api_layer_usage;
     esac 
 }
+mapic_api_layer_create_usage () {
+    echo $1
+    echo ""
+    echo "Usage: mapic api layer create OPTIONS"
+    echo ""
+    echo "Options:"
+    echo "  --layer-type        scf             Only available layer type at the moment, a Snow Cover Fraction layer"
+    echo "  --add-to-project    project_id      The project_id of the project which the layer will be added to" 
+    echo "  --layer-title       [title]         Give your layer a great name. (Optional.)" 
+    echo ""
+    exit 1
+}
+mapic_api_layer_create () {
+    test -z "$4" && mapic_api_layer_create_usage
+    cd $MAPIC_CLI_FOLDER/api 
+
+    ARGS=$@
+    MAPIC_API_LAYER_CREATE_PROJECT_ID=
+    MAPIC_API_LAYER_CREATE_LAYER_TYPE=
+    MAPIC_API_LAYER_CREATE_LAYER_TITLE=
+    MAPIC_API_VERBOSE=true
+    while [ ! $# -eq 0 ]
+    do
+        case "$1" in
+            --layer-type)
+                MAPIC_API_LAYER_CREATE_LAYER_TYPE=$2
+                ;;
+            --add-to-project)
+                MAPIC_API_LAYER_CREATE_PROJECT_ID=$2
+                ;;
+            --layer-title)
+                MAPIC_API_LAYER_CREATE_LAYER_TITLE=$2
+                ;;
+            --quiet)
+                MAPIC_API_VERBOSE=false
+                ;;
+        esac
+        shift
+    done
+
+    # ensure name
+    test -z $MAPIC_API_LAYER_CREATE_PROJECT_ID && mapic_api_layer_create_usage "Missing argument for --add-to-project"
+    test -z $MAPIC_API_LAYER_CREATE_LAYER_TYPE && mapic_api_layer_create_usage "Missing argument for --layer-type"
+
+    # create layer type scf
+    if [ "$MAPIC_API_LAYER_CREATE_LAYER_TYPE" == "scf" ]; then
+        docker run -v "$PWD":/wd -w /wd \
+            --env-file $MAPIC_ENV_FILE \
+            -e "MAPIC_API_LAYER_CREATE_PROJECT_ID=$MAPIC_API_LAYER_CREATE_PROJECT_ID" \
+            -e "MAPIC_API_LAYER_CREATE_LAYER_TITLE=$MAPIC_API_LAYER_CREATE_LAYER_TITLE" \
+            -e "MAPIC_API_VERBOSE=$MAPIC_API_VERBOSE" \
+            node:slim node create-cube-layer.js
+    
+    # unsupported layer types
+    else 
+        mapic_api_layer_create_usage "Unsupported layer type: $MAPIC_API_LAYER_CREATE_LAYER_TYPE"
+    fi
+
+}
+mapic_api_layer_inspect () {
+    echo "mapic api layer inspect"
+}
 mapic_api_layer_update () {
     echo "mapic api layer update"
     cd $MAPIC_CLI_FOLDER/api 
+    
     # todo: dynamic cube IDs
     # todo: dynamic ftp details
-    CUBE_ID=cube-4058a673-c0e0-4bad-a6ad-7e0039489540
-    docker run -v "$PWD":/wd -w /wd --env-file /usr/local/bin/.mapic.env node node ftp-update-scf-cube.js $CUBE_ID
-}
 
+    # CUBE_ID=cube-4058a673-c0e0-4bad-a6ad-7e0039489540
+    # docker run -v "$PWD":/wd -w /wd --env-file $MAPIC_ENV_FILE node node ftp-update-scf-cube.js $CUBE_ID
+}
+mapic_api_layer_list () {
+    echo "mapic api layer list"
+}
 
 mapic_api_project_usage () {
     echo ""
@@ -1669,7 +1735,7 @@ mapic_api_project_update () {
     # todo: dynamic cube IDs
     # todo: dynamic ftp details
     CUBE_ID=cube-4058a673-c0e0-4bad-a6ad-7e0039489540
-    docker run -v "$PWD":/wd -w /wd --env-file /usr/local/bin/.mapic.env node node ftp-update-scf-cube.js $CUBE_ID
+    docker run -v "$PWD":/wd -w /wd --env-file $MAPIC_ENV_FILE node node ftp-update-scf-cube.js $CUBE_ID
 }
 mapic_api_project_list () {
     cd $MAPIC_CLI_FOLDER/api
@@ -1684,7 +1750,7 @@ mapic_api_project_create_usage () {
     echo "Usage: mapic api project create [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  --project_name NAME     Name of project"
+    echo "  --project-name NAME     Name of project"
     echo "  --public                Make project public"
     echo "  --private               Make project private"
     echo "  --quiet                 Only return project_id. Useful for scripting."
@@ -1703,7 +1769,7 @@ mapic_api_project_create () {
             --name)
                 NAME=$2
                 ;;
-            --project_name)
+            --project-name)
                 NAME=$2
                 ;;
             --public)

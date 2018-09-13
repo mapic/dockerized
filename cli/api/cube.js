@@ -13,7 +13,8 @@ var config = {
     debug : true
 }
 // var api = supertest('https://' + config.domain);
-var debug = config.debug;
+// var debug = config.debug;
+var debug = false;
 
 // domain resolution compatible with localhost setup (must run from within Docker container)
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" 
