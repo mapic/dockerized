@@ -1615,6 +1615,8 @@ mapic_api_layer_usage () {
     echo "  inspect     Inspect layer"
     echo "  update      Update layer"
     echo ""
+    echo "  mask        Work with layer masks"
+    echo ""
     echo "Example: mapic api layer update --help"
     echo ""
     exit 1
@@ -1622,6 +1624,7 @@ mapic_api_layer_usage () {
 mapic_api_layer () {
     test -z "$3" && mapic_api_layer_usage
     case "$3" in
+        mask)       mapic_api_layer_mask "$@";;
         create)     mapic_api_layer_create "$@";;
         delete)     mapic_api_layer_delete "$@";;
         inspect)    mapic_api_layer_inspect "$@";;
@@ -1630,15 +1633,156 @@ mapic_api_layer () {
         *)          mapic_api_layer_usage;
     esac 
 }
+mapic_api_layer_mask_usage () {
+    echo ""
+    echo "Usage: mapic api layer mask create"
+    echo ""
+    echo "Commands:"
+    echo "  create      Create mask"
+    echo "  update      Update mask"
+    echo "  delete      Delete mask"
+    echo ""
+    exit 1
+}
+mapic_api_layer_mask () {
+    test -z "$4" && mapic_api_layer_mask_usage
+    case "$4" in
+        create)       mapic_api_layer_mask_create "$@";;
+        update)       mapic_api_layer_mask_update "$@";;
+        # delete)       mapic_api_layer_mask_delete "$@";;
+        *)            mapic_api_layer_mask_usage;
+    esac 
+}
+mapic_api_layer_mask_create_usage () {
+    echo ""
+    echo "Usage: mapic api layer mask create OPTIONS"
+    echo ""
+    echo "Options:"
+    echo "  --layer-id                Mask will be added to this Layer"
+    echo "  --verbose                 Verbose output. Without this flag, returns mask_id only (useful for scripting)."
+    echo ""
+    exit 1
+}
+mapic_api_layer_mask_create () {
+    test -z "$5" && mapic_api_layer_mask_create_usage
+
+    MAPIC_API_LAYER_MASK_CREATE_LAYER_ID=
+    MAPIC_API_VERBOSE=false
+    while [ ! $# -eq 0 ]
+    do
+        case "$1" in
+            --layer-id)
+                MAPIC_API_LAYER_MASK_CREATE_LAYER_ID=$2
+                ;;
+            --verbose)
+                MAPIC_API_VERBOSE=true
+                ;;
+        esac
+        shift
+    done
+
+    # create empty layer mask
+    cd $MAPIC_CLI_FOLDER/api 
+    docker run -v "$PWD":/wd -w /wd \
+        --env-file $MAPIC_ENV_FILE \
+        -e "MAPIC_API_LAYER_MASK_CREATE_LAYER_ID=$MAPIC_API_LAYER_MASK_CREATE_LAYER_ID" \
+        -e "MAPIC_API_VERBOSE=$MAPIC_API_VERBOSE" \
+        node:slim node create-empty-layer-mask.js
+
+}
+mapic_api_layer_mask_update_usage () {
+    echo ""
+    echo "Usage: mapic api layer mask update OPTIONS"
+    echo ""
+    echo "Options:"
+    echo "  --layer-id                  Layer which contains mask"
+    echo "  --mask-id                   Mask to update"
+    echo "  --mask-geojson              Absolute path to GeoJSON file with mask geometry"
+    echo "  --mask-json                 Absolute path to JSON file with mask data"
+    echo "  --mask-title                Give your mask a name"
+    echo "  --verbose                   Verbose output. Without this flag, returns mask_id only (useful for scripting)."
+    echo ""
+    exit 1
+}
+mapic_api_layer_mask_update () {
+    test -z "$5" && mapic_api_layer_mask_update_usage
+
+    MAPIC_API_LAYER_MASK_UPDATE_LAYER_ID=
+    MAPIC_API_LAYER_MASK_UPDATE_MASK_ID=
+    MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON=
+    MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON=
+    MAPIC_API_LAYER_MASK_UPDATE_MASK_TITLE=
+    MAPIC_API_VERBOSE=false
+    while [ ! $# -eq 0 ]
+    do
+        case "$1" in
+            --layer-id)
+                MAPIC_API_LAYER_MASK_UPDATE_LAYER_ID=$2
+                ;;
+            --mask-id)
+                MAPIC_API_LAYER_MASK_UPDATE_MASK_ID=$2
+                ;;
+            --mask-geojson)
+                MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON=$2
+                ;;
+            --mask-json)
+                MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON=$2
+                ;;
+            --mask-title)
+                MAPIC_API_LAYER_MASK_UPDATE_MASK_TITLE=$2
+                ;;
+            --verbose)
+                MAPIC_API_VERBOSE=true
+                ;;
+        esac
+        shift
+    done
+
+    test -z "$MAPIC_API_LAYER_MASK_UPDATE_LAYER_ID" && mapic_api_layer_mask_update_usage
+    test -z "$MAPIC_API_LAYER_MASK_UPDATE_MASK_ID"  && mapic_api_layer_mask_update_usage
+
+    # create tmp dir
+    mkdir $MAPIC_CLI_FOLDER/tmp
+
+    echo "MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON: $MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON"
+
+    # move files to tmp dir
+    if  [[ -f "$MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON" ]]; then
+        cp $MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON $MAPIC_CLI_FOLDER/tmp/mask.geojson
+    fi
+    if  [[ -f "$MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON" ]]; then
+        cp $MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON $MAPIC_CLI_FOLDER/tmp/mask.json
+    fi
+
+    cd $MAPIC_CLI_FOLDER/api 
+    docker run -v "$PWD":/wd -w /wd \
+        -v "$MAPIC_CLI_FOLDER/tmp":/mask \
+        --env-file $MAPIC_ENV_FILE \
+        -e "MAPIC_API_LAYER_MASK_UPDATE_LAYER_ID=$MAPIC_API_LAYER_MASK_UPDATE_LAYER_ID" \
+        -e "MAPIC_API_LAYER_MASK_UPDATE_MASK_ID=$MAPIC_API_LAYER_MASK_UPDATE_MASK_ID" \
+        -e "MAPIC_API_LAYER_MASK_UPDATE_MASK_TITLE=$MAPIC_API_LAYER_MASK_UPDATE_MASK_TITLE" \
+        -e "MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON=$MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON" \
+        -e "MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON=$MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON" \
+        -e "MAPIC_API_VERBOSE=$MAPIC_API_VERBOSE" \
+        node:slim node update-mask.js
+
+    # cleanup tmp dir
+    rm -r $MAPIC_CLI_FOLDER/tmp
+
+}
+mapic_api_layer_mask_delete () {
+    echo "mapic_api_layer_mask_delete"
+}
 mapic_api_layer_create_usage () {
-    echo $1
     echo ""
     echo "Usage: mapic api layer create OPTIONS"
     echo ""
     echo "Options:"
     echo "  --layer-type        scf             Only available layer type at the moment, a Snow Cover Fraction layer"
-    echo "  --add-to-project    project_id      The project_id of the project which the layer will be added to" 
-    echo "  --layer-title       [title]         Give your layer a great name. (Optional.)" 
+    echo "  --add-to-project    project-id      The project_id of the project which the layer will be added to" 
+    echo "  --layer-title       title           Give your layer a great name." 
+    echo "  --verbose                           Verbose output. Without this flag, the function will return layer_id only (useful for scripting)." 
+    echo "  --layer-id          layer-id        " 
     echo ""
     exit 1
 }
@@ -1762,7 +1906,7 @@ mapic_api_project_create () {
 
     ARGS=$@
     PUBLIC=false
-    VERBOSE=true
+    VERBOSE=false
     while [ ! $# -eq 0 ]
     do
         case "$1" in
@@ -1779,7 +1923,7 @@ mapic_api_project_create () {
                 PUBLIC=false
                 ;;
             --verbose)
-                VERBOSE=false
+                VERBOSE=true
                 ;;
             --help)
                 mapic_api_project_create_usage
