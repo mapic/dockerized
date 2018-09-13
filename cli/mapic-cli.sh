@@ -1649,7 +1649,6 @@ mapic_api_layer_mask () {
     case "$4" in
         create)       mapic_api_layer_mask_create "$@";;
         update)       mapic_api_layer_mask_update "$@";;
-        # delete)       mapic_api_layer_mask_delete "$@";;
         *)            mapic_api_layer_mask_usage;
     esac 
 }
@@ -1744,8 +1743,6 @@ mapic_api_layer_mask_update () {
     # create tmp dir
     mkdir $MAPIC_CLI_FOLDER/tmp
 
-    echo "MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON: $MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON"
-
     # move files to tmp dir
     if  [[ -f "$MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON" ]]; then
         cp $MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON $MAPIC_CLI_FOLDER/tmp/mask.geojson
@@ -1767,7 +1764,7 @@ mapic_api_layer_mask_update () {
         node:slim node update-mask.js
 
     # cleanup tmp dir
-    rm -r $MAPIC_CLI_FOLDER/tmp
+    # rm -r $MAPIC_CLI_FOLDER/tmp
 
 }
 mapic_api_layer_mask_delete () {
@@ -1836,15 +1833,67 @@ mapic_api_layer_create () {
 mapic_api_layer_inspect () {
     echo "mapic api layer inspect"
 }
+mapic_api_layer_update_usage () {
+    echo ""
+    echo "Usage: mapic api layer update OPTIONS"
+    echo ""
+    echo "Options:"
+    echo "  --layer-id          Layer id"
+    echo "  --add-dataset       Absolute path for the dataset to upload and add to timeseries" 
+    echo "  --verbose           Verbose output." 
+    echo ""
+    exit 1
+}
 mapic_api_layer_update () {
+    test -z "$5" && mapic_api_layer_update_usage
+
     echo "mapic api layer update"
     cd $MAPIC_CLI_FOLDER/api 
     
-    # todo: dynamic cube IDs
-    # todo: dynamic ftp details
+    ARGS=$@
+    MAPIC_API_LAYER_UPDATE_LAYER_ID=
+    MAPIC_API_LAYER_UPDATE_DATASET=
+    MAPIC_API_VERBOSE=false
+    while [ ! $# -eq 0 ]
+    do
+        case "$1" in
+            --layer-id)
+                MAPIC_API_LAYER_UPDATE_LAYER_ID=$2
+                ;;
+            --add-dataset)
+                MAPIC_API_LAYER_UPDATE_DATASET=$2
+                ;;
+            --verbose)
+                MAPIC_API_VERBOSE=true
+                ;;
+        esac
+        shift
+    done
 
-    # CUBE_ID=cube-4058a673-c0e0-4bad-a6ad-7e0039489540
-    # docker run -v "$PWD":/wd -w /wd --env-file $MAPIC_ENV_FILE node node ftp-update-scf-cube.js $CUBE_ID
+    test -z $MAPIC_API_LAYER_UPDATE_LAYER_ID && mapic_api_layer_update_usage
+    test -z $MAPIC_API_LAYER_UPDATE_DATASET  && mapic_api_layer_update_usage
+
+    # create tmp dir
+    mkdir $MAPIC_CLI_FOLDER/tmp
+
+    # move files to tmp dir
+    if  [[ -f "$MAPIC_API_LAYER_UPDATE_DATASET" ]]; then
+        BASENAME=$(basename $MAPIC_API_LAYER_UPDATE_DATASET)
+        cp $MAPIC_API_LAYER_UPDATE_DATASET $MAPIC_CLI_FOLDER/tmp/$BASENAME
+    fi
+    
+    cd $MAPIC_CLI_FOLDER/api 
+    docker run -v "$PWD":/wd -w /wd \
+        -v "$MAPIC_CLI_FOLDER/tmp":/data \
+        --env-file $MAPIC_ENV_FILE \
+        -e "MAPIC_API_LAYER_UPDATE_LAYER_ID=$MAPIC_API_LAYER_UPDATE_LAYER_ID" \
+        -e "MAPIC_API_LAYER_UPDATE_DATASET=/data/$BASENAME" \
+        -e "MAPIC_API_VERBOSE=$MAPIC_API_VERBOSE" \
+        node:slim node api-layer-update.js
+
+    # cleanup tmp dir
+    # rm -r $MAPIC_CLI_FOLDER/tmp
+
 }
 mapic_api_layer_list () {
     echo "mapic api layer list"

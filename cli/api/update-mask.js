@@ -15,13 +15,6 @@ const MAPIC_API_LAYER_MASK_UPDATE_MASK_TITLE = process.env.MAPIC_API_LAYER_MASK_
 const MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON = process.env.MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON;
 const MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON = process.env.MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON;
 
-
-console.log(MAPIC_API_LAYER_MASK_UPDATE_LAYER_ID)
-console.log(MAPIC_API_LAYER_MASK_UPDATE_MASK_ID)
-console.log(MAPIC_API_LAYER_MASK_UPDATE_MASK_TITLE)
-console.log(MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON)
-console.log(MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON)
-
 token(function (err, access_token) {
 
     // empty mask data
@@ -55,19 +48,12 @@ token(function (err, access_token) {
         data.mask.data = JSON.stringify(fs.readJsonSync('/mask/mask.json'));
     }
 
-    console.log('data:', data);
-
-    // return;
-
     api.post('/v2/cubes/updateMask')
     .send(data)
     .end(function (err, res) {
         if (err) console.log('err', err);
-        var masks = res.body;
-        console.log('masks', masks);
         if (MAPIC_API_VERBOSE) {
             console.log('Created mask');
         }
-        console.log(mask.id);
     });
 });
