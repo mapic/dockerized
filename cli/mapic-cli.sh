@@ -1583,19 +1583,16 @@ mapic_api_login () {
     test -z "$3" && mapic_api_login_usage
    
     # options
-    # MAPIC_API_DOMAIN=
-    # MAPIC_API_USERNAME=
-    # MAPIC_API_AUTH=
     while [ ! $# -eq 0 ]
     do
         case "$1" in
             --domain)
                 MAPIC_API_DOMAIN=$2
                 ;;
-            --user | --email | --username)
+            --email)
                 MAPIC_API_USERNAME=$2
                 ;;
-            --auth | --password | --pass)
+            --pass | --password)
                 MAPIC_API_AUTH=$2
                 ;;
             --help)
@@ -1609,17 +1606,11 @@ mapic_api_login () {
     _write_env MAPIC_API_USERNAME $MAPIC_API_USERNAME
     _write_env MAPIC_API_AUTH $MAPIC_API_AUTH
 
-    # # todo: remove/merge
-    # test -z $MAPIC_API_DOMAIN && m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with" $MAPIC_DOMAIN
-    # test -z $MAPIC_API_USERNAME && m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
-    # test -z $MAPIC_API_AUTH && m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
-
     # todo: 
     _test_api_login
 
 }
 mapic_api_display_config () {
-    # todo: remove/merge
     echo ""
     echo "Mapic API credentials:"
     echo "  API domain: $MAPIC_API_DOMAIN"
@@ -1967,11 +1958,11 @@ mapic_api_project () {
 }
 mapic_api_project_update () {
     echo "mapic api project update"
-    cd $MAPIC_CLI_FOLDER/api 
-    # todo: dynamic cube IDs
-    # todo: dynamic ftp details
-    CUBE_ID=cube-4058a673-c0e0-4bad-a6ad-7e0039489540
-    docker run -v "$PWD":/wd -w /wd --env-file $MAPIC_ENV_FILE node node ftp-update-scf-cube.js $CUBE_ID
+    # cd $MAPIC_CLI_FOLDER/api 
+    # # todo: dynamic cube IDs
+    # # todo: dynamic ftp details
+    # CUBE_ID=cube-4058a673-c0e0-4bad-a6ad-7e0039489540
+    # docker run -v "$PWD":/wd -w /wd --env-file $MAPIC_ENV_FILE node node ftp-update-scf-cube.js $CUBE_ID
 }
 mapic_api_project_list () {
     cd $MAPIC_CLI_FOLDER/api
@@ -1986,18 +1977,18 @@ mapic_api_project_create_usage () {
     echo "Usage: mapic api project create [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  --project-name NAME     Name of project"
-    echo "  --public                Make project public"
-    echo "  --private               Make project private"
-    echo "  --verbose               Verbose output. Without this flag, the function will return project_id only (useful for scripting)."
-    echo "  --help                  This help screen"
+    echo "  --project-name      NAME                Name of project"
+    echo "  --access            public | private    Make project public or private (private by default)"
+    echo "  --verbose                               Verbose output. Without this flag, the function will return project_id only (useful for scripting)."
+    echo "  --help                                  This help screen"
     echo ""
     exit 0
 }
 mapic_api_project_create () {
+    test -z "$4" && mapic_api_project_create_usage
 
     ARGS=$@
-    PUBLIC=false
+    ACCESS=false
     VERBOSE=false
     while [ ! $# -eq 0 ]
     do
@@ -2008,11 +1999,8 @@ mapic_api_project_create () {
             --project-name)
                 NAME=$2
                 ;;
-            --public)
-                PUBLIC=true
-                ;;
-            --private)
-                PUBLIC=false
+            --access)
+                ACCESS=$2
                 ;;
             --verbose)
                 VERBOSE=true
@@ -2030,7 +2018,12 @@ mapic_api_project_create () {
 
     # set env
     MAPIC_API_PROJECT_CREATE_NAME=$NAME
-    MAPIC_API_PROJECT_CREATE_PUBLIC=$PUBLIC
+    MAPIC_API_PROJECT_CREATE_PUBLIC=false
+
+    if [ $ACCESS == "public" ]; then
+        echo "access= public"
+        MAPIC_API_PROJECT_CREATE_PUBLIC=true
+    fi
 
     # ensure name
     test -z $MAPIC_API_PROJECT_CREATE_NAME && m config prompt MAPIC_API_PROJECT_CREATE_NAME "Please enter a project name"
