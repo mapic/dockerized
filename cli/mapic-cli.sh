@@ -79,6 +79,7 @@ mapic_cli_usage () {
     echo "  reload              Reload Docker service"
     echo ""
     echo "API commands:"
+    echo "  api                 Help screen for Mapic API"
     echo "  api login           Authenticate with (any) Mapic API"
     echo "  api user            Handle Mapic users"
     echo "  api upload          Upload data"  
@@ -1542,10 +1543,10 @@ _restart_docker () {
 #     /_/          
 mapic_api_usage () {
     echo ""
-    echo "Usage: mapic [API COMMAND]"
+    echo "Usage: mapic api [COMMAND]"
     echo ""
-    echo "API commands:"
-    echo "  login [again]   Login to a Mapic API [with fresh credentials]"
+    echo "Commands:"
+    echo "  login           Login to a Mapic API"
     echo "  user            Show and edit users"
     echo "  upload          Upload data"
     echo "  project         Handle projects"
@@ -1565,17 +1566,53 @@ mapic_api () {
         *)          mapic_api_usage;
     esac 
 }
+mapic_api_login_usage () {
+    echo ""
+    echo "Usage: mapic api login OPTIONS"
+    echo ""
+    echo "Options:"
+    echo "  --domain    API domain to use, eg. maps.mapic.io"
+    echo "  --email     The user email"
+    echo "  --password  The user password"
+    echo ""
+    echo "Example: mapic api login --domain maps.mapic.io --email test@mapic.io --password batteryhorsestaple"
+    echo ""
+    exit 1
+}
 mapic_api_login () {
-    if [ "$3" = "again" ]; then
-        _write_env MAPIC_API_DOMAIN
-        _write_env MAPIC_API_USERNAME
-        _write_env MAPIC_API_AUTH
-    fi
+    test -z "$3" && mapic_api_login_usage
+   
+    # options
+    # MAPIC_API_DOMAIN=
+    # MAPIC_API_USERNAME=
+    # MAPIC_API_AUTH=
+    while [ ! $# -eq 0 ]
+    do
+        case "$1" in
+            --domain)
+                MAPIC_API_DOMAIN=$2
+                ;;
+            --user | --email | --username)
+                MAPIC_API_USERNAME=$2
+                ;;
+            --auth | --password | --pass)
+                MAPIC_API_AUTH=$2
+                ;;
+            --help)
+                mapic_api_login_usage
+                ;;
+        esac
+        shift
+    done
     
-    # todo: remove/merge
-    test -z $MAPIC_API_DOMAIN && m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with" $MAPIC_DOMAIN
-    test -z $MAPIC_API_USERNAME && m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
-    test -z $MAPIC_API_AUTH && m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
+    _write_env MAPIC_API_DOMAIN $MAPIC_API_DOMAIN
+    _write_env MAPIC_API_USERNAME $MAPIC_API_USERNAME
+    _write_env MAPIC_API_AUTH $MAPIC_API_AUTH
+
+    # # todo: remove/merge
+    # test -z $MAPIC_API_DOMAIN && m config prompt MAPIC_API_DOMAIN "Please enter the domain of the Mapic API you want to connect with" $MAPIC_DOMAIN
+    # test -z $MAPIC_API_USERNAME && m config prompt MAPIC_API_USERNAME "Please enter your Mapic API username"
+    # test -z $MAPIC_API_AUTH && m config prompt MAPIC_API_AUTH "Please enter your Mapic API password"
 
     # todo: 
     _test_api_login
@@ -1585,9 +1622,9 @@ mapic_api_display_config () {
     # todo: remove/merge
     echo ""
     echo "Mapic API credentials:"
-    echo "  Domain:   $MAPIC_API_DOMAIN"
-    echo "  Username: $MAPIC_API_USERNAME"
-    echo "  Password: $MAPIC_API_AUTH"
+    echo "  API domain: $MAPIC_API_DOMAIN"
+    echo "  Email:      $MAPIC_API_USERNAME"
+    echo "  Password:   $MAPIC_API_AUTH"
     echo ""
 }
 _test_api_login () {
@@ -1598,11 +1635,17 @@ _test_api_login () {
     EXITCODE=$?
     if [ $EXITCODE = 1 ]; then
         echo ""
-        ecco 2 "Failed to login to Mapic with the following config:"
+        ecco 2 "Failed to login to Mapic with the following credentials:"
         mapic_api_display_config
         exit 1
     elif [ $EXITCODE = 0 ]; then
-        test -z $QUIET && ecco 4 "Successfully logged in!"
+        
+        # test -z $QUIET && ecco 4 "Successfully authenticated to Mapic API @ $MAPIC_API_DOMAIN as $MAPIC_API_USERNAME"
+        if [ -z $QUIET ]; then
+            ecco 4 "Successfully authenticated to Mapic API!"
+            mapic_api_display_config
+        fi
+
     fi
 }
 mapic_api_layer_usage () {
