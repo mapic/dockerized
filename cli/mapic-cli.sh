@@ -1720,7 +1720,7 @@ mapic_api_layer_mask_create () {
         --env-file $MAPIC_ENV_FILE \
         -e "MAPIC_API_LAYER_MASK_CREATE_LAYER_ID=$MAPIC_API_LAYER_MASK_CREATE_LAYER_ID" \
         -e "MAPIC_API_VERBOSE=$MAPIC_API_VERBOSE" \
-        node:slim node create-empty-layer-mask.js
+        node:slim node api.create-empty-layer-mask.js
 
 }
 mapic_api_layer_mask_update_usage () {
@@ -1775,7 +1775,7 @@ mapic_api_layer_mask_update () {
     test -z "$MAPIC_API_LAYER_MASK_UPDATE_MASK_ID"  && mapic_api_layer_mask_update_usage
 
     # create tmp dir
-    mkdir $MAPIC_CLI_FOLDER/tmp
+    mkdir $MAPIC_CLI_FOLDER/tmp >/dev/null 2>&1
 
     # move files to tmp dir
     if  [[ -f "$MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON" ]]; then
@@ -1795,7 +1795,7 @@ mapic_api_layer_mask_update () {
         -e "MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON=$MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON" \
         -e "MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON=$MAPIC_API_LAYER_MASK_UPDATE_MASK_JSON" \
         -e "MAPIC_API_VERBOSE=$MAPIC_API_VERBOSE" \
-        node:slim node update-mask.js
+        node:slim node api.update-mask.js
 
     # cleanup tmp dir
     # rm -r $MAPIC_CLI_FOLDER/tmp
@@ -1856,7 +1856,7 @@ mapic_api_layer_create () {
             -e "MAPIC_API_LAYER_CREATE_PROJECT_ID=$MAPIC_API_LAYER_CREATE_PROJECT_ID" \
             -e "MAPIC_API_LAYER_CREATE_LAYER_TITLE=$MAPIC_API_LAYER_CREATE_LAYER_TITLE" \
             -e "MAPIC_API_VERBOSE=$MAPIC_API_VERBOSE" \
-            node:slim node create-cube-layer.js
+            node:slim node api.create-cube-layer.js
     
     # unsupported layer types
     else 
@@ -1923,7 +1923,7 @@ mapic_api_layer_update () {
         -e "MAPIC_API_LAYER_UPDATE_LAYER_ID=$MAPIC_API_LAYER_UPDATE_LAYER_ID" \
         -e "MAPIC_API_LAYER_UPDATE_DATASET=/data/$BASENAME" \
         -e "MAPIC_API_VERBOSE=$MAPIC_API_VERBOSE" \
-        node:slim node api-layer-update.js
+        node:slim node api.layer-update.js
 
     # cleanup tmp dir
     # rm -r $MAPIC_CLI_FOLDER/tmp
@@ -2021,7 +2021,6 @@ mapic_api_project_create () {
     MAPIC_API_PROJECT_CREATE_PUBLIC=false
 
     if [ $ACCESS == "public" ]; then
-        echo "access= public"
         MAPIC_API_PROJECT_CREATE_PUBLIC=true
     fi
 
@@ -2038,7 +2037,7 @@ _api_create_project () {
     VERBOSE=$1
 
     # create project
-    RESULT=$(docker run -it --env-file $MAPIC_ENV_FILE -e "MAPIC_API_PROJECT_CREATE_NAME=$MAPIC_API_PROJECT_CREATE_NAME" -e "MAPIC_API_PROJECT_CREATE_PUBLIC=$MAPIC_API_PROJECT_CREATE_PUBLIC" --volume $MAPIC_CLI_FOLDER/api:/workdir -w /workdir node:slim node create-project.js)
+    RESULT=$(docker run -it --env-file $MAPIC_ENV_FILE -e "MAPIC_API_PROJECT_CREATE_NAME=$MAPIC_API_PROJECT_CREATE_NAME" -e "MAPIC_API_PROJECT_CREATE_PUBLIC=$MAPIC_API_PROJECT_CREATE_PUBLIC" --volume $MAPIC_CLI_FOLDER/api:/workdir -w /workdir node:slim node api.create-project.js)
    
     # get exit code
     EXITCODE=$?
@@ -2056,10 +2055,12 @@ _api_create_project () {
         fi
 
         # print project_id
-        echo $RESULT
+        # echo $RESULT
+        CLEAN_RESULT="${RESULT/$'\r'/}"
+        echo $CLEAN_RESULT
 
         # _write_env MAPIC_PROJECT_CREATE_ID $RESULT
-        _write_env MAPIC_API_PROJECT_CREATE_ID $RESULT
+        _write_env MAPIC_API_PROJECT_CREATE_ID $CLEAN_RESULT
     fi
 }
 
@@ -2141,7 +2142,7 @@ mapic_api_upload_dataset () {
     docker run -it --rm --volume $API_DIR:/wd --workdir /wd node:slim npm install --silent >/dev/null 2>&1
 
     # upload data
-    docker run -it --rm --name mapic_uploader --volume $API_DIR:/wd --volume $MAPIC_API_UPLOAD_DATASET:/mapic_upload$MAPIC_API_UPLOAD_DATASET --workdir /wd --env-file $MAPIC_ENV_FILE node:slim node upload-data.js
+    docker run -it --rm --name mapic_uploader --volume $API_DIR:/wd --volume $MAPIC_API_UPLOAD_DATASET:/mapic_upload$MAPIC_API_UPLOAD_DATASET --workdir /wd --env-file $MAPIC_ENV_FILE node:slim node api.upload-data.js
 
 }
 
@@ -2566,7 +2567,7 @@ mapic_bench_run () {
     echo "Benchmarking $MAPIC_BENCHMARK_SIZE dataset with $MAPIC_BENCHMARK_NUMBER_OF_TILES tiles..."
 
     # run benchmark
-    docker run -it --rm --env-file $MAPIC_ENV_FILE -e MAPIC_BENCHMARK_NUMBER_OF_TILES=$MAPIC_BENCHMARK_NUMBER_OF_TILES -e MAPIC_BENCHMARK_SIZE=$MAPIC_BENCHMARK_SIZE --volume $MAPIC_CLI_FOLDER/api:/mapic --volume $MAPIC_BENCHMARK_DATASET_PATH:/data/$MAPIC_BENCHMARK_DATASET_PATH -w /mapic node:6 sh benchmark.sh
+    docker run -it --rm --env-file $MAPIC_ENV_FILE -e MAPIC_BENCHMARK_NUMBER_OF_TILES=$MAPIC_BENCHMARK_NUMBER_OF_TILES -e MAPIC_BENCHMARK_SIZE=$MAPIC_BENCHMARK_SIZE --volume $MAPIC_CLI_FOLDER/api:/mapic --volume $MAPIC_BENCHMARK_DATASET_PATH:/data/$MAPIC_BENCHMARK_DATASET_PATH -w /mapic node:6 sh api.benchmark.sh
 
     echo "Benchmark done."    
 }

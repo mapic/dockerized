@@ -20,4 +20,4 @@ fi
 
 # run benchmark
 echo "Warming up..."
-node benchmark.js /data/$MAPIC_BENCHMARK_DATASET_PATH
+node api.benchmark.js /data/$MAPIC_BENCHMARK_DATASET_PATH

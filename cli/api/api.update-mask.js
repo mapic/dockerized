@@ -21,10 +21,7 @@ token(function (err, access_token) {
     var data = {
         access_token : access_token,
         cube_id : MAPIC_API_LAYER_MASK_UPDATE_LAYER_ID,
-        mask : {
-            type : 'geojson',
-            meta : {}
-        }
+        mask : {}
     }
 
     // add mask id
@@ -39,8 +36,8 @@ token(function (err, access_token) {
 
     // if geojson file, add it
     if (MAPIC_API_LAYER_MASK_UPDATE_MASK_GEOJSON) {
-        console.log('geosjon!');
         data.mask.geometry = fs.readJsonSync('/mask/mask.geojson');
+        data.mask.type = 'geojson'; // todo: topojson
     }
 
     // if json file, add it
@@ -51,9 +48,9 @@ token(function (err, access_token) {
     api.post('/v2/cubes/updateMask')
     .send(data)
     .end(function (err, res) {
-        if (err) console.log('err', err);
+        if (err) console.log('Something went wrong:', err);
         if (MAPIC_API_VERBOSE) {
-            console.log('Created mask');
+            console.log('Mask updated successfully!');
         }
     });
 });
