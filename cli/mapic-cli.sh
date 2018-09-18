@@ -385,6 +385,15 @@ _install_linux_tools () {
         apt-get install -y git >/dev/null 2>&1
     fi
 
+    # rsub
+    RSUB=$(which rsub)
+    if [ -z $RSUB ]; then
+        cp $MAPIC_CLI_FOLDER/install/rsub /usr/local/bin/rsub
+        chmod +x /usr/local/bin/rsub
+    fi
+
+}
+_install_certbot () {
     # certbot
     CERTBOTPATH=$(which certbot)
     if [ -z $CERTBOTPATH ]; then
@@ -397,15 +406,6 @@ _install_linux_tools () {
         sudo apt-get update -y >/dev/null 2>&1
         sudo apt-get install -y --force-yes python-certbot-nginx >/dev/null 2>&1
     fi
-
-    # rsub
-    RSUB=$(which rsub)
-    if [ -z $RSUB ]; then
-        echo "Installing rsub editor..."
-        cp $MAPIC_CLI_FOLDER/install/rsub /usr/local/bin/rsub
-        chmod +x /usr/local/bin/rsub
-    fi
-
 }
 _install_osx_tools () {
     
@@ -1552,6 +1552,7 @@ mapic_api_usage () {
     echo "  project         Handle projects"
     echo "  layer           Handle layers"
     echo ""
+    echo "All commands have their own help screens."
     mapic_api_display_config
     exit 1 
 }
@@ -2296,6 +2297,11 @@ _create_ssl_localhost () {
 
 }
 _create_ssl_public_domain () {
+    CERTBOTPATH=$(which certbot)
+    if [ -z $CERTBOTPATH ]; then
+        _install_certbot
+    fi
+
     # certbot-auto
     cd $MAPIC_CLI_FOLDER/ssl
     certbot certonly \
