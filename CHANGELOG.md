@@ -6,12 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ## Unreleased
 ### `mapic/mapic.js` 
 - Added help button for Snow layer
+- Bug fixes to the UI
+- Implemented hydrological year for SCF layers
 
 ### `mapic/mapic`
 - Improved upload flow
+- Added commands to CLI: `mapic api layer create`, etc.
+- Cleanup of CLI
+- Improved API handling
 
 ### `mapic/mile`
 - Add tests for updating masks in Cube Layer
+- Added more tests: `mask crud` 
+- Cleaned up tests
 
 ## [18.02](https://github.com/mapic/mapic/releases/tag/v18.02)
 ### `mapic/mapic.js` 
