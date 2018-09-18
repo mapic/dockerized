@@ -31,6 +31,7 @@ token(function (err, access_token) {
 
     // add mask title
     if (MAPIC_API_LAYER_MASK_UPDATE_MASK_TITLE) {
+        data.mask.meta = data.mask.meta || {};
         data.mask.meta.title = MAPIC_API_LAYER_MASK_UPDATE_MASK_TITLE;
     }
 
