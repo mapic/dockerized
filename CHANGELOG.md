@@ -3,7 +3,7 @@ All notable changes to all repositories in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
-## Unreleased
+## [18.09](https://github.com/mapic/mapic/releases/tag/v18.09)
 ### `mapic/mapic.js` 
 - Added help button for Snow layer
 - Bug fixes to the UI
@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 - Add tests for updating masks in Cube Layer
 - Added more tests: `mask crud` 
 - Cleaned up tests
+- Pre-rendering for cube tiles
 
 ## [18.02](https://github.com/mapic/mapic/releases/tag/v18.02)
 ### `mapic/mapic.js` 
