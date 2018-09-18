@@ -42,7 +42,7 @@ ops.upload = function (done) {
     }, function (err, result) {
         if (err) return done(err);
         uploaded = result;
-        console.log('Uploaded', result.filename);
+        VERBOSE && console.log('Uploaded', result.filename);
         done();
     });
 
@@ -60,7 +60,7 @@ ops.add_dataset = function (done) {
     }]
     }, function (err, cube) {
         if (err) return done(err);
-        console.log('Added datasets to cube.', err);
+        VERBOSE && console.log('Added datasets to cube.', err);
         done();
     });
 }
@@ -72,7 +72,7 @@ async.series(ops, function (err, results) {
         return process.exit(1);
     }
 
-    console.log('All done.');
+    VERBOSE && console.log('All done.');
 
 });
 
@@ -104,11 +104,8 @@ function parse_date_YYYY_DDD(f) {
 function parse_date_YYYYMMDD(f) {
     // f is eg. "SCF_MOD_20150101.tif"
     var a = f.split('.');
-    console.log('a:', a);
     var b = a[0].split('_').reverse();
-    console.log('b:', b);
     var dato = b[0];
-    console.log('dato: ', dato);
     var date = moment.utc(dato, "YYYYMMDD").format();
     return date;
 }

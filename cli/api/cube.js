@@ -10,11 +10,12 @@ var config = {
     domain : process.env.MAPIC_API_DOMAIN,
     username : process.env.MAPIC_API_USERNAME,
     password : process.env.MAPIC_API_AUTH,
-    debug : true
+    debug : process.env.MAPIC_API_VERBOSE
 }
 // var api = supertest('https://' + config.domain);
 // var debug = config.debug;
 var debug = false;
+console.log('process.env.MAPIC_API_VERBOSE', process.env.MAPIC_API_VERBOSE);
 
 // domain resolution compatible with localhost setup (must run from within Docker container)
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0" 

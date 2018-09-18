@@ -1881,7 +1881,6 @@ mapic_api_layer_update_usage () {
 mapic_api_layer_update () {
     test -z "$5" && mapic_api_layer_update_usage
 
-    echo "mapic api layer update"
     cd $MAPIC_CLI_FOLDER/api 
     
     ARGS=$@
@@ -1908,12 +1907,12 @@ mapic_api_layer_update () {
     test -z $MAPIC_API_LAYER_UPDATE_DATASET  && mapic_api_layer_update_usage
 
     # create tmp dir
-    mkdir $MAPIC_CLI_FOLDER/tmp
+    mkdir $MAPIC_CLI_FOLDER/tmp >/dev/null 2>&1
 
     # move files to tmp dir
     if  [[ -f "$MAPIC_API_LAYER_UPDATE_DATASET" ]]; then
         BASENAME=$(basename $MAPIC_API_LAYER_UPDATE_DATASET)
-        cp $MAPIC_API_LAYER_UPDATE_DATASET $MAPIC_CLI_FOLDER/tmp/$BASENAME
+        cp $MAPIC_API_LAYER_UPDATE_DATASET $MAPIC_CLI_FOLDER/tmp/$BASENAME >/dev/null 2>&1
     fi
     
     cd $MAPIC_CLI_FOLDER/api 
