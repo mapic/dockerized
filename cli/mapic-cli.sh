@@ -186,7 +186,7 @@ initialize () {
 
         # ask if only cli install needed
         if [ "$TRAVIS" != "true" ]; then
-            ehco "Installing Mapic CLI only..."
+            echo "Installing Mapic CLI only..."
             MAPIC_CLI_INSTALL_ONLY=true
         fi
 
