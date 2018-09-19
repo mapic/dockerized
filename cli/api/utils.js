@@ -38,12 +38,11 @@ module.exports = utils = {
     },
 
     get_access_token : function (done) {
-        api.get(endpoints.users.token.token)
-        .query({
+        api.post(endpoints.users.token.token)
+        .send({
             username : process.env.MAPIC_API_USERNAME || 'localhost@mapic.io',
             password : process.env.MAPIC_API_AUTH || 'localhost-password'
         })
-        .send()
         .end(function (err, res) {
             if (!res || !res.text) return done('Failed to connect to Mapic API.');
             var tokens = utils.parse(res.text);
