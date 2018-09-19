@@ -18,6 +18,7 @@
   "homepage": "https://github.com/mapic/mapic-cli",
   "dependencies": {
     "async": "^2.0.0-rc.2",
+    "easy-table": "^1.1.1",
     "fs-extra": "^0.26.7",
     "ftps": "^0.4.8",
     "jsftp": "^1.5.5",

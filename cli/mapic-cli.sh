@@ -2121,7 +2121,7 @@ mapic_api_user () {
 }
 mapic_api_user_list () {
     cd $MAPIC_CLI_FOLDER/api
-    bash list-users.sh
+    docker run -it --rm --volume $MAPIC_CLI_FOLDER/api:/wd --workdir /wd --env-file $MAPIC_ENV_FILE node:slim node api.list-users.js
 }
 mapic_api_user_create_usage () {
     echo ""
@@ -2134,8 +2134,23 @@ mapic_api_user_create () {
     test -z "$5" && mapic_api_user_create_usage
     test -z "$6" && mapic_api_user_create_usage
     test -z "$7" && mapic_api_user_create_usage
+
+    MAPIC_USER_CREATE_EMAIL=$4
+    MAPIC_USER_CREATE_USERNAME=$5
+    MAPIC_USER_CREATE_FIRSTNAME=$6
+    MAPIC_USER_CREATE_LASTNAME=$7
+
     cd $MAPIC_CLI_FOLDER/api
-    bash create-user.sh "${@:4}"
+    docker run -it --rm \
+        --volume $MAPIC_CLI_FOLDER/api:/wd \
+        --workdir /wd \
+        --env-file $MAPIC_ENV_FILE \
+        -e MAPIC_USER_CREATE_EMAIL=$MAPIC_USER_CREATE_EMAIL \
+        -e MAPIC_USER_CREATE_USERNAME=$MAPIC_USER_CREATE_USERNAME \
+        -e MAPIC_USER_CREATE_FIRSTNAME=$MAPIC_USER_CREATE_FIRSTNAME \
+        -e MAPIC_USER_CREATE_LASTNAME=$MAPIC_USER_CREATE_LASTNAME \
+        node:slim node api.create-user.js
+
 }
 mapic_api_user_remove_usage () {
     echo ""
