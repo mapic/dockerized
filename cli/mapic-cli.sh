@@ -2174,15 +2174,20 @@ mapic_api_user_super_usage () {
 }
 mapic_api_user_super () {
     test -z "$4" && mapic_api_user_super_usage
-    echo "WARNING: This command will promote user to SUPERADMIN,"
-    echo "giving access to all projects and data."
+    echo "Warning: This will promote user $4 to SUPER, giving access to all projects and data."
     echo ""
     read -p "Are you sure? (y/n)" -n 1 -r
     echo 
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
         cd $MAPIC_CLI_FOLDER/api
-        bash promote-super.sh "${@:4}"
+        cd $MAPIC_CLI_FOLDER/api
+        docker run -it --rm \
+            --volume $MAPIC_CLI_FOLDER/api:/wd \
+            --workdir /wd \
+            --env-file $MAPIC_ENV_FILE \
+            -e MAPIC_USER_PROMOTE_EMAIL=$4 \
+            node:slim node api.promote-user.js
     fi
 }
 mapic_run_usage () {

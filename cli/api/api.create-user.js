@@ -26,7 +26,8 @@ token(function (err, access_token) {
         email : MAPIC_USER_CREATE_EMAIL,
         firstname : MAPIC_USER_CREATE_FIRSTNAME,
         lastname : MAPIC_USER_CREATE_LASTNAME,
-        password : crypto.randomBytes(16).toString('hex')
+        password : crypto.randomBytes(16).toString('hex'),
+        // access_token : access_token // no access needed to create simple user
     }
 
     // empty mask data

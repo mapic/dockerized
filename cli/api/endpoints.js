@@ -68,7 +68,8 @@ module.exports = endpoint = {
         },
         create : '/v2/users/create',
         delete : '/v2/users/delete',
-        list : '/v2/users/list' // get     
+        list : '/v2/users/list', // get     
+        promote: '/v2/users/promote'
     },
 
     hashes : {
