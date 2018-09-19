@@ -184,6 +184,9 @@ initialize () {
 
         # we're not installed, so let's do that
 
+        # ask if only cli install needed
+        _prompt_cli_only_install
+
         # check for .mapic.env
         test ! -f mapic-cli.sh && _corrupted_install
 
@@ -221,11 +224,16 @@ initialize () {
         # ensure docker is installed
         mapic_install_docker
 
-        # update submodules
-        _init_submodules
+        # unless only CLI mode
+        if [ "$MAPIC_CLI_ONLY" != "true" ]; then
 
-        # ensure editor
-        _ensure_editor
+            # update submodules
+            _init_submodules
+
+            # ensure editor
+            _ensure_editor
+
+        fi
 
         # now everything should work, time to write ENV
         _write_env MAPIC_ROOT_FOLDER $MAPIC_ROOT_FOLDER
@@ -260,6 +268,17 @@ initialize () {
     # mark that we're in a cli
     MAPIC_CLI=true
 
+}
+_prompt_cli_only_install () {
+    read -p "Install Mapic CLI only? " -n 1 -r
+    echo    # (optional) move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+        # do dangerous stuff
+        MAPIC_CLI_ONLY=true
+        _write_env MAPIC_CLI_ONLY $MAPIC_CLI_ONLY
+
+    fi
 }
 usage () {
     echo "Usage: mapic [COMMAND]"
@@ -318,9 +337,10 @@ mapic_init_worker () {
 }
 _init_submodules () {
     cd $MAPIC_ROOT_FOLDER
-    git submodule init
-    git submodule update --remote
-    git remote set-url origin git@github.com:mapic/mapic.git
+    ecco 4 "Initializing submodules..."
+    git submodule init >/dev/null 2>&1
+    git submodule update --remote >/dev/null 2>&1
+    git remote set-url origin git@github.com:mapic/mapic.git >/dev/null 2>&1
 }
 _install_dependencies () {
 
@@ -1493,13 +1513,15 @@ mapic_install_docker_ubuntu () {
     # install/update docker
     _install_docker_ubuntu
 
-    # use experimental mode
-    _set_experimental_docker
+    if [ "$MAPIC_CLI_ONLY" != "true" ]; then
 
-    # init swarm
-    _init_docker_swarm
+        # use experimental mode
+        _set_experimental_docker
 
-    # todo: init swarm only if manager
+        # init swarm
+        _init_docker_swarm # todo: init swarm only if manager
+    
+    fi
     
 }
 _install_docker_ubuntu () {
