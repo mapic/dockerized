@@ -185,9 +185,8 @@ initialize () {
         # we're not installed, so let's do that
 
         # ask if only cli install needed
-        if [ "$TRAVIS" == "true" ]; then
-            MAPIC_CLI_INSTALL_ONLY=
-        else 
+        if [ "$TRAVIS" != "true" ]; then
+            ehco "Installing Mapic CLI only..."
             MAPIC_CLI_INSTALL_ONLY=true
         fi
 
@@ -267,7 +266,7 @@ initialize () {
     source $MAPIC_COLOR_FILE
 
     # mark [debug mode]
-    # test "$MAPIC_DEBUG" == "true" && ecco 82 "debug mode"
+    test "$MAPIC_DEBUG" == "true" && ecco 82 "[debug mode]"
 
     # mark that we're in a cli
     MAPIC_CLI=true
@@ -721,7 +720,6 @@ mapic_travis_ready_check () {
         mapic_travis_ready_check
     fi
 }
-
 mapic_volume_usage () {
     echo ""
     echo "Usage: mapic volume [OPTIONS]"
@@ -775,7 +773,6 @@ mapic_volume_rm () {
         echo "Nothing removed."
     fi
 }
-
 mapic_scale_usage () {
     echo ""
     echo "Usage: mapic scale SERVICE NODES"
@@ -825,12 +822,6 @@ _ping_mapic_command () {
         bash ping.sh "\`[travis]\` $MAPIC_DOMAIN @ $MAPIC_IP: \`$MCMD\`" &
     fi
 }
-
-#   _________  ____  / __(_)___ _
-#  / ___/ __ \/ __ \/ /_/ / __ `/
-# / /__/ /_/ / / / / __/ / /_/ / 
-# \___/\____/_/ /_/_/ /_/\__, /  
-#                       /____/   
 mapic_configure_usage () {
     echo ""
     echo "Usage: mapic configure [OPTIONS]"
@@ -852,12 +843,7 @@ mapic_configure () {
     esac 
 }
 _mapic_configure_manager () {
-    # 1. domain + email
-    # 2. aws creds
-    # 3. dns (if not localhost)
-    # 4. ssl 
-    # 5. stack is automaitcally configured with ENV inside stack.yml
-
+ 
     # domain
     _ensure_mapic_domain
 
@@ -877,9 +863,7 @@ _mapic_configure_manager () {
     # ssl
     m ssl create
 
-    # what else?
-    # set redis/mongo auth
-
+    # done
     ecco 5 "Mapic is configured!"
 
     # ping
@@ -947,7 +931,6 @@ mapic_config () {
         *)          mapic_config_usage;;
     esac 
 }
-
 mapic_config_set_usage () {
     echo ""
     echo "Usage: mapic config set KEY VALUE"
@@ -1074,16 +1057,10 @@ _ensure_editor () {
         _write_env MAPIC_DEFAULT_EDITOR $MAPIC_DEFAULT_EDITOR
     fi
 }
-               
-#    / __ \/ ___/
-#   / /_/ (__  ) 
-#  / .___/____/  
-# /_/            
 mapic_ps () {
     docker ps 
     exit 0
 }
-
 _test_config () {
 
     # ensure domain is set
@@ -1099,14 +1076,7 @@ _test_config () {
         _set_redis_auth
     fi
 
-    # todo:...
-    # ssl
 }
-
-#    _____/ /_____ ______/ /_
-#   / ___/ __/ __ `/ ___/ __/
-#  (__  ) /_/ /_/ / /  / /_  
-# /____/\__/\__,_/_/   \__/  
 mapic_up () {
 
     # test sanity of config
@@ -1115,8 +1085,11 @@ mapic_up () {
     # start mapic stack
     STACK=$MAPIC_CONFIG_FOLDER/stack.yml
     docker stack deploy --compose-file=$STACK mapic 
+
+    # feedback
     echo "Mapic is up."
     docker service ls
+
 }
 mapic_restart () {
     mapic_down
@@ -1131,12 +1104,6 @@ mapic_flush () {
     cd $MAPIC_CLI_FOLDER/management
     bash flush-mapic.sh
 }
-
-#    / /___  ____ ______
-#   / / __ \/ __ `/ ___/
-#  / / /_/ / /_/ (__  ) 
-# /_/\____/\__, /____/  
-#         /____/     
 mapic_logs_container_usage () {
     echo "22"
     echo ""
@@ -1185,11 +1152,6 @@ mapic_logs () {
         docker service logs mapic_engine     
     fi
 }
-                     
-#  _      __(_) /___/ /
-# | | /| / / / / __  / 
-# | |/ |/ / / / /_/ /  
-# |__/|__/_/_/\__,_/   
 mapic_wild () {
     echo "\"$@\" is not a Mapic command. See 'mapic help' for available commands."
     exit 1
@@ -1208,6 +1170,7 @@ mapic_domain_usage () {
 mapic_domain () {
     [ -z "$1" ] && mapic_domain_usage
     [ -z "$2" ] && mapic_domain_usage
+    
     DOMAIN=$2
     _write_env MAPIC_DOMAIN $DOMAIN
     echo ""
@@ -1216,11 +1179,6 @@ mapic_domain () {
     # update config
     mapic_configure
 }
-
-#   ___  ____  / /____  _____
-#  / _ \/ __ \/ __/ _ \/ ___/
-# /  __/ / / / /_/  __/ /    
-# \___/_/ /_/\__/\___/_/     
 mapic_enter_usage () {
     echo ""
     echo "Usage: mapic enter [filter]"
@@ -1237,7 +1195,6 @@ mapic_enter () {
         db)         mapic_enter_db "$@";;
         *)          mapic_enter_container "$@";;
     esac 
-   
 }
 mapic_enter_container () {
     C=$(docker ps -q --filter name=$2)
@@ -1254,11 +1211,6 @@ mapic_enter_usage_missing_container () {
     echo "No container matched filter: $2" 
     exit 1
 }
-
-#    (_)___  _____/ /_____ _/ / /
-#   / / __ \/ ___/ __/ __ `/ / / 
-#  / / / / (__  ) /_/ /_/ / / /  
-# /_/_/ /_/____/\__/\__,_/_/_/   
 mapic_install_usage () {
     echo ""
     echo "Usage: mapic install [OPTIONS]"
@@ -1311,12 +1263,7 @@ mapic_install_master () {
     _install_mapic
 }
 mapic_install_travis () {
-    # install whatever branch is designated in travis
-    
-    # 1. install docker
-    # 2. set exp mode
-    # 3. init swarm with 127...
-
+  
     # install docker
     echo "Installing Docker!"
     cd $MAPIC_CLI_FOLDER/install
@@ -1361,8 +1308,6 @@ mapic_install_prime () {
         apt-get update -y
         apt-get install -y fish htop build-essential iotop curl wget nano git
 
-        # todo: rsub
-
         # install docker
         m install docker
         
@@ -1394,7 +1339,6 @@ _install_mapic () {
     # init docker swarm
     _init_docker_swarm
 }
-
 _print_branches () {
     echo ""
     ecco 5 "Git branches:"
@@ -1550,12 +1494,6 @@ _restart_docker () {
         fi
     fi
 }
-
-#   ____ _____  (_)
-#  / __ `/ __ \/ / 
-# / /_/ / /_/ / /  
-# \__,_/ .___/_/   
-#     /_/          
 mapic_api_usage () {
     echo ""
     echo "Usage: mapic api [COMMAND]"
@@ -1973,6 +1911,7 @@ mapic_api_project () {
 }
 mapic_api_project_update () {
     echo "mapic api project update"
+    echo "todo!"
     # cd $MAPIC_CLI_FOLDER/api 
     # # todo: dynamic cube IDs
     # # todo: dynamic ftp details
@@ -2046,7 +1985,6 @@ mapic_api_project_create () {
     _api_create_project $VERBOSE
 
 }
-
 _api_create_project () {
 
     VERBOSE=$1
@@ -2070,11 +2008,10 @@ _api_create_project () {
         fi
 
         # print project_id
-        # echo $RESULT
         CLEAN_RESULT="${RESULT/$'\r'/}"
         echo $CLEAN_RESULT
 
-        # _write_env MAPIC_PROJECT_CREATE_ID $RESULT
+        # save
         _write_env MAPIC_API_PROJECT_CREATE_ID $CLEAN_RESULT
     fi
 }
@@ -2088,27 +2025,27 @@ mapic_api_upload_cube_usage () {
     echo ""
     exit 1 
 }
-
 mapic_api_upload_usage () {
     echo ""
-    echo "Usage: mapic api upload TYPE path [OPTIONS]"
-    echo ""
-    echo "Types of upload:"
-    echo "  Dataset     Upload a dataset"
-    echo "  Snow        Upload a snow-raster timeseries"
-    echo ""
-    echo "Path:"
-    echo "  Absolute path of JSON file or dataset to upload"
-    echo ""
-    echo "Options:"
-    echo "  --project-id        Project id"
-    echo ""
-    echo "Examples:"
-    echo "  mapic api upload dataset /tmp/raster.tiff"
-    echo "  mapic api upload snow snow-project.json"
-    echo ""
-    echo "See https://github.com/mapic/mapic/wiki/Upload-Snow-Raster-Datasets for more information."
-    echo ""
+    echo "Deprecated. Use [mapic api layer] instead."
+    # echo "Usage: mapic api upload TYPE path [OPTIONS]"
+    # echo ""
+    # echo "Types of upload:"
+    # echo "  Dataset     Upload a dataset"
+    # echo "  Snow        Upload a snow-raster timeseries"
+    # echo ""
+    # echo "Path:"
+    # echo "  Absolute path of JSON file or dataset to upload"
+    # echo ""
+    # echo "Options:"
+    # echo "  --project-id        Project id"
+    # echo ""
+    # echo "Examples:"
+    # echo "  mapic api upload dataset /tmp/raster.tiff"
+    # echo "  mapic api upload snow snow-project.json"
+    # echo ""
+    # echo "See https://github.com/mapic/mapic/wiki/Upload-Snow-Raster-Datasets for more information."
+    # echo ""
     exit 1 
 }
 mapic_api_upload () {
@@ -2160,12 +2097,6 @@ mapic_api_upload_dataset () {
     docker run -it --rm --name mapic_uploader --volume $API_DIR:/wd --volume $MAPIC_API_UPLOAD_DATASET:/mapic_upload$MAPIC_API_UPLOAD_DATASET --workdir /wd --env-file $MAPIC_ENV_FILE node:slim node api.upload-data.js
 
 }
-
-#   ____ _____  (_)  __  __________  _____
-#  / __ `/ __ \/ /  / / / / ___/ _ \/ ___/
-# / /_/ / /_/ / /  / /_/ (__  )  __/ /    
-# \__,_/ .___/_/   \__,_/____/\___/_/     
-#     /_/                                     
 mapic_api_user_usage () {
     echo ""
     echo "Usage: mapic api user [OPTIONS]"
@@ -2239,11 +2170,6 @@ mapic_api_user_super () {
         bash promote-super.sh "${@:4}"
     fi
 }
-
-
-#   / ___/ / / / __ \
-#  / /  / /_/ / / / /
-# /_/   \__,_/_/ /_/ 
 mapic_run_usage () {
     echo ""
     echo "Usage: mapic run [filter] [commands]"
@@ -2258,11 +2184,6 @@ mapic_run () {
     test -z "$C" && mapic_enter_usage_missing_container "$@"
     docker exec -it -e MAPIC_DEBUG=$MAPIC_DEBUG $C  ${@:3}
 }
-
-#    __________/ /
-#   / ___/ ___/ / 
-#  (__  |__  ) /  
-# /____/____/_/   
 mapic_ssl_usage () {
     echo ""
     echo "Usage: mapic ssl [OPTIONS]"
@@ -2367,11 +2288,6 @@ _scan_ssl () {
     cd $MAPIC_CLI_FOLDER/ssl
     bash ssllabs-scan.sh "https://$MAPIC_DOMAIN"
 }
-
-#   ____/ /___  _____
-#  / __  / __ \/ ___/
-# / /_/ / / / (__  ) 
-# \__,_/_/ /_/____/  
 mapic_dns_usage () {
     echo ""
     echo "Usage: mapic dns [OPTIONS]"
@@ -2393,11 +2309,6 @@ _set_dns () {
     WDR=/usr/src/app
     docker run -it --rm -p 80:80 -p 443:443 --env-file $MAPIC_ENV_FILE --volume $PWD:$WDR -w $WDR node:6 sh entrypoint.sh
 }
-
-#    _____/ /_____ _/ /___  _______
-#   / ___/ __/ __ `/ __/ / / / ___/
-#  (__  ) /_/ /_/ / /_/ /_/ (__  ) 
-# /____/\__/\__,_/\__/\__,_/____/  
 mapic_status () {
     
     # show stack status
@@ -2419,18 +2330,7 @@ _print_stack () {
     echo ""
     ecco 6 "docker ps"
     docker ps
-
-    # print more debug info for travis build
-    # if [[ "$TRAVIS" == "true" ]]; then
-    #     echo 'docker inspect $(docker stack services mapic -q):'
-    #     docker stack services mapic
-    #     # docker inspect $(docker stack services mapic -q)
-    # fi
 }
-#   / /____  _____/ /_
-#  / __/ _ \/ ___/ __/
-# / /_/  __(__  ) /_  
-# \__/\___/____/\__/  
 mapic_test_usage () {
     echo ""
     echo "Usage: mapic test [OPTIONS]"
@@ -2536,7 +2436,6 @@ mapic_bench () {
         *)          mapic_bench_usage;;
     esac 
 }
-
 mapic_bench_run () {
 
     # defaults
@@ -2600,11 +2499,6 @@ mapic_scale_mile () {
 
     echo "Please allow a few minutes for correct number of replicas to become active (especially when scaling down)."
 }
-                 
-#   / __ `/ ___/ _ \/ __ \
-#  / /_/ / /  /  __/ /_/ /
-#  \__, /_/   \___/ .___/ 
-# /____/         /_/      
 mapic_grep_usage () {
     echo ""
     echo "Usage: mapic grep [PATTERN]"
@@ -2675,10 +2569,5 @@ mapic_tor_stop () {
     docker service rm tor-relay
 }
 
-
-#   ___  ____  / /________  ______  ____  (_)___  / /_
-#  / _ \/ __ \/ __/ ___/ / / / __ \/ __ \/ / __ \/ __/
-# /  __/ / / / /_/ /  / /_/ / /_/ / /_/ / / / / / /_  
-# \___/_/ /_/\__/_/   \__, / .___/\____/_/_/ /_/\__/  
-#                    /____/_/                         
+# entrypoint
 mapic_cli "$@"
