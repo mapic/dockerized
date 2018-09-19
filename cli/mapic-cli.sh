@@ -185,7 +185,7 @@ initialize () {
         # we're not installed, so let's do that
 
         # ask if only cli install needed
-        _prompt_cli_only_install
+        _prompt_cli_install_only
 
         # check for .mapic.env
         test ! -f mapic-cli.sh && _corrupted_install
@@ -225,7 +225,7 @@ initialize () {
         mapic_install_docker
 
         # unless only CLI mode
-        if [ "$MAPIC_CLI_ONLY" != "true" ]; then
+        if [ "$MAPIC_CLI_INSTALL_ONLY" != "true" ]; then
 
             # update submodules
             _init_submodules
@@ -247,6 +247,7 @@ initialize () {
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         _write_env MAPIC_HOME $MAPIC_HOME
         _write_env TRAVIS $TRAVIS
+        _write_env MAPIC_CLI_INSTALL_ONLY $MAPIC_CLI_INSTALL_ONLY
 
         # ping
         _ping_cli_install
@@ -269,15 +270,13 @@ initialize () {
     MAPIC_CLI=true
 
 }
-_prompt_cli_only_install () {
+_prompt_cli_install_only () {
     read -p "Install Mapic CLI only? " -n 1 -r
     echo    # (optional) move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
         # do dangerous stuff
-        MAPIC_CLI_ONLY=true
-        _write_env MAPIC_CLI_ONLY $MAPIC_CLI_ONLY
-
+        MAPIC_CLI_INSTALL_ONLY=true
     fi
 }
 usage () {
@@ -1513,7 +1512,7 @@ mapic_install_docker_ubuntu () {
     # install/update docker
     _install_docker_ubuntu
 
-    if [ "$MAPIC_CLI_ONLY" != "true" ]; then
+    if [ "$MAPIC_CLI_INSTALL_ONLY" != "true" ]; then
 
         # use experimental mode
         _set_experimental_docker
