@@ -185,7 +185,11 @@ initialize () {
         # we're not installed, so let's do that
 
         # ask if only cli install needed
-        _prompt_cli_install_only
+        if [ "$TRAVIS" == "true" ]; then
+            MAPIC_CLI_INSTALL_ONLY=
+        else 
+            MAPIC_CLI_INSTALL_ONLY=true
+        fi
 
         # check for .mapic.env
         test ! -f mapic-cli.sh && _corrupted_install
@@ -247,7 +251,6 @@ initialize () {
         _write_env MAPIC_HOST_OS $MAPIC_HOST_OS
         _write_env MAPIC_HOME $MAPIC_HOME
         _write_env TRAVIS $TRAVIS
-        _write_env MAPIC_CLI_INSTALL_ONLY $MAPIC_CLI_INSTALL_ONLY
 
         # ping
         _ping_cli_install
@@ -269,16 +272,6 @@ initialize () {
     # mark that we're in a cli
     MAPIC_CLI=true
 
-}
-_prompt_cli_install_only () {
-    nl "$INPUT" >/dev/tty
-    read -p "Install Mapic CLI only? " -n 1 -r
-    echo    # (optional) move to a new line
-    if [[ $REPLY =~ ^[Yy]$ ]]
-    then
-        # do dangerous stuff
-        MAPIC_CLI_INSTALL_ONLY=true
-    fi
 }
 usage () {
     echo "Usage: mapic [COMMAND]"
