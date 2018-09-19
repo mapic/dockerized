@@ -271,6 +271,7 @@ initialize () {
 
 }
 _prompt_cli_install_only () {
+    nl "$INPUT" >/dev/tty
     read -p "Install Mapic CLI only? " -n 1 -r
     echo    # (optional) move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]
