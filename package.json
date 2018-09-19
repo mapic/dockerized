@@ -28,5 +28,8 @@
     "aws-sdk": "^2.6.12",
     "lodash": "^4.17.4",
     "yamljs": "^0.2.8"
+  },
+  "dependencies": {
+    "easy-table": "^1.1.1"
   }
 }
