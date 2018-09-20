@@ -1453,7 +1453,7 @@ mapic_install_docker_unsupported () {
     echo ""
     echo "See https://docs.docker.com/engine/installation/"
     echo ""
-    exit 0
+    # exit 0
 }
 mapic_install_docker_ubuntu () {
 
