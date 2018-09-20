@@ -95,6 +95,10 @@ mapic_cli_usage () {
     echo "  schedule            Schedule AWS instances"
     echo "  delayed             Execute job after n seconds of sleep"
     echo ""
+
+    # print config
+    _print_config
+    mapic_api_display_config
     fi
     exit 0
 }
@@ -1527,6 +1531,7 @@ mapic_api () {
         upload)     mapic_api_upload "$@";;
         project)    mapic_api_project "$@";;
         layer)      mapic_api_layer "$@";;
+        test)       mapic_api_test "$@";;
         *)          mapic_api_usage;
     esac 
 }
@@ -1577,9 +1582,9 @@ mapic_api_login () {
 mapic_api_display_config () {
     echo ""
     echo "Mapic API credentials:"
-    echo "  API domain: $MAPIC_API_DOMAIN"
-    echo "  Email:      $MAPIC_API_USERNAME"
-    echo "  Password:   $MAPIC_API_AUTH"
+    echo "  API domain:         $MAPIC_API_DOMAIN"
+    echo "  Email:              $MAPIC_API_USERNAME"
+    echo "  Password:           $MAPIC_API_AUTH"
     echo ""
 }
 _test_api_login () {
