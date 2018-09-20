@@ -445,7 +445,7 @@ _install_osx_tools () {
     echo "SED VERSION: $SEDV"
 
     # gnu-sed
-    if [ -z $SEDV ]; then
+    if [ -z "$SEDV" ]; then
         echo "Installing GNU sed..."
         cd $MAPIC_CLI_FOLDER/lib >/dev/null 2>&1
         rm -rf sed-4.4 >/dev/null 2>&1
@@ -460,7 +460,7 @@ _install_osx_tools () {
     fi
 
     # grep
-    if [ -z $GREP ]; then
+    if [ -z "$GREP" ]; then
         if [ -z $BREW ]; then
             echo "Brew required for OSX. Please install 'grep' manually:"
             echo "brew install grep --with-default-names"
@@ -1410,11 +1410,16 @@ _yarn_mapic () {
     docker run -it --rm -v $MAPIC_ROOT_FOLDER:/mapic_tmp -w /mapic_tmp mapic/xenial:latest yarn install 
 }
 mapic_install_jq () {
-    DISTRO=$(lsb_release -si)
-    case "$DISTRO" in
-        Ubuntu)     mapic_install_jq_ubuntu "$@";;
-        *)          mapic_install_jq_unsupported;;
-    esac 
+    LSB=$(which lsb_release)
+    if [[ "$LSB" == "" ]]; then
+        mapic_install_jq_unsupported
+    else 
+        DISTRO=$(lsb_release -si)
+        case "$DISTRO" in
+            Ubuntu)     mapic_install_jq_ubuntu "$@";;
+            *)          mapic_install_jq_unsupported;;
+        esac 
+    fi
 }
 mapic_install_jq_ubuntu () {
     apt-get -qq update -y || exit 1
@@ -1431,11 +1436,16 @@ mapic_install_jq_unsupported () {
     exit 1
 }
 mapic_install_docker () {
-    DISTRO=$(lsb_release -si)
-    case "$DISTRO" in
-        Ubuntu)     mapic_install_docker_ubuntu "$@";;
-        *)          mapic_install_docker_unsupported;;
-    esac 
+    LSB=$(which lsb_release)
+    if [[ "$LSB" == "" ]]; then
+        mapic_install_docker_unsupported
+    else 
+        DISTRO=$(lsb_release -si)
+        case "$DISTRO" in
+            Ubuntu)     mapic_install_docker_ubuntu "$@";;
+            *)          mapic_install_docker_unsupported;;
+        esac 
+    fi
 }
 mapic_install_docker_unsupported () {
     echo ""
