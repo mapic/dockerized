@@ -3,6 +3,13 @@ All notable changes to all repositories in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## Unreleased
+### `mapic/mile`
+- Updated tests with new raster processing
+
+### `mapic/engine`
+- Improved resolution on raster, remove tiling from raster2pgsql 
+
 ## [18.09](https://github.com/mapic/mapic/releases/tag/v18.09)
 ### `mapic/mapic.js` 
 - Added help button for Snow layer
