@@ -23,6 +23,7 @@ token(function (err, access_token) {
             console.log(users.error);
             process.exit(1);
         }
+
         var t = new Table;
         users.forEach(function (u, i) {
             
@@ -32,7 +33,7 @@ token(function (err, access_token) {
             t.cell('First Name', u.firstName);
             t.cell('Last Name', u.lastName);
             t.cell('Email', u.local.email);
-            t.cell('ID', u.id);
+            t.cell('ID', u.uuid);
             t.cell('Super', (u.access.super ? 'YES' : ''))
             t.newRow();
 
