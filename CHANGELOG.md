@@ -9,6 +9,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ### `mapic/engine`
 - Improved resolution on raster, remove tiling from raster2pgsql 
+- Added more customizable email templates
+
+### `mapic/mapic.js`
+- Improved SCF Graph object
+
+### `mapic/mapic` 
+- Improved API: Python and Bash scripts
 
 ## [18.09](https://github.com/mapic/mapic/releases/tag/v18.09)
 ### `mapic/mapic.js` 
