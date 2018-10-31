@@ -22,7 +22,10 @@ On OSX or Ubuntu:
 
 ```bash
 # install mapic cli
-curl -sSL https://get.mapic.io  | sh
+git clone https://github.com/mapic/mapic.git
+cd mapic/cli 
+sudo bash mapic-cli.sh
+
 
 ```
 
