@@ -18,7 +18,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ### `mapic/mapic` 
 - Improved API: Python and Bash scripts
 
-
 ## [18.09](https://github.com/mapic/mapic/releases/tag/v18.09)
 ### `mapic/mapic.js` 
 - Added help button for Snow layer
