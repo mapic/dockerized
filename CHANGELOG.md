@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ### `mapic/mapic.js`
 - Improved SCF Graph object
+- Improved Color Theme
 
 ### `mapic/mapic` 
 - Improved API: Python and Bash scripts
