@@ -3,7 +3,7 @@ All notable changes to all repositories in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
-## Unreleased
+## Unreleased [19.01.08]
 ### `mapic/mile`
 - Updated tests with new raster processing
 
@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 ### `mapic/mapic.js`
 - Improved SCF Graph object
 - Improved Color Theme
+- Added support for WMS layers, GeoJSON layers, Tile Service layers
+- Lots of improvements to GUI
 
 ### `mapic/mapic` 
 - Improved API: Python and Bash scripts
