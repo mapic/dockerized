@@ -11,6 +11,7 @@ if (!fs.existsSync(CONFIG_FOLDER)) {
     process.exit(1);
 }
 
+
 // helper fn
 // var updateRedisConfig = function (config) {
 //     var lines = fs.readFileSync(config).toString().split("\n");
@@ -101,6 +102,8 @@ engineConfig.clientConfig.servers.utfgrid.subdomains = [
     'grid-c-' + MAPIC_SUBDOMAIN, 
     'grid-d-' + MAPIC_SUBDOMAIN 
 ];
+
+engineConfig.serverConfig.logo_base64 = process.env.MAPIC_LOGIN_LOGO;
 
 var engineJsonStr = 'module.exports = ' + JSON.stringify(engineConfig, null, 2);
 fs.writeFileSync(ENGINE_CONFIG_PATH , engineJsonStr, 'utf-8');
