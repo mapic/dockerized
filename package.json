@@ -24,10 +24,10 @@
   },
   "homepage": "https://mapic.io",
   "devDependencies": {
-    "async": "^2.1.2",
-    "aws-sdk": "^2.6.12",
-    "lodash": "^4.17.4",
-    "yamljs": "^0.2.8"
+    "async": "^3.1.0",
+    "aws-sdk": "^2.510.0",
+    "lodash": "^4.17.15",
+    "yamljs": "^0.3.0"
   },
   "dependencies": {
     "easy-table": "^1.1.1"
