@@ -1122,7 +1122,6 @@ mapic_logs_container_usage () {
     exit 1
 }   
 mapic_logs () {
-    echo "ml"
     if [[ -n "$2" ]]; then
         case "$2" in
             mongo)          docker service logs -f mapic_mongo;;
