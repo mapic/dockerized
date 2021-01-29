@@ -3,6 +3,7 @@ All notable changes to all repositories in this project will be documented in th
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+
 ## Unreleased [19.01.08]
 ### `mapic/mile`
 - Updated tests with new raster processing

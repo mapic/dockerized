@@ -1,7 +1,7 @@
 {
   "name": "mapic",
   "version": "18.3.18",
-  "description": "Mapic Web Map Engine",
+  "description": "Mapic Open Source Web Map Engine",
   "scripts": {
     "test": "mapic test all",
     "start": "mapic start"

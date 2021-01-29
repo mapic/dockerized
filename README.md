@@ -12,7 +12,7 @@
     Mapic is an Open Source Web Map Engine.
 </p>
 <p align="center">
-    Learn more @ https://mapic.io. For a technical overview, see the <a href="https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview">wiki</a>.
+    For a technical overview, see the <a href="https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview">wiki</a>.
 </p>
 
 ## Install
