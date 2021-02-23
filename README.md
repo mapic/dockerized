@@ -12,7 +12,7 @@
     Mapic is an Open Source Web Map Engine.
 </p>
 <p align="center">
-    Learn more @ https://mapic.io. For a technical overview, see the <a href="https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview">wiki</a>.
+    For a technical overview, see the <a href="https://github.com/mapic/mapic/wiki/Mapic-Techincal-Overview">wiki</a>.
 </p>
 
 ## Install
@@ -22,7 +22,10 @@ On OSX or Ubuntu:
 
 ```bash
 # install mapic cli
-curl -sSL https://get.mapic.io  | sh
+git clone https://github.com/mapic/mapic.git
+cd mapic/cli 
+sudo bash mapic-cli.sh
+
 
 ```
 
